@@ -18,7 +18,7 @@ body.hide-header-footer .site-footer {
 .wave-bg {
   position: fixed;
   inset: 0;
-  z-index: 0; /* behind content but above body background */
+  z-index: 5; /* above main content, below header (z-10) */
   pointer-events: none;
 }
 .wave-bg svg {
@@ -28,10 +28,11 @@ body.hide-header-footer .site-footer {
 }
 .ecg-highlight {
   stroke: #0ea5e9; /* sky-500 */
-  stroke-width: 2.2;
+  stroke-width: 2.4;
   vector-effect: non-scaling-stroke;
   fill: none;
   filter: url(#ecgGlow);
+  stroke-linecap: round;
 }
 .wave-path.slower { animation-duration: 10s; opacity: 0.25; }
 .wave-path.faster { animation-duration: 4s; opacity: 0.45; }
