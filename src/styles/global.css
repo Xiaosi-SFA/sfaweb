@@ -18,26 +18,34 @@ body.hide-header-footer .site-footer {
 .wave-bg {
   position: fixed;
   inset: 0;
-  z-index: 5; /* above main content, below header (z-10) */
+  z-index: -1; /* behind page content */
   pointer-events: none;
 }
-.wave-bg svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-.ecg-highlight {
-  stroke: #0ea5e9; /* sky-500 */
-  stroke-width: 2.4;
-  vector-effect: non-scaling-stroke;
+.wave-path {
+  stroke: rgba(14, 165, 233, 0.75); /* sky-500 */
+  stroke-width: 2;
   fill: none;
-  filter: url(#ecgGlow);
-  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 4px rgba(14,165,233,0.35));
 }
-.wave-path.slower { animation-duration: 10s; opacity: 0.25; }
-.wave-path.faster { animation-duration: 4s; opacity: 0.45; }
+/* faint baseline waveform, always visible */
+.wave-path-base {
+  stroke: rgba(14, 165, 233, 0.25);
+  stroke-width: 1.25;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+/* scanning window animation reveals the waveform */
+.scan-window {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: scanSweep 4s linear infinite; /* 1.5x speed */
+}
+@keyframes scanSweep {
+  from { transform: translateX(0); }
+  to { transform: translateX(1380px); } /* 1200 + new offset(180) */
+}
 
-/* Scanning band animation handled via SVG <animate> for broad compatibility */
 
 /* Article detail typography tuning */
 .article-prose p {
