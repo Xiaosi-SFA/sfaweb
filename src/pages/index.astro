@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+const allArticles = await getCollection('articles')
+  .then((xs) => xs.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+const allNews = await getCollection('news')
+  .then((xs) => xs.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+
+const latestArticles = allArticles.slice(0, 5)
+const latestNews = allNews.slice(0, 5)
+---
+<BaseLayout title="SFA 社团官网">
+  <section class="mb-10">
+    <h1 class="text-3xl font-bold mb-2">SFA 社团</h1>
+    <p class="text-slate-600">文章作品与消息门户</p>
+  </section>
+
+  <section class="grid md:grid-cols-2 gap-8">
+    <div>
+      <h2 class="text-xl font-semibold mb-3">最新消息</h2>
+      <ul class="space-y-2">
+        {latestNews.map((n) => (
+          <li>
+            <a class="hover:text-brand" href={`/news/#${n.slug}`}>
+              <span class="text-sm text-slate-500 mr-2">{n.data.date?.toISOString().slice(0,10)}</span>
+              {n.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-3">
+        <a href="/news/" class="text-brand hover:text-brand-dark text-sm">查看全部消息 →</a>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-semibold mb-3">最新文章</h2>
+      <ul class="space-y-2">
+        {latestArticles.map((a) => (
+          <li>
+            <a class="hover:text-brand" href={`/articles/${a.slug}/`}>
+              <span class="text-sm text-slate-500 mr-2">{a.data.date?.toISOString().slice(0,10)}</span>
+              {a.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="mt-3">
+        <a href="/articles/" class="text-brand hover:text-brand-dark text-sm">查看全部文章 →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

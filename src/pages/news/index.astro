@@ -1,0 +1,21 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+const items = await getCollection('news')
+  .then((xs) => xs.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+---
+<BaseLayout title="消息 - SFA">
+  <h1 class="text-2xl font-bold mb-6">消息</h1>
+  <ul class="space-y-4">
+    {items.map((n) => (
+      <li id={n.slug} class="p-4 bg-white rounded-lg shadow-sm border">
+        <div class="text-sm text-slate-500">{n.data.date?.toISOString().slice(0,10)} · {n.data.category}</div>
+        <h2 class="text-lg font-semibold">{n.data.title}</h2>
+        {n.body && <p class="text-slate-700 mt-1">{n.body}</p>}
+        {n.data.link && (
+          <a href={n.data.link} class="text-brand text-sm mt-2 inline-block" target="_blank">查看详情 →</a>
+        )}
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

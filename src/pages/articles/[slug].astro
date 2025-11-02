@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+const { slug } = Astro.params
+const entry = (await getCollection('articles')).find((e) => e.slug === slug)
+if (!entry) {
+  throw new Error('未找到文章')
+}
+const { Content } = await entry.render()
+---
+<BaseLayout title={`${entry.data.title} - SFA`}>
+  <article class="prose max-w-none">
+    <h1>{entry.data.title}</h1>
+    <p class="text-sm text-slate-500">{entry.data.date?.toISOString().slice(0,10)} · {entry.data.author}</p>
+    <Content />
+  </article>
+</BaseLayout>
