@@ -9,3 +9,7 @@ dist
 .DS_Store
 *.log
 *.code-workspace
+
+src/content/articles/*
+src/content/news/*
+src/content/groups/*

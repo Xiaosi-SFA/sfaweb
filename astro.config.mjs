@@ -10,5 +10,5 @@ export default defineConfig({
   server: {
     port: 4321,
   },
-  site: 'https://example.com', // TODO: replace with real domain later
+  site: 'https://example.com',
 })
