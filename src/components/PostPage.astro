@@ -1,0 +1,98 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+
+interface Props {
+  title: string
+  date?: Date
+  author?: string
+  tags?: string[]
+  cover?: string
+  // The rendered markdown content component from entry.render()
+  Content: any
+  // Headings for TOC from entry.render()
+  headings?: Array<{ depth: number; text: string; slug: string }>
+}
+const { title, date, author, tags = [], cover, Content, headings = [] } = Astro.props as Props
+---
+<BaseLayout title={`${title} - SFA`}>
+  <article class="max-w-none relative">
+    <header class="mb-6">
+      {cover ? (
+        <img src={cover} alt={title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
+      ) : (
+        <div class="w-full aspect-[16/9] rounded-md mb-4 bg-gradient-to-r from-slate-100 to-white flex items-center justify-center text-slate-400">封面缺失</div>
+      )}
+
+      <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{title}</h1>
+
+      <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
+        <div>
+          {date ? new Date(date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}
+          {author ? ` · ${author}` : ''}
+        </div>
+        <div class="hidden sm:flex gap-2">
+          {tags?.map((t) => (
+            <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
+          ))}
+        </div>
+      </div>
+    </header>
+
+    <div class="prose max-w-none">
+      <Content />
+    </div>
+
+    {tags?.length ? (
+      <div class="mt-6 sm:hidden flex gap-2 flex-wrap">
+        {tags.map((t) => (
+          <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
+        ))}
+      </div>
+    ) : null}
+
+    <!-- 悬浮球 TOC -->
+    {headings?.length ? (
+      <>
+        <button id="tocFab" aria-label="打开目录" class="fixed bottom-6 right-6 z-20 w-12 h-12 rounded-full bg-brand text-white shadow-lg flex items-center justify-center hover:scale-105 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+            <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
+          </svg>
+        </button>
+        <aside id="tocPanel" class="fixed bottom-24 right-6 z-20 w-64 max-h-[60vh] overflow-auto bg-white border rounded-lg shadow-xl p-3 hidden">
+          <div class="text-sm font-semibold mb-2">目录</div>
+          <ul class="space-y-1">
+            {headings.map((h) => (
+              <li class={`pl-${Math.max(0, (h.depth - 1)) * 3}`}>
+                <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 hover:text-brand">{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+        <script>
+          const fab = document.getElementById('tocFab');
+          const panel = document.getElementById('tocPanel');
+          fab?.addEventListener('click', () => {
+            if (!panel) return;
+            panel.classList.toggle('hidden');
+          });
+          panel?.addEventListener('click', (e) => {
+            const a = (e.target as HTMLElement).closest('a');
+            if (!a) return;
+            e.preventDefault();
+            const slug = a.getAttribute('data-slug');
+            const target = document.getElementById(slug || '');
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+        </script>
+      </>
+    ) : null}
+  </article>
+</BaseLayout>
+
+<style>
+  .bg-brand { background-color: #0ea5e9; }
+  .hover\:scale-105:hover { transform: scale(1.05); }
+  .max-h\[60vh\] { max-height: 60vh; }
+</style>

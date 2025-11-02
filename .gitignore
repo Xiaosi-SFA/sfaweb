@@ -12,4 +12,5 @@ dist
 
 src/content/articles/*
 src/content/news/*
+src/content/events/*
 src/content/groups/*

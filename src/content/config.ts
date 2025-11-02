@@ -17,7 +17,9 @@ const news = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.date(),
-    category: z.string().default('公告'),
+    tags: z.array(z.string()).default([]),
+    summary: z.string().max(280).optional(),
+    cover: z.string().optional(),
     link: z.string().url().optional(),
   }),
 })

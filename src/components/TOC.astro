@@ -1,0 +1,31 @@
+---
+interface Heading { depth: number; text: string; slug: string }
+interface Props { headings?: Heading[] }
+const { headings = [] } = Astro.props as Props
+---
+{headings.length ? (
+  <aside class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border rounded-lg p-3 sticky top-24">
+    <div class="text-sm font-semibold mb-2">目录</div>
+    <ul class="space-y-1">
+      {headings.map((h) => (
+        <li class={`pl-${Math.max(0, (h.depth - 1)) * 3}`}>
+          <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 hover:text-brand">{h.text}</a>
+        </li>
+      ))}
+    </ul>
+  </aside>
+) : null}
+
+<script>
+  const onClick = (e: Event) => {
+    const a = (e.target as HTMLElement).closest('a');
+    if (!a) return;
+    const slug = a.getAttribute('data-slug') || '';
+    if (!slug) return;
+    const el = document.getElementById(slug);
+    if (!el) return;
+    e.preventDefault();
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.currentScript?.parentElement?.addEventListener('click', onClick);
+</script>

@@ -6,3 +6,79 @@
 .prose img {
   border-radius: 0.5rem;
 }
+
+/* When a page requests header/footer hidden initially, toggle this class on <body>
+   to hide site chrome until client-side code removes it. */
+body.hide-header-footer .site-header,
+body.hide-header-footer .site-footer {
+  display: none !important;
+}
+
+/* Global ECG-like wave background */
+.wave-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* behind content but above body background */
+  pointer-events: none;
+}
+.wave-bg svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.ecg-highlight {
+  stroke: #0ea5e9; /* sky-500 */
+  stroke-width: 2.2;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+  filter: url(#ecgGlow);
+}
+.wave-path.slower { animation-duration: 10s; opacity: 0.25; }
+.wave-path.faster { animation-duration: 4s; opacity: 0.45; }
+
+/* Scanning band animation handled via SVG <animate> for broad compatibility */
+
+/* Article detail typography tuning */
+.article-prose p {
+  font-size: 1rem;
+  line-height: 1.9;
+}
+.article-prose h1,
+.article-prose h2,
+.article-prose h3,
+.article-prose h4 {
+  scroll-margin-top: 84px; /* avoid being hidden below sticky header */
+}
+.article-prose h2 {
+  font-size: 1.5rem; /* 24px */
+  line-height: 1.35;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  border-left: 3px solid #0ea5e9; /* sky-500 */
+  padding-left: 0.6rem;
+}
+.article-prose h3 {
+  font-size: 1.25rem; /* 20px */
+  line-height: 1.4;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.article-prose h4 {
+  font-size: 1.125rem; /* 18px */
+  line-height: 1.45;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.article-prose ul,
+.article-prose ol {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.article-prose blockquote {
+  border-left: 3px solid rgba(15, 23, 42, 0.12);
+  padding-left: 0.9rem;
+  color: #475569; /* slate-600 */
+}
+.article-prose pre {
+  border-radius: 0.5rem;
+}

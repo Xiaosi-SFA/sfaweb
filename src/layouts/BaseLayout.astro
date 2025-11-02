@@ -2,8 +2,9 @@
 interface Props {
   title?: string
   description?: string
+  hideHeaderFooter?: boolean
 }
-const { title = 'SFA 社团', description = '社团官网与消息门户' } = Astro.props as Props
+const { title = 'SFA 社团', description = '社团官网与消息门户', hideHeaderFooter = false } = Astro.props as Props
 import '../styles/global.css'
 ---
 <!doctype html>
@@ -15,20 +16,91 @@ import '../styles/global.css'
     <title>{title}</title>
     <link rel="icon" href="/favicon.svg" />
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900">
-    <header class="border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-10">
+  <body class={`min-h-screen bg-slate-50 text-slate-900 ${hideHeaderFooter ? 'hide-header-footer' : ''}`}>
+    <!-- Global animated wave background -->
+    <div class="wave-bg" aria-hidden="true">
+      <svg viewBox="0 0 1200 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Glow for highlighted ECG line -->
+          <filter id="ecgGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <!-- Scanning mask: a vertical band moves from left to right -->
+          <mask id="scanMask" x="0" y="0" width="1200" height="600" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+            <rect x="-240" y="0" width="240" height="600" fill="white">
+              <animate attributeName="x" from="-240" to="1440" dur="6s" repeatCount="indefinite" />
+            </rect>
+          </mask>
+        </defs>
+
+        <!-- Realistic ECG cycle repeated across width at y=300 -->
+        <!-- One cycle: baseline -> Q dip -> sharp R -> S -> baseline -> T wave hump -> baseline -->
+        <path id="ecgPath"
+          d="
+            M0 300
+            l 80 0
+            l 12 10  l 12 -10
+            l 10 0
+            l 6 90  l 6 -180  l 6 120
+            l 16 0
+            c 40 0, 60 -20, 80 -30
+            c 20 -8, 20 8, 0 16
+            c -20 10, -40 30, -80 30
+            l 70 0
+            l 80 0
+            l 12 10  l 12 -10
+            l 10 0
+            l 6 90  l 6 -180  l 6 120
+            l 16 0
+            c 40 0, 60 -20, 80 -30
+            c 20 -8, 20 8, 0 16
+            c -20 10, -40 30, -80 30
+            l 70 0
+            l 80 0
+            l 12 10  l 12 -10
+            l 10 0
+            l 6 90  l 6 -180  l 6 120
+            l 16 0
+            c 40 0, 60 -20, 80 -30
+            c 20 -8, 20 8, 0 16
+            c -20 10, -40 30, -80 30
+            l 70 0
+            l 80 0
+            l 12 10  l 12 -10
+            l 10 0
+            l 6 90  l 6 -180  l 6 120
+            l 16 0
+            c 40 0, 60 -20, 80 -30
+            c 20 -8, 20 8, 0 16
+            c -20 10, -40 30, -80 30
+            l 70 0
+          "
+          fill="none"
+          stroke="none" />
+
+        <!-- Base line faintly visible at all times -->
+        <use href="#ecgPath" stroke="rgba(14,165,233,0.18)" stroke-width="1.6" fill="none" />
+        <!-- Highlighted line only visible inside scanning mask -->
+        <use href="#ecgPath" class="ecg-highlight" mask="url(#scanMask)" />
+      </svg>
+    </div>
+    <header class="site-header border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-10">
       <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-6">
         <a href="/" class="font-semibold text-brand">SFA</a>
-        <a href="/articles/" class="hover:text-brand-dark">文章</a>
-        <a href="/news/" class="hover:text-brand-dark">消息</a>
-        <a href="/tags/" class="hover:text-brand-dark">标签</a>
-        <a href="/api/articles.json" class="ml-auto text-xs text-slate-500 hover:text-slate-700">API</a>
+  <a href="/articles/" class="hover:text-brand-dark">文章</a>
+  <a href="/news/" class="hover:text-brand-dark">消息</a>
+  <!-- API 链接已隐藏；如需恢复请取消注释下面这行 -->
+  <!-- <a href="/api/articles.json" class="ml-auto text-xs text-slate-500 hover:text-slate-700">API</a> -->
       </nav>
     </header>
-    <main class="mx-auto max-w-6xl px-4 py-8">
+    <main class="mx-auto max-w-6xl px-4 py-8 relative z-0">
       <slot />
     </main>
-    <footer class="border-t py-6 text-center text-sm text-slate-500">
+    <footer class="site-footer border-t py-6 text-center text-sm text-slate-500">
       © {new Date().getFullYear()} SFA 社团
     </footer>
   </body>
