@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+const articles = await getCollection('articles')
+const counter = new Map<string, number>()
+for (const a of articles) {
+  for (const t of a.data.tags ?? []) {
+    counter.set(t, (counter.get(t) ?? 0) + 1)
+  }
+}
+const tags = [...counter.entries()]
+  .map(([tag, count]) => ({ tag, count }))
+  .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'zh-CN'))
+---
+<BaseLayout title="标签 - SFA">
+  <h1 class="text-2xl font-bold mb-6">标签</h1>
+  {tags.length === 0 ? (
+    <p class="text-slate-600">暂无标签。</p>
+  ) : (
+    <ul class="flex flex-wrap gap-3">
+      {tags.map(({ tag, count }) => (
+        <li>
+          <a href={`/tags/${encodeURIComponent(tag)}/`} class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+            <span>#{tag}</span>
+            <span class="text-xs text-slate-500">{count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</BaseLayout>

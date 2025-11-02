@@ -18,7 +18,7 @@ const articles = await getCollection('articles')
           {a.data.tags?.length ? (
             <div class="mt-2 flex gap-2 flex-wrap">
               {a.data.tags.map((t) => (
-                <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">{t}</span>
+                <a href={`/tags/${encodeURIComponent(t)}/`} class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded hover:bg-slate-200">#{t}</a>
               ))}
             </div>
           ) : null}

@@ -1,0 +1,31 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+
+const raw = Astro.params.tag ?? ''
+const tag = decodeURIComponent(raw)
+
+const all = await getCollection('articles')
+const list = all
+  .filter((a) => (a.data.tags ?? []).includes(tag))
+  .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
+---
+<BaseLayout title={`#${tag} - SFA`}>
+  <h1 class="text-2xl font-bold mb-6">#{tag}</h1>
+  {list.length === 0 ? (
+    <p class="text-slate-600">暂无文章。</p>
+  ) : (
+    <ul class="space-y-4">
+      {list.map((a) => (
+        <li class="p-4 bg-white rounded-lg shadow-sm border">
+          <a class="block" href={`/articles/${a.slug}/`}>
+            <div class="text-sm text-slate-500">
+              {a.data.date?.toISOString().slice(0,10)} · {a.data.author}
+            </div>
+            <h2 class="text-lg font-semibold">{a.data.title}</h2>
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</BaseLayout>

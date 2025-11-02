@@ -14,5 +14,12 @@ const { Content } = await entry.render()
     <h1>{entry.data.title}</h1>
     <p class="text-sm text-slate-500">{entry.data.date?.toISOString().slice(0,10)} · {entry.data.author}</p>
     <Content />
+    {entry.data.tags?.length ? (
+      <div class="mt-6 flex gap-2 flex-wrap">
+        {entry.data.tags.map((t) => (
+          <a href={`/tags/${encodeURIComponent(t)}/`} class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded hover:bg-slate-200">#{t}</a>
+        ))}
+      </div>
+    ) : null}
   </article>
 </BaseLayout>
