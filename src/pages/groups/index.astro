@@ -1,8 +1,8 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro'
+import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
-import MemberCard from '../../components/MemberCard.astro'
-import ActivityCard from '../../components/ActivityCard.astro'
+import MemberCard from '@components/MemberCard.astro'
+import ActivityCard from '@components/ActivityCard.astro'
 
 const groups = (await getCollection('groups')).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
 const items = await Promise.all(
@@ -29,57 +29,66 @@ function initials(title: string) {
 
     <div class="flex flex-col items-center gap-6">
       {items.map(({ entry: g, hasBody, Render }) => (
-        <article class="w-full max-w-2xl rounded-xl border bg-white/90 shadow-sm overflow-hidden">
-          <div class="p-5 sm:p-6 flex items-start gap-4">
-            <div class="h-20 w-20 rounded-lg ring-1 ring-slate-200 bg-slate-100 overflow-hidden grid place-items-center flex-none">
-              {g.data.avatar ? (
-                <img src={g.data.avatar} alt={g.data.title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
-              ) : null}
-              <div class={`h-full w-full ${g.data.avatar ? 'hidden' : ''} grid place-items-center text-slate-400 text-sm`}>{initials(g.data.title)}</div>
-            </div>
-            <div class="min-w-0 flex-1 space-y-2">
-              <h2 class="text-xl font-semibold text-slate-800 truncate">{g.data.title}</h2>
-              {hasBody ? (
-                <div class="text-slate-700 leading-7">
-                  <Render />
+        <article class="w-full max-w-4xl rounded-xl border bg-white/90 shadow-sm overflow-hidden">
+          <div class="p-5 sm:p-6 space-y-5">
+            {/* 顶部：双栏布局（左：标题与简介；右：大头像 占 1/3） */}
+            <div class="grid gap-5 md:grid-cols-3 items-start">
+              <div class="md:col-span-1">
+                <div class="aspect-square w-full rounded-lg ring-1 ring-slate-200 bg-slate-100 overflow-hidden grid place-items-center">
+                  {g.data.avatar ? (
+                    <img src={g.data.avatar} alt={g.data.title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
+                  ) : null}
+                  <div class={`h-full w-full ${g.data.avatar ? 'hidden' : ''} grid place-items-center text-slate-400 text-lg`}>{initials(g.data.title)}</div>
                 </div>
-              ) : (
-                <p class="text-slate-700 leading-7">{g.data.intro}</p>
-              )}
-              <div class="mt-2">
-                <h3 class="text-sm font-medium text-slate-600">主要活动</h3>
-                <ul class="mt-1 list-disc pl-5 text-slate-700 space-y-1">
-                  {g.data.activities.map((a) => (<li>{a}</li>))}
-                </ul>
               </div>
-              {g.data.leader ? (
-                <div class="mt-4">
-                  <MemberCard avatar={g.data.leader.avatar} name={g.data.leader.name} quote={g.data.leader.quote} bio={g.data.leader.bio} labelOverride="组长" />
-                </div>
-              ) : null}
-              {g.data.linkedEvents?.length ? (
-                <div class="mt-4">
-                  <h3 class="text-sm font-medium text-slate-600 mb-2">活动</h3>
-                  <div class="grid gap-3 sm:grid-cols-2">
-                    {(g.data.linkedEvents || [])
-                      .map((slug: string) => eventMap.get(slug))
-                      .filter(Boolean)
-                      .slice(0, 4)
-                      .map((e: any) => (
-                        <a href={`/events/${e.slug}/`} class="block">
-                          <ActivityCard
-                            title={e.data.title}
-                            date={e.data.date}
-                            cover={e.data.cover}
-                            summary={e.data.summary}
-                            compact={true}
-                          />
-                        </a>
-                      ))}
+              <div class="min-w-0 space-y-2 md:col-span-2">
+                <h2 class="text-2xl font-semibold text-slate-800 truncate">{g.data.title}</h2>
+                {hasBody ? (
+                  <div class="text-slate-700 leading-7">
+                    <Render />
                   </div>
+                ) : (
+                  <p class="text-slate-700 leading-7">{g.data.intro}</p>
+                )}
+                <div class="mt-2">
+                  <h3 class="text-sm font-medium text-slate-600">主要活动</h3>
+                  <ul class="mt-1 list-disc pl-5 text-slate-700 space-y-1">
+                    {g.data.activities.map((a) => (<li>{a}</li>))}
+                  </ul>
                 </div>
-              ) : null}
+              </div>
             </div>
+
+            {/* 中段：组长卡片（单栏通栏） */}
+            {g.data.leader ? (
+              <div>
+                <MemberCard avatar={g.data.leader.avatar} name={g.data.leader.name} quote={g.data.leader.quote} bio={g.data.leader.bio} labelOverride="组长" />
+              </div>
+            ) : null}
+
+            {/* 底部：活动列表（双栏） */}
+            {g.data.linkedEvents?.length ? (
+              <div>
+                <h3 class="text-sm font-medium text-slate-600 mb-2">活动</h3>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  {(g.data.linkedEvents || [])
+                    .map((slug: string) => eventMap.get(slug))
+                    .filter(Boolean)
+                    .slice(0, 4)
+                    .map((e: any) => (
+                      <a href={`/events/${e.slug}/`} class="block">
+                        <ActivityCard
+                          title={e.data.title}
+                          date={e.data.date}
+                          cover={e.data.cover}
+                          summary={e.data.summary}
+                          compact={true}
+                        />
+                      </a>
+                    ))}
+                </div>
+              </div>
+            ) : null}
           </div>
         </article>
       ))}
