@@ -21,6 +21,7 @@ const news = defineCollection({
     summary: z.string().max(280).optional(),
     cover: z.string().optional(),
     link: z.string().url().optional(),
+    host: z.string().optional(),
   }),
 })
 
