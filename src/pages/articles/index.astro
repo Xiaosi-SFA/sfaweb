@@ -1,15 +1,98 @@
 ---
-import BaseLayout from '@layouts/BaseLayout.astro'
+import BaseLayout from '../../layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
-import PostCard from '@components/PostCard.astro'
+import PostCard from '../../components/PostCard.astro'
+
+const SECTION_META = [
+  {
+    slugPrefix: 'contributions',
+    title: '投稿',
+    description: '成员投稿与合作文章，呈现不同视角的思考与故事。',
+    link: '/articles/contributions/',
+    linkLabel: '更多投稿',
+  },
+  {
+    slugPrefix: 'essays',
+    title: '杂谈',
+    description: '轻松随笔、活动感想与社团里程碑，记录我们的日常。',
+    link: '/articles/essays/',
+    linkLabel: '更多杂谈',
+  },
+  {
+    slugPrefix: 'reviews',
+    title: '影评 / 书评',
+    description: '科幻书籍与影视作品的深度解读与推荐。',
+    link: '/articles/reviews/',
+    linkLabel: '更多影评书评',
+  },
+] as const
+
 const articles = await getCollection('articles')
-  .then((xs) => xs.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+  .then((xs) => xs
+    .filter((item) => !item.slug.includes('article-template') && !item.slug.includes(' copy'))
+    .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+
+type SectionSlug = (typeof SECTION_META)[number]['slugPrefix']
+const grouped = new Map<SectionSlug, typeof articles>()
+SECTION_META.forEach(({ slugPrefix }) => grouped.set(slugPrefix, []))
+
+articles.forEach((item) => {
+  const [rawPrefix] = item.slug.split('/')
+  const isKnown = SECTION_META.some(({ slugPrefix }) => slugPrefix === rawPrefix)
+  const key: SectionSlug = isKnown ? (rawPrefix as SectionSlug) : 'essays'
+  const list = grouped.get(key)
+  if (list) {
+    list.push(item)
+  }
+})
 ---
 <BaseLayout title="文章 - SFA">
-  <h1 class="text-2xl font-bold mb-6">文章</h1>
-  <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-    {articles.map((a) => (
-      <PostCard href={`/articles/${a.slug}/`} title={a.data.title} date={a.data.date} cover={a.data.cover} tags={a.data.tags} summary={a.data.summary} />
-    ))}
-  </div>
+  <section class="space-y-12">
+    <header class="space-y-2">
+      <h1 class="text-3xl font-bold">文章</h1>
+      <p class="text-slate-600 text-base">精选内容分为三个栏目，快速浏览最新更新，或前往栏目页查看更多文章。</p>
+    </header>
+
+    {SECTION_META.map(({ slugPrefix, title, description, link, linkLabel }) => {
+      const list = grouped.get(slugPrefix) ?? []
+      return (
+        <section class="space-y-4" data-section={slugPrefix}>
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div class="space-y-3">
+              <div class="flex items-center gap-3">
+                <span class="hidden sm:block h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
+                <span class="inline-flex items-center gap-2 rounded-full border border-sky-400 bg-sky-50 px-4 py-1 text-xs font-semibold tracking-[0.3em] text-sky-600 uppercase">{title}</span>
+                <span class="h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
+              </div>
+              <p class="text-slate-500 text-sm md:text-base">{description}</p>
+            </div>
+            <a href={link} class="text-sm font-medium text-brand hover:text-brand-dark transition">{linkLabel} →</a>
+          </div>
+          {list.length ? (
+            <div class="horizontal-scroll overflow-x-auto -mx-4 px-4">
+              <div class="flex gap-4 pb-4 snap-x snap-mandatory">
+                {list.slice(0, 6).map((a) => (
+                  <div class="min-w-[18rem] max-w-xs flex-shrink-0 snap-start">
+                    <PostCard href={`/articles/${a.slug}/`} title={a.data.title} date={a.data.date} cover={a.data.cover} tags={a.data.tags} summary={a.data.summary} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p class="text-xs text-slate-400">暂时还没有内容，欢迎稍后查看。</p>
+          )}
+        </section>
+      )
+    })}
+  </section>
+
+  <style>
+    .horizontal-scroll::-webkit-scrollbar {
+      height: 6px;
+    }
+    .horizontal-scroll::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.6);
+      border-radius: 9999px;
+    }
+  </style>
 </BaseLayout>

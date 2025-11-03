@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+import TOC from '../../components/TOC.astro'
+import RelatedPosts from '../../components/RelatedPosts.astro'
+import BackToTopOrb from '../../components/BackToTopOrb.astro'
+import NotFound from '../../components/NotFound.astro'
+
+const rawSlug = Astro.params.slug
+const slug = Array.isArray(rawSlug) ? rawSlug.join('/') : rawSlug ?? ''
+
+const entry = slug ? (await getCollection('articles')).find((e) => e.slug === slug) : undefined
+let Content: any = null
+let headings: Array<{ depth: number; text: string; slug: string }> = []
+
+if (entry) {
+  const rendered = await entry.render()
+  Content = rendered.Content
+  headings = rendered.headings
+} else {
+  Astro.response.status = 404
+}
+---
+{entry ? (
+  <BaseLayout title={`${entry.data.title} - SFA`}>
+    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <div class="order-2 md:order-1 md:col-span-1">
+        <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
+          <TOC headings={headings} />
+          <RelatedPosts currentSlug={entry.slug} tags={entry.data.tags} />
+        </div>
+      </div>
+      <article class="order-1 md:order-2 md:col-span-2 max-w-none">
+        {entry.data.cover ? (
+          <img src={entry.data.cover} alt={entry.data.title} class="mb-4 w-full rounded-md object-cover" style="aspect-ratio: 16 / 9;" />
+        ) : null}
+        <h1 class="text-3xl font-extrabold leading-tight md:text-4xl">{entry.data.title}</h1>
+        <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
+          <div>
+            {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+            {entry.data.author ? ` · ${entry.data.author}` : ''}
+          </div>
+          <div class="hidden gap-2 sm:flex">
+            {entry.data.tags?.map((t) => (
+              <span class="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">#{t}</span>
+            ))}
+          </div>
+        </div>
+        <div class="article-prose prose mt-6 max-w-none">
+          {Content ? <Content /> : null}
+        </div>
+      </article>
+    </div>
+    <BackToTopOrb />
+  </BaseLayout>
+) : (
+  <NotFound />
+)}

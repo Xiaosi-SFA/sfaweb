@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+import PostCard from '../../../components/PostCard.astro'
+
+const CATEGORY = {
+  slugPrefix: 'contributions',
+  title: '投稿',
+  description: '成员与朋友们的原创投稿，记录真实的思考、经历与灵感。',
+  empty: '暂时还没有投稿内容，欢迎向我们分享你的故事。',
+} as const
+
+const articles = await getCollection('articles')
+  .then((xs) => xs
+    .filter((item) => !item.slug.includes('article-template'))
+    .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+
+const filtered = articles.filter((item) => item.slug.startsWith(`${CATEGORY.slugPrefix}/`))
+---
+<BaseLayout title={`${CATEGORY.title}栏目 - 文章 - SFA`}>
+  <section class="space-y-8">
+    <header class="space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="hidden sm:block h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
+        <span class="inline-flex items-center gap-2 rounded-full border border-sky-400 bg-sky-50 px-4 py-1 text-xs font-semibold tracking-[0.3em] text-sky-600 uppercase">{CATEGORY.title}</span>
+        <span class="h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
+      </div>
+      <p class="text-slate-600 max-w-3xl text-sm md:text-base">{CATEGORY.description}</p>
+    </header>
+
+    {filtered.length ? (
+      <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {filtered.map((a) => (
+          <PostCard
+            href={`/articles/${a.slug}/`}
+            title={a.data.title}
+            date={a.data.date}
+            cover={a.data.cover}
+            tags={a.data.tags}
+            summary={a.data.summary}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="text-slate-500">{CATEGORY.empty}</p>
+    )}
+  </section>
+</BaseLayout>
