@@ -24,4 +24,19 @@ const news = defineCollection({
   }),
 })
 
-export const collections = { articles, news }
+// collections export
+ 
+// Events collection for timeline
+const events = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.date(),
+    tags: z.array(z.string()).default([]),
+    summary: z.string().max(280).optional(),
+    cover: z.string().optional(),
+    location: z.string().optional(),
+  }),
+})
+
+export const collections = { articles, news, events }

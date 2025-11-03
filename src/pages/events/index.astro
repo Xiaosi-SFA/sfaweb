@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import PostCard from '@components/PostCard.astro'
+import { getCollection } from 'astro:content'
+
+const events = (await (getCollection as any)('events')).sort((a: any, b: any) => {
+  const ad = a.data.date?.valueOf() ?? 0
+  const bd = b.data.date?.valueOf() ?? 0
+  return bd - ad
+})
+---
+<BaseLayout title="事件" description="活动与重要事件时间轴" disableWaveBg={true}>
+  <h1 class="text-2xl font-bold mb-6">事件时间轴</h1>
+  <div class="relative">
+    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-slate-200 -z-10"></div>
+    <div class="space-y-10">
+      {events.map((e: any, idx: number) => (
+        <div class="relative grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+          {/* center dot */}
+          <div class="absolute left-1/2 -translate-x-1/2 top-1.5 w-3 h-3 rounded-full bg-sky-500 border-2 border-white shadow"></div>
+          {idx % 2 === 0 ? (
+            <>
+              <div class="md:pr-10 flex justify-end">
+                <div class="w-full md:max-w-md">
+                  <PostCard href={`/events/${e.slug}/`} title={e.data.title} date={e.data.date} cover={e.data.cover} tags={e.data.tags} summary={e.data.summary} />
+                </div>
+              </div>
+              <div></div>
+            </>
+          ) : (
+            <>
+              <div></div>
+              <div class="md:pl-10 flex justify-start">
+                <div class="w-full md:max-w-md">
+                  <PostCard href={`/events/${e.slug}/`} title={e.data.title} date={e.data.date} cover={e.data.cover} tags={e.data.tags} summary={e.data.summary} />
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</BaseLayout>
