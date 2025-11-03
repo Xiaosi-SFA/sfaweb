@@ -5,10 +5,11 @@ interface Props {
 	cover?: string
 	host?: string
 	compact?: boolean
+	tags?: string[]
 	summary?: string
 }
 
-const { title, date, cover, host, compact = false, summary } = Astro.props as Props
+const { title, date, cover, host, compact = false, tags = [], summary } = Astro.props as Props
 
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 ---
@@ -39,13 +40,20 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
 			) : null}
 			<div class={`h-full w-full ${cover ? 'hidden' : ''} grid place-items-center text-slate-400 text-sm`}>无封面</div>
 		</div>
-			<div class="p-3 space-y-1">
+		<div class="p-3 space-y-1.5">
 				<h3 class="text-base font-semibold leading-snug line-clamp-2">{title}</h3>
-				{summary ? (<p class="text-sm text-slate-600 line-clamp-3">{summary}</p>) : null}
-				<div class="text-xs text-slate-500 space-x-2">
+			<div class="text-xs text-slate-500 space-x-2">
 				<time>{fmt(date)}</time>
 				{host ? (<span>· 主办：{host}</span>) : null}
 			</div>
+			{tags?.length ? (
+				<div class="flex flex-wrap gap-2">
+					{tags.map((t) => (
+						<span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">{t}</span>
+					))}
+				</div>
+			) : null}
+			{summary ? (<p class="text-sm text-slate-600 line-clamp-3">{summary}</p>) : null}
 		</div>
 	</article>
 )}
