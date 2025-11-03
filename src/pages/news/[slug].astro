@@ -22,9 +22,11 @@ if (entry) {
 {entry ? (
   <BaseLayout title={`${entry.data.title} - SFA`}>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="order-2 md:order-1 md:col-span-1 space-y-4">
-        <TOC headings={headings} />
-        <RelatedNews currentSlug={entry.slug} tags={entry.data.tags} />
+      <div class="order-2 md:order-1 md:col-span-1">
+        <div class="space-y-4 md:sticky md:top-24">
+          <TOC headings={headings} />
+          <RelatedNews currentSlug={entry.slug} tags={entry.data.tags} />
+        </div>
       </div>
       <article class="order-1 md:order-2 md:col-span-2 max-w-none">
         <div id="topSentinel"></div>
@@ -52,12 +54,12 @@ if (entry) {
     {headings?.length ? (
       <>
         <button id="tocFab" aria-label="打开目录"
-          class="hidden fixed left-6 bottom-6 z-20 w-12 h-12 rounded-full bg-sky-500 text-white shadow-lg md:flex items-center justify-center hover:bg-sky-600 transition">
+          class="hidden md:hidden fixed left-4 bottom-6 z-20 w-12 h-12 rounded-full bg-sky-500 text-white shadow-lg flex items-center justify-center hover:bg-sky-600 transition">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
             <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
           </svg>
         </button>
-        <aside id="tocPanel" class="hidden fixed left-6 bottom-24 z-20 w-72 max-h-[60vh] overflow-auto bg-white border rounded-lg shadow-xl p-3">
+          <aside id="tocPanel" class="hidden md:hidden fixed left-4 right-4 bottom-24 z-20 max-h-[60vh] overflow-auto bg-white border rounded-lg shadow-xl p-3">
           <div class="text-sm font-semibold mb-2">目录</div>
           <ul class="space-y-1">
             {headings.map((h: any) => (
