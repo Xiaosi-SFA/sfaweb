@@ -1,0 +1,52 @@
+---
+interface Props {
+	title: string
+	date: Date
+	cover?: string
+	host?: string
+	compact?: boolean
+	summary?: string
+}
+
+const { title, date, cover, host, compact = false, summary } = Astro.props as Props
+
+const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
+---
+{compact ? (
+		<article class="rounded-lg border bg-white/90 shadow-sm overflow-hidden">
+			<div class="p-3 flex items-start gap-3">
+			<div class="h-16 w-24 flex-none rounded-md bg-slate-100 overflow-hidden relative grid place-items-center">
+				{cover ? (
+					<img src={cover} alt={title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
+				) : null}
+				<div class={`h-full w-full ${cover ? 'hidden' : ''} grid place-items-center text-slate-400 text-xs`}>无封面</div>
+			</div>
+				<div class="min-w-0 space-y-1">
+					<h3 class="text-sm font-medium truncate">{title}</h3>
+					{summary ? (<p class="text-xs text-slate-600 line-clamp-2">{summary}</p>) : null}
+					<div class="text-[11px] text-slate-500 space-x-2">
+						<time>{fmt(date)}</time>
+						{host ? (<span>· 主办：{host}</span>) : null}
+					</div>
+			</div>
+		</div>
+	</article>
+) : (
+	<article class="rounded-lg border bg-white/90 shadow-sm overflow-hidden">
+		<div class="relative aspect-[16/9] bg-slate-100 grid place-items-center">
+			{cover ? (
+				<img src={cover} alt={title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
+			) : null}
+			<div class={`h-full w-full ${cover ? 'hidden' : ''} grid place-items-center text-slate-400 text-sm`}>无封面</div>
+		</div>
+			<div class="p-3 space-y-1">
+				<h3 class="text-base font-semibold leading-snug line-clamp-2">{title}</h3>
+				{summary ? (<p class="text-sm text-slate-600 line-clamp-3">{summary}</p>) : null}
+				<div class="text-xs text-slate-500 space-x-2">
+				<time>{fmt(date)}</time>
+				{host ? (<span>· 主办：{host}</span>) : null}
+			</div>
+		</div>
+	</article>
+)}
+

@@ -1,15 +1,11 @@
 ---
-import BaseLayout from '@layouts/BaseLayout.astro'
-import { getCollection } from 'astro:content'
-import PostCard from '@components/PostCard.astro'
-const items = await (getCollection as any)('news')
-  .then((xs: any[]) => xs.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+Astro.redirect('/activities/')
 ---
-<BaseLayout title="消息 - SFA">
-  <h1 class="text-2xl font-bold mb-6">消息</h1>
-  <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-    {items.map((n: any) => (
-      <PostCard href={`/news/${n.slug}/`} title={n.data.title} date={n.data.date} cover={n.data.cover} tags={n.data.tags} summary={n.data.summary} />
-    ))}
-  </div>
-</BaseLayout>
+<html>
+  <head>
+    <meta http-equiv="refresh" content="0; url=/activities/" />
+  </head>
+  <body>
+    <a href="/activities/">正在跳转到 活动…</a>
+  </body>
+</html>

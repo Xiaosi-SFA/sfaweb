@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import PostCard from '@components/PostCard.astro'
+import ActivityCard from '@components/ActivityCard.astro'
 import { getCollection } from 'astro:content'
 import '@styles/timeline.css'
 
@@ -34,9 +34,19 @@ for (const g of groups) {
   })
   startSide = startSide === 'left' ? 'right' : 'left'
 }
----
 
-<BaseLayout title="事件" description="活动与重要事件时间轴" disableWaveBg={true}>
+const groupsCollection = await getCollection('groups')
+const deptsCollection = await getCollection('departments')
+const groupMap = new Map(groupsCollection.map((g) => [g.slug, g.data.title]))
+const deptMap = new Map(deptsCollection.map((d) => [d.slug, d.data.title]))
+
+function hostName(e: any) {
+  if (e.data.hostType === 'group' && e.data.hostSlug) return groupMap.get(e.data.hostSlug) ?? e.data.hostSlug
+  if (e.data.hostType === 'department' && e.data.hostSlug) return deptMap.get(e.data.hostSlug) ?? e.data.hostSlug
+  return undefined
+}
+---
+<BaseLayout title="活动" description="活动与重要事件时间轴" disableWaveBg={true}>
   <div class="relative timeline">
     <!-- 中央竖线 -->
     <div class="center-line"></div>
@@ -55,9 +65,14 @@ for (const g of groups) {
               <>
                 <div class="md:pr-10 flex justify-end">
                   <div class="timeline-card">
-                    <PostCard href={`/events/${item.entry.slug}/`} title={item.entry.data.title}
-                              date={item.entry.data.date} cover={item.entry.data.cover}
-                              tags={item.entry.data.tags} summary={item.entry.data.summary} />
+                    <a href={`/events/${item.entry.slug}/`} class="block">
+                      <ActivityCard title={item.entry.data.title}
+                        date={item.entry.data.date}
+                        cover={item.entry.data.cover}
+                        summary={item.entry.data.summary}
+                        host={hostName(item.entry)}
+                      />
+                    </a>
                   </div>
                 </div>
                 <div></div>
@@ -67,9 +82,14 @@ for (const g of groups) {
                 <div></div>
                 <div class="md:pl-10 flex justify-start">
                   <div class="timeline-card">
-                    <PostCard href={`/events/${item.entry.slug}/`} title={item.entry.data.title}
-                              date={item.entry.data.date} cover={item.entry.data.cover}
-                              tags={item.entry.data.tags} summary={item.entry.data.summary} />
+                    <a href={`/events/${item.entry.slug}/`} class="block">
+                      <ActivityCard title={item.entry.data.title}
+                        date={item.entry.data.date}
+                        cover={item.entry.data.cover}
+                        summary={item.entry.data.summary}
+                        host={hostName(item.entry)}
+                      />
+                    </a>
                   </div>
                 </div>
               </>
