@@ -4,7 +4,9 @@ import ActivityCard from '@components/ActivityCard.astro'
 import { getCollection } from 'astro:content'
 import '@styles/timeline.css'
 
-const events = (await (getCollection as any)('events')).sort((a: any, b: any) => {
+const events = (await (getCollection as any)('events'))
+  .filter((e: any) => e.slug.includes('/'))
+  .sort((a: any, b: any) => {
   const ad = a.data.date?.valueOf() ?? 0
   const bd = b.data.date?.valueOf() ?? 0
   return bd - ad
@@ -41,6 +43,7 @@ const groupMap = new Map(groupsCollection.map((g) => [g.slug, g.data.title]))
 const deptMap = new Map(deptsCollection.map((d) => [d.slug, d.data.title]))
 
 function hostName(e: any) {
+  if (e.data.host) return e.data.host
   if (e.data.hostType === 'group' && e.data.hostSlug) return groupMap.get(e.data.hostSlug) ?? e.data.hostSlug
   if (e.data.hostType === 'department' && e.data.hostSlug) return deptMap.get(e.data.hostSlug) ?? e.data.hostSlug
   return undefined

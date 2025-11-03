@@ -6,13 +6,14 @@ export const GET: APIRoute = async ({ request }) => {
   const limitParam = url.searchParams.get('limit')
   const limit = limitParam ? Math.max(1, Math.min(100, Number.parseInt(limitParam))) : undefined
 
-  const events = await (getCollection as any)('events') as any[]
+  const events = (await (getCollection as any)('events') as any[]).filter((e) => e.slug.includes('/'))
   const groups = await getCollection('groups')
   const depts = await getCollection('departments')
   const groupMap = new Map(groups.map((g) => [g.slug, g.data.title]))
   const deptMap = new Map(depts.map((d) => [d.slug, d.data.title]))
 
   const hostName = (e: any) => {
+    if (e.data.host) return e.data.host
     if (e.data.hostType === 'group' && e.data.hostSlug) return groupMap.get(e.data.hostSlug) ?? e.data.hostSlug
     if (e.data.hostType === 'department' && e.data.hostSlug) return deptMap.get(e.data.hostSlug) ?? e.data.hostSlug
     return undefined
