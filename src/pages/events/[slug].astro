@@ -23,7 +23,7 @@ if (entry) {
   <BaseLayout title={`${entry.data.title} - 事件 - SFA`} disableWaveBg={true}>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="order-2 md:order-1 md:col-span-1">
-        <div class="space-y-4 md:sticky md:top-24">
+  <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
           <TOC headings={headings} />
           <RelatedEvents currentSlug={entry.slug} tags={entry.data.tags} />
         </div>
