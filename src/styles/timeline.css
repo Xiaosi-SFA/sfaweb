@@ -1,0 +1,141 @@
+/* timeline.css */
+.timeline {
+  position: relative;
+  --gap: clamp(1.75rem, 4vw, 3rem);
+  --card-width: min(26rem, calc(50vw - 4rem));
+  --overlap: calc(var(--card-width) * 9 / 16);
+  --duration: 0.6s;
+  --easing: cubic-bezier(.22, .61, .36, 1);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+.stack > * + * {
+  margin-top: var(--gap);
+}
+
+/* 中心竖线 */
+.center-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e2e8f0;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+/* 年份行 */
+.year-row {
+  position: relative;
+  text-align: center;
+  padding: 1rem 0;
+}
+.year-pill {
+  display: inline-block;
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+/* 时间轴项 */
+.timeline-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: stretch;
+  --slide-x: 0px;
+}
+
+.timeline-item.is-left {
+  --slide-x: -32px;
+}
+.timeline-item.is-right {
+  --slide-x: 32px;
+}
+
+/* 小圆点 */
+.timeline-dot {
+  position: absolute;
+  top: 1.2rem;
+  left: 50%;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: #0ea5e9;
+  border: 2px solid #ffffff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  transition: transform var(--duration) var(--easing), opacity var(--duration) var(--easing);
+  z-index: 10;
+}
+
+.timeline-card {
+  width: var(--card-width);
+  max-width: 100%;
+  border-radius: var(--radius-macos);
+  overflow: hidden;
+  opacity: 0;
+  transform: translate(var(--slide-x), 32px);
+  transition: transform var(--duration) var(--easing), opacity var(--duration) var(--easing);
+}
+.timeline-card article {
+  border-radius: var(--radius-macos);
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  border: 1px solid rgba(15,23,42,0.06);
+}
+
+.timeline-item.is-left .timeline-card {
+  margin-left: auto;
+}
+.timeline-item.is-right .timeline-card {
+  margin-right: auto;
+}
+
+/* 入场触发 */
+.timeline-item.is-visible .timeline-card {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+.timeline-item.is-visible .timeline-dot {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* 限定重叠：只在相邻事件间重叠，年份行重置 */
+@media (min-width: 768px) {
+  .stack > .timeline-item + .timeline-item {
+    margin-top: var(--stack-gap, calc(var(--gap) - var(--overlap)));
+  }
+  .stack > .year-row + .timeline-item {
+    margin-top: var(--gap);
+  }
+}
+
+/* 移动端回退 */
+@media (max-width: 767px) {
+  .timeline {
+    --card-width: 100%;
+    --overlap: 0px;
+  }
+  .timeline-item {
+    grid-template-columns: 1fr;
+    --slide-x: 0px;
+  }
+  .timeline-card {
+    width: 100%;
+    transform: translate(0, 24px);
+  }
+  .stack > .timeline-item + .timeline-item {
+    margin-top: var(--gap);
+  }
+}

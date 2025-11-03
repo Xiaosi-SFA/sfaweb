@@ -9,9 +9,9 @@ interface Props {
 }
 const { href, title, date, cover, tags = [], summary } = Astro.props as Props
 ---
-<article class="bg-white rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition-shadow">
+<article class="bg-white rounded-macos overflow-hidden shadow-sm border hover:shadow-md transition-shadow">
   <a href={href} class="block">
-    <div style="aspect-ratio:16/9; width:100%;" class="w-full bg-slate-100">
+    <div style="aspect-ratio:16/9; width:100%;" class="w-full bg-slate-100 rounded-macos overflow-hidden" data-card-cover>
       {cover ? (
         <img src={cover} alt={title} class="w-full h-full object-cover" />
       ) : (

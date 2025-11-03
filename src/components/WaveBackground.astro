@@ -1,0 +1,44 @@
+---
+// ECG animated background with scanning highlight and baseline
+const width = 1200
+const height = 600
+const baseline = 400
+import '../styles/wave.css'
+
+// Build a repeated ECG-like segment (P wave, sharp QRS, broad T wave)
+const segment = `
+  h30 q12 -10 24 0 h10
+  l6 14 l6 -120 l6 120 l6 -14
+  h12 q36 28 72 0 h40
+`
+
+// Repeat the segment enough times to exceed width
+const repeats = 8
+let d = `M0 ${baseline}`
+for (let i = 0; i < repeats; i++) d += segment
+---
+<div class="wave-bg" aria-hidden="true">
+  <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- scanning mask with edge fade -->
+      <mask id="ecg-scan-mask">
+        <rect x="0" y="0" width={width} height={height} fill="black" />
+        <linearGradient id="ecg-scan-gradient" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
+          <stop offset="0%" stop-color="white" stop-opacity="0" />
+          <stop offset="12%" stop-color="white" stop-opacity="1" />
+          <stop offset="88%" stop-color="white" stop-opacity="1" />
+          <stop offset="100%" stop-color="white" stop-opacity="0" />
+        </linearGradient>
+        <rect id="ecg-scan-window" x="-200" y="0" width="120" height={height} fill="url(#ecg-scan-gradient)" class="scan-window" />
+      </mask>
+    </defs>
+
+    <!-- Baseline waveform (always visible) -->
+    <path class="wave-path-base" d={d} />
+
+    <!-- Highlighted waveform (visible only through scanning window) -->
+    <g mask="url(#ecg-scan-mask)">
+      <path class="wave-path" d={d} />
+    </g>
+  </svg>
+</div>

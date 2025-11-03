@@ -5,6 +5,8 @@ interface Props {
   hideHeaderFooter?: boolean;
   disableWaveBg?: boolean;
 }
+import WaveBackground from '@components/WaveBackground.astro'
+import '../styles/global.css'
 const {
   title = "SFA 社团",
   description = "社团官网与消息门户",
@@ -23,44 +25,7 @@ const {
     <link rel="icon" href="/favicon.svg" />
   </head>
   <body class={`min-h-screen bg-slate-50 text-slate-900 ${hideHeaderFooter ? 'hide-header-footer' : ''}`}>
-    {!disableWaveBg && (
-      <div class="wave-bg" aria-hidden="true">
-        <svg viewBox="0 0 1200 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <mask id="scan-mask">
-              <rect x="0" y="0" width="1200" height="600" fill="black"></rect>
-              <linearGradient id="scanGradient" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
-                <stop offset="0%" stop-color="white" stop-opacity="0"></stop>
-                <stop offset="12%" stop-color="white" stop-opacity="1"></stop>
-                <stop offset="88%" stop-color="white" stop-opacity="1"></stop>
-                <stop offset="100%" stop-color="white" stop-opacity="0"></stop>
-              </linearGradient>
-              <rect id="scanWindow" x="-180" y="0" width="180" height="600" fill="url(#scanGradient)" class="scan-window"></rect>
-            </mask>
-          </defs>
-          <path class="wave-path-base" d="
-            M0 300
-            h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-            h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-            h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-            h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-            h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-            h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-          "></path>
-          <g mask="url(#scan-mask)">
-            <path class="wave-path" d="
-              M0 300
-              h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-              h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-              h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-              h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-              h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-              h30 q10 -13 20 0 h20 l6 16 l6 -104 l6 104 l10 -16 h10 q20 -21 40 0 h52
-            "></path>
-          </g>
-        </svg>
-      </div>
-    )}
+    {!disableWaveBg && <WaveBackground />}
     <header
       class="site-header border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-10"
     >
