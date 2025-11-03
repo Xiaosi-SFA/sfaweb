@@ -4,115 +4,125 @@ import { getCollection } from 'astro:content'
 import TOC from '@components/TOC.astro'
 import RelatedNews from '@components/RelatedNews.astro'
 import BackToTopOrb from '@components/BackToTopOrb.astro'
+import NotFound from '@components/NotFound.astro'
 
 const { slug } = Astro.params
 const entry = (await (getCollection as any)('news')).find((e: any) => e.slug === slug)
-if (!entry) {
-  throw new Error('未找到消息')
+let Content: any = null
+let headings: Array<{ depth: number; text: string; slug: string }> = []
+
+if (entry) {
+  const rendered = await entry.render()
+  Content = rendered.Content
+  headings = rendered.headings
+} else {
+  Astro.response.status = 404
 }
-const rendered = await entry.render()
-const { Content, headings } = rendered
 ---
-<BaseLayout title={`${entry.data.title} - SFA`}>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    <div class="order-2 md:order-1 md:col-span-1 space-y-4">
-      <TOC headings={headings} />
-      <RelatedNews currentSlug={entry.slug} tags={entry.data.tags} />
+{entry ? (
+  <BaseLayout title={`${entry.data.title} - SFA`}>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="order-2 md:order-1 md:col-span-1 space-y-4">
+        <TOC headings={headings} />
+        <RelatedNews currentSlug={entry.slug} tags={entry.data.tags} />
+      </div>
+      <article class="order-1 md:order-2 md:col-span-2 max-w-none">
+        <div id="topSentinel"></div>
+        {entry.data.cover ? (
+          <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
+        ) : null}
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{entry.data.title}</h1>
+  <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
+          <div>
+            {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+          </div>
+          <div class="hidden sm:flex gap-2">
+            {entry.data.tags?.map((t: string) => (
+              <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
+            ))}
+          </div>
+        </div>
+        <div class="prose article-prose max-w-none mt-6">
+          {Content ? <Content /> : null}
+        </div>
+      </article>
     </div>
-    <article class="order-1 md:order-2 md:col-span-2 max-w-none">
-      <div id="topSentinel"></div>
-      {entry.data.cover ? (
-        <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
-      ) : null}
-      <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{entry.data.title}</h1>
-      <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
-        <div>
-          {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
-        </div>
-        <div class="hidden sm:flex gap-2">
-          {entry.data.tags?.map((t: string) => (
-            <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
-          ))}
-        </div>
-      </div>
-      <div class="prose article-prose max-w-none mt-6">
-        <Content />
-      </div>
-    </article>
-  </div>
 
-  <!-- 与文章页一致的悬浮目录按钮与头部隐藏逻辑 -->
-  {headings?.length ? (
-    <>
-      <button id="tocFab" aria-label="打开目录"
-        class="hidden fixed left-6 bottom-6 z-20 w-12 h-12 rounded-full bg-sky-500 text-white shadow-lg md:flex items-center justify-center hover:bg-sky-600 transition">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
-          <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
-        </svg>
-      </button>
-      <aside id="tocPanel" class="hidden fixed left-6 bottom-24 z-20 w-72 max-h-[60vh] overflow-auto bg-white border rounded-lg shadow-xl p-3">
-        <div class="text-sm font-semibold mb-2">目录</div>
-        <ul class="space-y-1">
-          {headings.map((h: any) => (
-            <li class={`pl-${Math.max(0, (h.depth - 1)) * 3}`}>
-              <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 hover:text-sky-600">{h.text}</a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    </>
-  ) : null}
+    <!-- 与文章页一致的悬浮目录按钮与头部隐藏逻辑 -->
+    {headings?.length ? (
+      <>
+        <button id="tocFab" aria-label="打开目录"
+          class="hidden fixed left-6 bottom-6 z-20 w-12 h-12 rounded-full bg-sky-500 text-white shadow-lg md:flex items-center justify-center hover:bg-sky-600 transition">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+            <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
+          </svg>
+        </button>
+        <aside id="tocPanel" class="hidden fixed left-6 bottom-24 z-20 w-72 max-h-[60vh] overflow-auto bg-white border rounded-lg shadow-xl p-3">
+          <div class="text-sm font-semibold mb-2">目录</div>
+          <ul class="space-y-1">
+            {headings.map((h: any) => (
+              <li class={`pl-${Math.max(0, (h.depth - 1)) * 3}`}>
+                <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 hover:text-sky-600">{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </>
+    ) : null}
 
-  <script>
-    const header = document.querySelector('.site-header');
-    const fab = document.getElementById('tocFab');
-    const panel = document.getElementById('tocPanel');
-    const sentinel = document.getElementById('topSentinel');
+    <script>
+      const header = document.querySelector('.site-header');
+      const fab = document.getElementById('tocFab');
+      const panel = document.getElementById('tocPanel');
+      const sentinel = document.getElementById('topSentinel');
 
-    if ('IntersectionObserver' in window && sentinel && fab) {
-      const io = new IntersectionObserver((entries) => {
-        const e = entries[0];
-        if (!e.isIntersecting) {
-          fab.classList.remove('hidden');
-        } else {
-          fab.classList.add('hidden');
-          panel?.classList.add('hidden');
-        }
-      }, { rootMargin: '-64px 0px 0px 0px', threshold: 0 });
-      io.observe(sentinel);
-    }
-
-    fab?.addEventListener('click', () => {
-      panel?.classList.toggle('hidden');
-    });
-    panel?.addEventListener('click', (e) => {
-      const a = (e.target as HTMLElement).closest('a');
-      if (!a) return;
-      e.preventDefault();
-      const slug = a.getAttribute('data-slug') || '';
-      const target = document.getElementById(slug);
-      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    });
-
-    let lastY = window.scrollY;
-    let ticking = false;
-    window.addEventListener('scroll', () => {
-      if (ticking) return;
-      window.requestAnimationFrame(() => {
-        const y = window.scrollY;
-        const dy = y - lastY;
-        if (Math.abs(dy) > 6 && header) {
-          if (dy > 0 && y > 80) {
-            header.classList.add('is-hidden');
+      if ('IntersectionObserver' in window && sentinel && fab) {
+        const io = new IntersectionObserver((entries) => {
+          const e = entries[0];
+          if (!e.isIntersecting) {
+            fab.classList.remove('hidden');
           } else {
-            header.classList.remove('is-hidden');
+            fab.classList.add('hidden');
+            panel?.classList.add('hidden');
           }
-        }
-        lastY = y;
-        ticking = false;
+        }, { rootMargin: '-64px 0px 0px 0px', threshold: 0 });
+        io.observe(sentinel);
+      }
+
+      fab?.addEventListener('click', () => {
+        panel?.classList.toggle('hidden');
       });
-      ticking = true;
-    }, { passive: true });
-  </script>
-  <BackToTopOrb />
-</BaseLayout>
+      panel?.addEventListener('click', (e) => {
+        const a = (e.target as HTMLElement).closest('a');
+        if (!a) return;
+        e.preventDefault();
+        const slug = a.getAttribute('data-slug') || '';
+        const target = document.getElementById(slug);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+
+      let lastY = window.scrollY;
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (ticking) return;
+        window.requestAnimationFrame(() => {
+          const y = window.scrollY;
+          const dy = y - lastY;
+          if (Math.abs(dy) > 6 && header) {
+            if (dy > 0 && y > 80) {
+              header.classList.add('is-hidden');
+            } else {
+              header.classList.remove('is-hidden');
+            }
+          }
+          lastY = y;
+          ticking = false;
+        });
+        ticking = true;
+      }, { passive: true });
+    </script>
+    <BackToTopOrb />
+  </BaseLayout>
+) : (
+  <NotFound />
+)}

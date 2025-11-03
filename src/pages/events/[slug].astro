@@ -4,40 +4,50 @@ import { getCollection } from 'astro:content'
 import TOC from '@components/TOC.astro'
 import RelatedEvents from '@components/RelatedEvents.astro'
 import BackToTopOrb from '@components/BackToTopOrb.astro'
+import NotFound from '@components/NotFound.astro'
 
 const { slug } = Astro.params
 const entry = (await (getCollection as any)('events')).find((e: any) => e.slug === slug)
-if (!entry) {
-  throw new Error('未找到事件')
+let Content: any = null
+let headings: Array<{ depth: number; text: string; slug: string }> = []
+
+if (entry) {
+  const rendered = await entry.render()
+  Content = rendered.Content
+  headings = rendered.headings
+} else {
+  Astro.response.status = 404
 }
-const rendered = await entry.render()
-const { Content, headings } = rendered
 ---
-<BaseLayout title={`${entry.data.title} - 事件 - SFA`} disableWaveBg={true}>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-    <div class="order-2 md:order-1 md:col-span-1 space-y-4">
-      <TOC headings={headings} />
-      <RelatedEvents currentSlug={entry.slug} tags={entry.data.tags} />
+{entry ? (
+  <BaseLayout title={`${entry.data.title} - 事件 - SFA`} disableWaveBg={true}>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="order-2 md:order-1 md:col-span-1 space-y-4">
+        <TOC headings={headings} />
+        <RelatedEvents currentSlug={entry.slug} tags={entry.data.tags} />
+      </div>
+      <article class="order-1 md:order-2 md:col-span-2 max-w-none">
+        {entry.data.cover ? (
+          <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
+        ) : null}
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{entry.data.title}</h1>
+        <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
+          <div>
+            {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+          </div>
+          <div class="hidden sm:flex gap-2">
+            {entry.data.tags?.map((t: string) => (
+              <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
+            ))}
+          </div>
+        </div>
+        <div class="prose article-prose max-w-none mt-6">
+          {Content ? <Content /> : null}
+        </div>
+      </article>
     </div>
-    <article class="order-1 md:order-2 md:col-span-2 max-w-none">
-      {entry.data.cover ? (
-        <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
-      ) : null}
-      <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{entry.data.title}</h1>
-      <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
-        <div>
-          {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
-        </div>
-        <div class="hidden sm:flex gap-2">
-          {entry.data.tags?.map((t: string) => (
-            <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
-          ))}
-        </div>
-      </div>
-      <div class="prose article-prose max-w-none mt-6">
-        <Content />
-      </div>
-    </article>
-  </div>
-  <BackToTopOrb />
-</BaseLayout>
+    <BackToTopOrb />
+  </BaseLayout>
+) : (
+  <NotFound />
+)}
