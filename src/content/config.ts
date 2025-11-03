@@ -61,6 +61,7 @@ const departments = defineCollection({
     intro: z.union([z.string(), z.array(z.string())]).optional(),
     duties: z.array(z.string()).optional(),
     order: z.number().optional(),
+    linkedEvents: z.array(z.string()).optional(), // 手动引用的活动 slug 列表
   }),
 })
 
@@ -94,6 +95,7 @@ const groups = defineCollection({
     intro: z.string().max(400),
     activities: z.array(z.string()).min(1),
     avatar: z.string().optional(),
+    linkedEvents: z.array(z.string()).optional(), // 手动引用的活动 slug 列表
     leader: z
       .object({
         name: z.string(),

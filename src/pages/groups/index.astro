@@ -14,6 +14,7 @@ const items = await Promise.all(
 )
 
 const events: any[] = await (getCollection as any)('events')
+const eventMap = new Map(events.map((e) => [e.slug, e]))
 
 function initials(title: string) {
   return title.slice(0, 2)
@@ -56,26 +57,28 @@ function initials(title: string) {
                   <MemberCard avatar={g.data.leader.avatar} name={g.data.leader.name} quote={g.data.leader.quote} bio={g.data.leader.bio} labelOverride="组长" />
                 </div>
               ) : null}
-              <div class="mt-4">
-                <h3 class="text-sm font-medium text-slate-600 mb-2">活动</h3>
-                <div class="grid gap-3 sm:grid-cols-2">
-                  {events
-                    .filter((e) => e.data.hostType === 'group' && e.data.hostSlug === g.slug)
-                    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-                    .slice(0, 4)
-                    .map((e) => (
-                      <a href={`/events/${e.slug}/`} class="block">
-                        <ActivityCard title={e.data.title}
-                          date={e.data.date}
-                          cover={e.data.cover}
-                          summary={e.data.summary}
-                          host={g.data.title}
-                          compact={true}
-                        />
-                      </a>
-                    ))}
+              {g.data.linkedEvents?.length ? (
+                <div class="mt-4">
+                  <h3 class="text-sm font-medium text-slate-600 mb-2">活动</h3>
+                  <div class="grid gap-3 sm:grid-cols-2">
+                    {(g.data.linkedEvents || [])
+                      .map((slug: string) => eventMap.get(slug))
+                      .filter(Boolean)
+                      .slice(0, 4)
+                      .map((e: any) => (
+                        <a href={`/events/${e.slug}/`} class="block">
+                          <ActivityCard
+                            title={e.data.title}
+                            date={e.data.date}
+                            cover={e.data.cover}
+                            summary={e.data.summary}
+                            compact={true}
+                          />
+                        </a>
+                      ))}
+                  </div>
                 </div>
-              </div>
+              ) : null}
             </div>
           </div>
         </article>

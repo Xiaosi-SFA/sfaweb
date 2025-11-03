@@ -36,9 +36,10 @@ const gallery = (await getCollection('deptGallery' as any) as unknown as Gallery
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 
 const allEvents: any[] = await (getCollection as any)('events')
-const deptEvents = allEvents
-  .filter((e) => e.data.hostType === 'department' && e.data.hostSlug === slug)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+const eventMap = new Map(allEvents.map((e) => [e.slug, e]))
+const linkedEvents: any[] = (dept?.data.linkedEvents || [])
+  .map((s: string) => eventMap.get(s))
+  .filter(Boolean)
 ---
 {dept && hasIntro ? (
   <BaseLayout title={`${dept.data.title} - 关于我们 - SFA`}>
@@ -75,9 +76,9 @@ const deptEvents = allEvents
 
       <section class="space-y-3">
         <h2 class="text-lg font-semibold">活动</h2>
-        {deptEvents.length ? (
+        {linkedEvents.length ? (
           <div class="grid gap-3 sm:grid-cols-2">
-            {deptEvents.slice(0, 4).map((e) => (
+            {linkedEvents.slice(0, 4).map((e) => (
               <ActivityCard title={e.data.title} date={e.data.date} cover={e.data.cover} compact={true} summary={e.data.summary} />
             ))}
           </div>
