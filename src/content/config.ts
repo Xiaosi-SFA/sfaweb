@@ -39,4 +39,15 @@ const events = defineCollection({
   }),
 })
 
-export const collections = { articles, news, events }
+// Friend links collection
+const links = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(), // 站点/名称
+    url: z.string().url(),
+    description: z.string().max(400),
+    logo: z.string().optional(), // 图片或图标路径
+  }),
+})
+
+export const collections = { articles, news, events, links }

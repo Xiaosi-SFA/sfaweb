@@ -20,10 +20,8 @@ const filtered = articles.filter((item) => item.slug.startsWith(`${CATEGORY.slug
 <BaseLayout title={`${CATEGORY.title}栏目 - 文章 - SFA`}>
   <section class="space-y-8">
     <header class="space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="hidden sm:block h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
-        <span class="inline-flex items-center gap-2 rounded-full border border-sky-400 bg-sky-50 px-4 py-1 text-xs font-semibold tracking-[0.3em] text-sky-600 uppercase">{CATEGORY.title}</span>
-        <span class="h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
+      <div class="topic-divider">
+        <span class="topic-divider__label">{CATEGORY.title}</span>
       </div>
       <p class="text-slate-600 max-w-3xl text-sm md:text-base">{CATEGORY.description}</p>
     </header>

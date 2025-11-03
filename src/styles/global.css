@@ -70,3 +70,53 @@ body.hide-header-footer .site-footer {
 .article-prose pre {
   border-radius: 0.5rem;
 }
+
+/* Topic divider used on article listings */
+.topic-divider {
+  --topic-label-width: min(22ch, 90vw);
+  --topic-line-length: clamp(3rem, 12vw, 8rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.topic-divider::before,
+.topic-divider::after {
+  content: '';
+  width: var(--topic-line-length);
+  height: 2px;
+  border-radius: 9999px;
+  background: rgba(14, 165, 233, 0.35);
+}
+
+.topic-divider__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--topic-label-width);
+  min-height: 2.25rem;
+  padding: 0.4rem 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.85);
+  background: rgba(224, 242, 254, 0.85);
+  color: #0c4a6e;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .topic-divider {
+    --topic-label-width: min(24ch, 88vw);
+    --topic-line-length: clamp(2.5rem, 18vw, 5rem);
+    gap: 1rem;
+  }
+
+  .topic-divider__label {
+    letter-spacing: 0.24em;
+    padding-inline: 1.25rem;
+  }
+}

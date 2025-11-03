@@ -6,7 +6,7 @@ interface Props {
   disableWaveBg?: boolean;
 }
 import WaveBackground from '@components/WaveBackground.astro'
-import '../styles/global.css'
+import '@styles/global.css'
 const {
   title = "SFA 社团",
   description = "社团官网与消息门户",
@@ -37,6 +37,7 @@ const {
         <a href="/articles/" class="hover:text-brand-dark">文章</a>
         <a href="/news/" class="hover:text-brand-dark">消息</a>
         <a href="/events/" class="hover:text-brand-dark">事件</a>
+        <a href="/links/" class="hover:text-brand-dark ml-auto md:ml-0">友链</a>
       </nav>
     </header>
     <main class="mx-auto max-w-6xl px-4 py-8 relative z-0">

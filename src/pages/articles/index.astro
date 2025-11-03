@@ -1,7 +1,7 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro'
+import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
-import PostCard from '../../components/PostCard.astro'
+import PostCard from '@components/PostCard.astro'
 
 const SECTION_META = [
   {
@@ -9,21 +9,21 @@ const SECTION_META = [
     title: '投稿',
     description: '成员投稿与合作文章，呈现不同视角的思考与故事。',
     link: '/articles/contributions/',
-    linkLabel: '更多投稿',
+    linkLabel: '更多',
   },
   {
     slugPrefix: 'essays',
     title: '杂谈',
     description: '轻松随笔、活动感想与社团里程碑，记录我们的日常。',
     link: '/articles/essays/',
-    linkLabel: '更多杂谈',
+    linkLabel: '更多',
   },
   {
     slugPrefix: 'reviews',
     title: '影评 / 书评',
     description: '科幻书籍与影视作品的深度解读与推荐。',
     link: '/articles/reviews/',
-    linkLabel: '更多影评书评',
+    linkLabel: '更多',
   },
 ] as const
 
@@ -48,10 +48,6 @@ articles.forEach((item) => {
 ---
 <BaseLayout title="文章 - SFA">
   <section class="space-y-12">
-    <header class="space-y-2">
-      <h1 class="text-3xl font-bold">文章</h1>
-      <p class="text-slate-600 text-base">精选内容分为三个栏目，快速浏览最新更新，或前往栏目页查看更多文章。</p>
-    </header>
 
     {SECTION_META.map(({ slugPrefix, title, description, link, linkLabel }) => {
       const list = grouped.get(slugPrefix) ?? []
@@ -59,10 +55,8 @@ articles.forEach((item) => {
         <section class="space-y-4" data-section={slugPrefix}>
           <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div class="space-y-3">
-              <div class="flex items-center gap-3">
-                <span class="hidden sm:block h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
-                <span class="inline-flex items-center gap-2 rounded-full border border-sky-400 bg-sky-50 px-4 py-1 text-xs font-semibold tracking-[0.3em] text-sky-600 uppercase">{title}</span>
-                <span class="h-[2px] flex-1 bg-sky-200" aria-hidden="true"></span>
+              <div class="topic-divider">
+                <span class="topic-divider__label">{title}</span>
               </div>
               <p class="text-slate-500 text-sm md:text-base">{description}</p>
             </div>

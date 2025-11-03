@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+import FriendCard from '../../components/FriendCard.astro'
+
+const links = await getCollection('links')
+  .then((xs) => xs.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh-Hans-CN')))
+---
+<BaseLayout title="友链 - SFA">
+  <section class="space-y-6">
+    <header class="space-y-2">
+      <h1 class="text-3xl font-bold">友链</h1>
+      <p class="text-slate-600">欢迎与我们互换友链，如需添加请联系管理员或在仓库提 Issue。</p>
+    </header>
+
+    {links.length ? (
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {links.map((l) => (
+          <FriendCard title={l.data.title} url={l.data.url} description={l.data.description} logo={l.data.logo} />
+        ))}
+      </div>
+    ) : (
+      <p class="text-slate-500">尚无友链，敬请期待。</p>
+    )}
+  </section>
+</BaseLayout>
