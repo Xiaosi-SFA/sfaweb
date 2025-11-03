@@ -10,6 +10,9 @@ dist
 *.log
 *.code-workspace
 
+# Local server config
+allowed-hosts.txt
+
 src/content/articles/*
 src/content/news/*
 src/content/events/*
