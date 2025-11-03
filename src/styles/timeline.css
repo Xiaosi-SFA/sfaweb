@@ -1,4 +1,3 @@
-/* timeline.css */
 .timeline {
   position: relative;
   --gap: clamp(1.75rem, 4vw, 3rem);
@@ -113,14 +112,17 @@
 
 /* 限定重叠：只在相邻事件间重叠，年份行重置 */
 @media (min-width: 768px) {
+  /* 控制重叠量：下一张卡片顶部比上一张略上移一点 */
   .stack > .timeline-item + .timeline-item {
-    margin-top: var(--stack-gap, calc(var(--gap) - var(--overlap)));
+    /* 这里的 -60px 控制上移量，可自由调整为 -40px, -80px 等 */
+    margin-top: -114px;
   }
+
+  /* 遇到年份分隔时，重置正常间距 */
   .stack > .year-row + .timeline-item {
     margin-top: var(--gap);
   }
 }
-
 /* 移动端回退 */
 @media (max-width: 767px) {
   .timeline {

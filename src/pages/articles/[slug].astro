@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import TOC from '@components/TOC.astro'
 import RelatedPosts from '@components/RelatedPosts.astro'
+import BackToTopOrb from '@components/BackToTopOrb.astro'
 
 const { slug } = Astro.params
 const entry = (await getCollection('articles')).find((e) => e.slug === slug)
@@ -40,4 +41,5 @@ const { Content, headings } = rendered
       </div>
     </article>
   </div>
+  <BackToTopOrb />
 </BaseLayout>

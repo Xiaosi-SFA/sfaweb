@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import TOC from '@components/TOC.astro'
 import RelatedNews from '@components/RelatedNews.astro'
+import BackToTopOrb from '@components/BackToTopOrb.astro'
 
 const { slug } = Astro.params
 const entry = (await (getCollection as any)('news')).find((e: any) => e.slug === slug)
@@ -113,4 +114,5 @@ const { Content, headings } = rendered
       ticking = true;
     }, { passive: true });
   </script>
+  <BackToTopOrb />
 </BaseLayout>

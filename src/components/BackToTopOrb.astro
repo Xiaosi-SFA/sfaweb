@@ -1,0 +1,72 @@
+<button type="button" class="back-to-top-orb" data-back-to-top aria-label="返回顶部" data-state="hidden">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
+    <path d="M12 5c.28 0 .53.11.71.29l5 5-1.42 1.42L13 9.83V19h-2V9.83l-3.29 3.3-1.42-1.42 5-5A1 1 0 0 1 12 5z" />
+  </svg>
+</button>
+
+<style is:inline>
+  .back-to-top-orb {
+    position: fixed;
+    right: clamp(1.25rem, 3vw, 2.75rem);
+    bottom: clamp(1.25rem, 4vw, 3rem);
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    background: radial-gradient(circle at 30% 30%, #f8fafc, #dbeafe 70%, #bfdbfe 100%);
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.25);
+    opacity: 0;
+    transform: translateY(12px) scale(0.92);
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 220ms ease, box-shadow 180ms ease;
+    z-index: 30;
+  }
+  .back-to-top-orb svg {
+    transform: translateY(-1px);
+  }
+  .back-to-top-orb[data-state="visible"] {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+  .back-to-top-orb:focus-visible {
+    outline: 2px solid rgba(14, 165, 233, 0.8);
+    outline-offset: 3px;
+  }
+  .back-to-top-orb:hover {
+    box-shadow: 0 16px 38px rgba(15, 23, 42, 0.28);
+  }
+</style>
+
+<script is:inline>
+  const orb = document.querySelector('[data-back-to-top]');
+  if (orb) {
+    const showAfter = parseInt(orb.getAttribute('data-offset') || '', 10) || 240;
+    const updateState = () => {
+      if (window.scrollY > showAfter) {
+        orb.setAttribute('data-state', 'visible');
+      } else {
+        orb.setAttribute('data-state', 'hidden');
+      }
+    };
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      window.requestAnimationFrame(() => {
+        updateState();
+        ticking = false;
+      });
+      ticking = true;
+    }, { passive: true });
+
+    orb.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    updateState();
+  }
+</script>
