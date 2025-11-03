@@ -8,7 +8,10 @@ const { headings = [] } = Astro.props as Props
     <div class="text-sm font-semibold mb-2">目录</div>
     <ul class="space-y-1">
       {headings.map((h) => (
-        <li class={`pl-${Math.max(0, (h.depth - 1)) * 3}`}>
+        <li
+          class="toc-item"
+          style={`padding-left: ${Math.max(0, h.depth - 1) * 1.25}rem;`}
+        >
           <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 hover:text-brand">{h.text}</a>
         </li>
       ))}
