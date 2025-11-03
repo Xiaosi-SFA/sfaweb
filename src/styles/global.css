@@ -3,7 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --radius-macos: 12px;
+  /* Apple-like palette and radii */
+  --radius-macos: 14px;
+  --apple-bg: #f5f5f7;
+  --apple-fg: #1d1d1f;
+  --apple-muted: #6e6e73;
+  --apple-link: #06c; /* Apple blue */
+}
+
+/* System font stack closer to Apple */
+html, body, button, input, select, textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro SC", "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif;
+  color: var(--apple-fg);
+  background-color: var(--apple-bg);
 }
 
 /* macOS-like corner radius helper */
@@ -38,22 +50,22 @@ body.hide-header-footer .site-footer {
   scroll-margin-top: 84px; /* avoid being hidden below sticky header */
 }
 .article-prose h2 {
-  font-size: 1.5rem; /* 24px */
-  line-height: 1.35;
+  font-size: clamp(1.4rem, 1rem + 1.2vw, 1.8rem);
+  line-height: 1.22;
   margin-top: 1.75rem;
   margin-bottom: 0.75rem;
-  border-left: 3px solid #0ea5e9; /* sky-500 */
-  padding-left: 0.6rem;
+  letter-spacing: -0.01em;
+  color: var(--apple-fg);
 }
 .article-prose h3 {
-  font-size: 1.25rem; /* 20px */
-  line-height: 1.4;
+  font-size: 1.2rem; /* 19px */
+  line-height: 1.35;
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
 }
 .article-prose h4 {
-  font-size: 1.125rem; /* 18px */
-  line-height: 1.45;
+  font-size: 1.05rem; /* ~17px */
+  line-height: 1.42;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
 }
@@ -63,9 +75,9 @@ body.hide-header-footer .site-footer {
   margin-bottom: 0.75rem;
 }
 .article-prose blockquote {
-  border-left: 3px solid rgba(15, 23, 42, 0.12);
+  border-left: 3px solid rgba(29, 29, 31, 0.12);
   padding-left: 0.9rem;
-  color: #475569; /* slate-600 */
+  color: var(--apple-muted);
 }
 .article-prose pre {
   border-radius: 0.5rem;
@@ -87,7 +99,7 @@ body.hide-header-footer .site-footer {
   width: var(--topic-line-length);
   height: 2px;
   border-radius: 9999px;
-  background: rgba(14, 165, 233, 0.35);
+  background: rgba(110, 110, 115, 0.25);
 }
 
 .topic-divider__label {
@@ -120,3 +132,10 @@ body.hide-header-footer .site-footer {
     padding-inline: 1.25rem;
   }
 }
+
+/* Apple-like link treatment (optional utility) */
+.link-apple {
+  color: var(--apple-link);
+  font-weight: 600;
+}
+.link-apple:hover { text-decoration: underline; }

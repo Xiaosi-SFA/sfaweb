@@ -3,13 +3,12 @@ interface Props {
 	title: string
 	date: Date
 	cover?: string
-	host?: string
 	compact?: boolean
 	tags?: string[]
 	summary?: string
 }
 
-const { title, date, cover, host, compact = false, tags = [], summary } = Astro.props as Props
+const { title, date, cover, compact = false, tags = [], summary } = Astro.props as Props
 
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 ---
@@ -27,14 +26,13 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
 					{summary ? (<p class="text-xs text-slate-600 line-clamp-2">{summary}</p>) : null}
 					<div class="text-[11px] text-slate-500 space-x-2">
 						<time>{fmt(date)}</time>
-						{host ? (<span>· 主办：{host}</span>) : null}
 					</div>
 			</div>
 		</div>
 	</article>
 ) : (
 	<article class="rounded-lg border bg-white/90 shadow-sm overflow-hidden">
-		<div class="relative aspect-[16/9] bg-slate-100 grid place-items-center">
+		<div class="relative aspect-[16/9] bg-slate-100 grid place-items-center" data-card-cover>
 			{cover ? (
 				<img src={cover} alt={title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
 			) : null}
@@ -44,7 +42,6 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
 				<h3 class="text-base font-semibold leading-snug line-clamp-2">{title}</h3>
 			<div class="text-xs text-slate-500 space-x-2">
 				<time>{fmt(date)}</time>
-				{host ? (<span>· 主办：{host}</span>) : null}
 			</div>
 			{tags?.length ? (
 				<div class="flex flex-wrap gap-2">

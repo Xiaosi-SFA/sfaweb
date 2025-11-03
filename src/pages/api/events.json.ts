@@ -7,16 +7,6 @@ export const GET: APIRoute = async ({ request }) => {
   const limit = limitParam ? Math.max(1, Math.min(100, Number.parseInt(limitParam))) : undefined
 
   const events = (await (getCollection as any)('events') as any[]).filter((e) => e.slug.includes('/'))
-  const groups = await getCollection('groups')
-  const depts = await getCollection('departments')
-  const groupMap = new Map(groups.map((g) => [g.slug, g.data.title]))
-  const deptMap = new Map(depts.map((d) => [d.slug, d.data.title]))
-
-  const hostName = (e: any) => {
-    if (e.data.hostType === 'group' && e.data.hostSlug) return groupMap.get(e.data.hostSlug) ?? e.data.hostSlug
-    if (e.data.hostType === 'department' && e.data.hostSlug) return deptMap.get(e.data.hostSlug) ?? e.data.hostSlug
-    return undefined
-  }
 
   const sorted = [...events].sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   let items = sorted
@@ -30,7 +20,6 @@ export const GET: APIRoute = async ({ request }) => {
     cover: x.data.cover,
     hostType: x.data.hostType,
     hostSlug: x.data.hostSlug,
-    host: hostName(x),
     url: `/events/${x.slug}/`,
   }))
 

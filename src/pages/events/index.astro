@@ -37,16 +37,7 @@ for (const g of groups) {
   startSide = startSide === 'left' ? 'right' : 'left'
 }
 
-const groupsCollection = await getCollection('groups')
-const deptsCollection = await getCollection('departments')
-const groupMap = new Map(groupsCollection.map((g) => [g.slug, g.data.title]))
-const deptMap = new Map(deptsCollection.map((d) => [d.slug, d.data.title]))
 
-function hostName(e: any) {
-  if (e.data.hostType === 'group' && e.data.hostSlug) return groupMap.get(e.data.hostSlug) ?? e.data.hostSlug
-  if (e.data.hostType === 'department' && e.data.hostSlug) return deptMap.get(e.data.hostSlug) ?? e.data.hostSlug
-  return undefined
-}
 ---
 <BaseLayout title="活动" description="活动与重要事件时间轴" disableWaveBg={true}>
   <div class="relative timeline">
@@ -72,7 +63,6 @@ function hostName(e: any) {
                         date={item.entry.data.date}
                         cover={item.entry.data.cover}
                         summary={item.entry.data.summary}
-                        host={hostName(item.entry)}
                         tags={item.entry.data.tags}
                       />
                     </a>
@@ -90,7 +80,6 @@ function hostName(e: any) {
                         date={item.entry.data.date}
                         cover={item.entry.data.cover}
                         summary={item.entry.data.summary}
-                        host={hostName(item.entry)}
                         tags={item.entry.data.tags}
                       />
                     </a>
