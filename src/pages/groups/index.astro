@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+import MemberCard from '../../components/MemberCard.astro'
+
+const groups = (await getCollection('groups')).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
+const items = await Promise.all(
+  groups.map(async (g) => ({
+    entry: g,
+    hasBody: !!(g.body && g.body.trim().length > 0),
+    Render: (await g.render()).Content,
+  }))
+)
+
+function initials(title: string) {
+  return title.slice(0, 2)
+}
+---
+<BaseLayout title="兴趣小组 - SFA">
+  <section class="space-y-6">
+    <header class="text-center space-y-2">
+      <h1 class="text-3xl font-bold">兴趣小组</h1>
+      <p class="text-slate-600">加入一个小组，和同好一起探索更远的科幻宇宙。</p>
+    </header>
+
+    <div class="flex flex-col items-center gap-6">
+      {items.map(({ entry: g, hasBody, Render }) => (
+        <article class="w-full max-w-2xl rounded-xl border bg-white/90 shadow-sm overflow-hidden">
+          <div class="p-5 sm:p-6 flex items-start gap-4">
+            <div class="h-20 w-20 rounded-lg ring-1 ring-slate-200 bg-slate-100 overflow-hidden grid place-items-center flex-none">
+              {g.data.avatar ? (
+                <img src={g.data.avatar} alt={g.data.title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
+              ) : null}
+              <div class={`h-full w-full ${g.data.avatar ? 'hidden' : ''} grid place-items-center text-slate-400 text-sm`}>{initials(g.data.title)}</div>
+            </div>
+            <div class="min-w-0 flex-1 space-y-2">
+              <h2 class="text-xl font-semibold text-slate-800 truncate">{g.data.title}</h2>
+              {hasBody ? (
+                <div class="text-slate-700 leading-7">
+                  <Render />
+                </div>
+              ) : (
+                <p class="text-slate-700 leading-7">{g.data.intro}</p>
+              )}
+              <div class="mt-2">
+                <h3 class="text-sm font-medium text-slate-600">主要活动</h3>
+                <ul class="mt-1 list-disc pl-5 text-slate-700 space-y-1">
+                  {g.data.activities.map((a) => (<li>{a}</li>))}
+                </ul>
+              </div>
+              {g.data.leader ? (
+                <div class="mt-4">
+                  <MemberCard avatar={g.data.leader.avatar} name={g.data.leader.name} quote={g.data.leader.quote} bio={g.data.leader.bio} labelOverride="组长" />
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

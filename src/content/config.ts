@@ -50,4 +50,61 @@ const links = defineCollection({
   }),
 })
 
-export const collections = { articles, news, events, links }
+// (moved to bottom export)
+
+// ——— Departments and Members ———
+const departments = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    summary: z.string().max(200).optional(),
+    intro: z.union([z.string(), z.array(z.string())]).optional(),
+    duties: z.array(z.string()).optional(),
+    order: z.number().optional(),
+  }),
+})
+
+const members = defineCollection({
+  type: 'content',
+  schema: z.object({
+    name: z.string(),
+    quote: z.string().optional(),
+    bio: z.string().optional(),
+    avatar: z.string().optional(),
+    position: z.enum(['minister', 'vice-minister', 'member']).optional(),
+  }),
+})
+
+// Department gallery entries, organized by folder: src/content/dept-gallery/{dept}/...
+const deptGallery = defineCollection({
+  type: 'content',
+  schema: z.object({
+    date: z.date(),
+    image: z.string(),
+    intro: z.string().max(400),
+    link: z.string().url().optional(),
+  }),
+})
+
+// Interest groups collection
+const groups = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    intro: z.string().max(400),
+    activities: z.array(z.string()).min(1),
+    avatar: z.string().optional(),
+    leader: z
+      .object({
+        name: z.string(),
+        avatar: z.string().optional(),
+        quote: z.string().optional(),
+        bio: z.string().optional(),
+      })
+      .optional(),
+    order: z.number().optional(),
+  }),
+})
+
+// Re-export including new collections
+export const collections = { articles, news, events, links, departments, members, deptGallery, groups }

@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import DeptCard from '../../components/DeptCard.astro'
+import { getCollection } from 'astro:content'
+
+const INTRO = `四川大学科幻协会（SFA）以推广科幻文化为宗旨，组织读书会、讲座、观影、创作交流等活动，鼓励成员在校园内外进行多样化的科幻实践。`
+
+const departments = (await getCollection('departments')).sort(
+  (a, b) => (a.data.order ?? 999) - (b.data.order ?? 999)
+)
+---
+<BaseLayout title="关于我们 - SFA">
+  <section class="space-y-8">
+    <header class="space-y-2">
+      <h1 class="text-3xl font-bold">关于我们</h1>
+      <p class="text-slate-600 max-w-3xl">{INTRO}</p>
+    </header>
+
+    <section class="space-y-3">
+      <h2 class="text-xl font-semibold">部门与小组</h2>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {departments.map((d) => (
+          <DeptCard title={d.data.title} summary={d.data.summary ?? ''} href={`/about/departments/${d.slug}/`} />
+        ))}
+      </div>
+    </section>
+  </section>
+</BaseLayout>

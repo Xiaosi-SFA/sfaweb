@@ -1,0 +1,45 @@
+---
+interface Props {
+  avatar?: string
+  name: string
+  quote?: string
+  bio?: string
+  position?: 'minister' | 'vice-minister' | 'member'
+  labelOverride?: string
+}
+const { avatar, name, quote, bio, position, labelOverride } = Astro.props as Props
+---
+<div class="rounded-lg border bg-white/90 p-4 shadow-sm">
+  <div class="flex items-start gap-4">
+    <div class="h-16 w-16 overflow-hidden rounded-md bg-slate-100 ring-1 ring-slate-200 flex-none relative">
+      <img
+        src={avatar ?? ''}
+        alt={name}
+        class="h-full w-full object-cover"
+        loading="lazy"
+        style={avatar ? '' : 'display:none'}
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+      />
+      <div class="h-full w-full hidden grid place-items-center text-slate-400 text-[11px] tracking-wider"
+           style={avatar ? '' : 'display:grid'}>
+        头像缺失
+      </div>
+    </div>
+    <div class="min-w-0">
+      <div class="flex items-center gap-2">
+        {labelOverride ? (
+          <span class="inline-flex items-center rounded bg-indigo-100 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 ring-1 ring-indigo-200">{labelOverride}</span>
+        ) : position === 'minister' ? (
+          <span class="inline-flex items-center rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 ring-1 ring-amber-200">部长</span>
+        ) : position === 'vice-minister' ? (
+          <span class="inline-flex items-center rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 ring-1 ring-sky-200">副部长</span>
+        ) : (
+          <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 ring-1 ring-slate-200">干事</span>
+        )}
+        <h3 class="text-base font-semibold text-slate-800 truncate">{name}</h3>
+      </div>
+  {quote ? <p class="mt-1 text-xs text-sky-700 italic whitespace-pre-line break-words">“{quote}”</p> : null}
+      {bio ? <p class="mt-1 text-sm leading-6 text-slate-600 line-clamp-3">{bio}</p> : null}
+    </div>
+  </div>
+</div>
