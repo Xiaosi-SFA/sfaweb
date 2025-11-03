@@ -13,7 +13,6 @@ export const GET: APIRoute = async ({ request }) => {
   const deptMap = new Map(depts.map((d) => [d.slug, d.data.title]))
 
   const hostName = (e: any) => {
-    if (e.data.host) return e.data.host
     if (e.data.hostType === 'group' && e.data.hostSlug) return groupMap.get(e.data.hostSlug) ?? e.data.hostSlug
     if (e.data.hostType === 'department' && e.data.hostSlug) return deptMap.get(e.data.hostSlug) ?? e.data.hostSlug
     return undefined
