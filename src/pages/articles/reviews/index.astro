@@ -23,7 +23,7 @@ const filtered = articles.filter((item) => item.slug.startsWith(`${CATEGORY.slug
       <div class="topic-divider">
         <span class="topic-divider__label">{CATEGORY.title}</span>
       </div>
-      <p class="text-slate-600 max-w-3xl text-sm md:text-base">{CATEGORY.description}</p>
+      <p class="text-slate-600 dark:text-slate-300 max-w-3xl text-sm md:text-base">{CATEGORY.description}</p>
     </header>
 
     {filtered.length ? (
@@ -40,7 +40,7 @@ const filtered = articles.filter((item) => item.slug.startsWith(`${CATEGORY.slug
         ))}
       </div>
     ) : (
-      <p class="text-slate-500">{CATEGORY.empty}</p>
+      <p class="text-slate-500 dark:text-slate-400">{CATEGORY.empty}</p>
     )}
   </section>
 </BaseLayout>

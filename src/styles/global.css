@@ -140,7 +140,9 @@ body.hide-header-footer .site-footer {
 .dark .article-prose h1,
 .dark .article-prose h2,
 .dark .article-prose h3,
-.dark .article-prose h4 { color: #f3f4f6; }
+.dark .article-prose h4,
+.dark .article-prose h5,
+.dark .article-prose h6 { color: #f3f4f6; }
 .dark .article-prose p,
 .dark .article-prose li { color: #e5e7eb; }
 .dark .article-prose blockquote {

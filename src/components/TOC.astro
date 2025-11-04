@@ -4,15 +4,15 @@ interface Props { headings?: Heading[] }
 const { headings = [] } = Astro.props as Props
 ---
 {headings.length ? (
-  <aside class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border rounded-lg p-3">
-    <div class="text-sm font-semibold mb-2">目录</div>
+  <aside class="bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border dark:border-[#2c2c2e] rounded-lg p-3">
+    <div class="text-sm font-semibold mb-2 text-slate-800 dark:text-slate-100">目录</div>
     <ul class="space-y-1">
       {headings.map((h) => (
         <li
           class="toc-item"
           style={`padding-left: ${Math.max(0, h.depth - 1) * 1.25}rem;`}
         >
-          <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 hover:text-brand">{h.text}</a>
+          <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 dark:text-slate-200 hover:text-brand dark:hover:text-sky-300">{h.text}</a>
         </li>
       ))}
     </ul>

@@ -35,15 +35,15 @@ if (entry) {
         {entry.data.cover ? (
           <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
         ) : null}
-        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{entry.data.title}</h1>
-        <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
+        <h1 class="text-3xl md:text-4xl font-extrabold leading-tight text-slate-900 dark:text-slate-100">{entry.data.title}</h1>
+        <div class="mt-2 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
           <div>
             {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
             {entry.data.author ? ` · ${entry.data.author}` : ''}
           </div>
           <div class="hidden sm:flex gap-2">
             {entry.data.tags?.map((t) => (
-              <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
+              <span class="text-xs bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200 px-2 py-0.5 rounded">#{t}</span>
             ))}
           </div>
         </div>
