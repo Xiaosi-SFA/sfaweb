@@ -17,7 +17,7 @@ const {
 // 当前路径与导航高亮
 const path = Astro.url.pathname;
 const isSection = (prefix: string) => path === prefix || path.startsWith(prefix);
-const isHome = path === '/';
+const isHome = path == '/';
 // 顶格长方形高亮：让链接背景填满整条导航的垂直高度
 const navBase = "relative inline-flex items-center py-3 -my-3 transition-colors nav-link";
 const navActive = "bg-[var(--ios-gray-5)] text-[#1d1d1f] dark:bg-[var(--ios-gray-5)] dark:text-[#f2f2f7]";
@@ -126,6 +126,14 @@ const navInactive = "";
           return { left: r.left - n.left, width: r.width };
         }
         function moveTo(el) {
+          if (!el) return;
+          // 当首页初始隐藏 Header（body.hide-header-footer）时，nav 的尺寸为 0；
+          // 延迟到下一帧或等待可见后再定位，避免宽度为 0 导致高亮不可见。
+          var nrect = nav.getBoundingClientRect();
+          if (!nrect || nrect.width === 0 || nrect.height === 0) {
+            requestAnimationFrame(function(){ moveTo(el); });
+            return;
+          }
           var m = rect(el);
           hl.style.setProperty('--hl-left', m.left + 'px');
           hl.style.setProperty('--hl-width', m.width + 'px');
@@ -135,13 +143,30 @@ const navInactive = "";
           return nav.querySelector('.nav-link.is-active') || links[0];
         }
 
-        moveTo(current());
-        window.addEventListener('resize', function() { moveTo(current()); });
+        function recalc() { moveTo(current()); }
+
+        recalc();
+        window.addEventListener('resize', recalc);
         links.forEach(function(a) {
           a.addEventListener('mouseenter', function() { moveTo(a); });
           a.addEventListener('focus', function() { moveTo(a); });
         });
-        nav.addEventListener('mouseleave', function() { moveTo(current()); });
+        nav.addEventListener('mouseleave', recalc);
+
+        // 监听 body 的 class 变化：当首页去掉 hide-header-footer（显示 Header）时立即重算
+        try {
+          var body = document.body;
+          var mo = new MutationObserver(function(muts){
+            for (var i=0;i<muts.length;i++) {
+              var m = muts[i];
+              if (m.attributeName === 'class' && !body.classList.contains('hide-header-footer')) {
+                recalc();
+                break;
+              }
+            }
+          });
+          mo.observe(body, { attributes: true, attributeFilter: ['class'] });
+        } catch (e) {}
       })();
     </script>
   </body>
