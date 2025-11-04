@@ -99,6 +99,51 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[])
       window.addEventListener('resize', onResize);
       const ro = new ResizeObserver(() => onResize());
       ro.observe(root);
+
+      // 悬浮交互：不置顶，而是“上移上方、下移下方”以完整露出当前项
+      function resetTransforms() {
+        for (const el of items) el.style.transform = '';
+      }
+
+  function hoverAdjust(index: number) {
+        resetTransforms();
+        const defRatio = getDefaultRatio();
+
+        // 计算与上一张的重叠（当前项被上一张遮住的部分）
+        let upDelta = 0;
+        if (index > 0) {
+          const prev = items[index - 1];
+          const ratioStr = items[index].getAttribute('data-overlap-ratio');
+          const ratio = ratioStr ? parseFloat(ratioStr) : defRatio;
+          const prevH = prev.getBoundingClientRect().height;
+          upDelta = Math.max(0, Math.round(prevH * (isNaN(ratio) ? defRatio : ratio)));
+        }
+
+        // 计算与下一张的重叠（下一张遮住当前项的部分）
+        let downDelta = 0;
+        if (index < items.length - 1) {
+          const curr = items[index];
+          const next = items[index + 1];
+          const nextRatioStr = next.getAttribute('data-overlap-ratio');
+          const nextRatio = nextRatioStr ? parseFloat(nextRatioStr) : defRatio;
+          const currH = curr.getBoundingClientRect().height;
+          downDelta = Math.max(0, Math.round(currH * (isNaN(nextRatio) ? defRatio : nextRatio)));
+        }
+
+        // 上方上移、下方下移
+        for (let i = 0; i < items.length; i++) {
+          if (i < index && upDelta) {
+            items[i].style.transform = `translateY(${-upDelta}px)`;
+          } else if (i > index && downDelta) {
+            items[i].style.transform = `translateY(${downDelta}px)`;
+          }
+        }
+      }
+
+      items.forEach((el, idx) => {
+        el.addEventListener('mouseenter', () => hoverAdjust(idx));
+        el.addEventListener('mouseleave', () => resetTransforms());
+      });
     })();
   </script>
 </section>
