@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import PostCard from '@components/PostCard.astro'
 import SectionHeader from '@components/SectionHeader.astro'
+import '@styles/articles.css'
 
 const SECTION_META = [
   {
@@ -57,9 +58,9 @@ articles.forEach((item) => {
           <SectionHeader title={title} description={description} link={link} linkLabel={linkLabel} />
           {list.length ? (
             <div class="horizontal-scroll overflow-x-auto -mx-4 px-4">
-              <div class="flex gap-4 pb-4 snap-x snap-mandatory">
-                {list.slice(0, 6).map((a) => (
-                  <div class="min-w-[18rem] max-w-xs flex-shrink-0 snap-start">
+              <div class="articles-row flex gap-4 pb-4 snap-x snap-mandatory">
+                {list.slice(0, 6).map((a, i) => (
+                  <div class="min-w-[18rem] max-w-xs flex-shrink-0 snap-start post-card-anim" data-idx={i}>
                     <PostCard href={`/articles/${a.slug}/`} title={a.data.title} date={a.data.date} cover={a.data.cover} tags={a.data.tags} summary={a.data.summary} />
                   </div>
                 ))}
@@ -82,4 +83,17 @@ articles.forEach((item) => {
       border-radius: 9999px;
     }
   </style>
+
+  <script is:inline>
+    const cards = Array.from(document.querySelectorAll('.post-card-anim'))
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible')
+          io.unobserve(e.target)
+        }
+      }
+    }, { threshold: 0.2 })
+    cards.forEach((el) => io.observe(el))
+  </script>
 </BaseLayout>

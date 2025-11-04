@@ -12,45 +12,45 @@ const { title, date, cover, compact = false, tags = [], summary } = Astro.props 
 
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 ---
-{compact ? (
-		<article class="rounded-lg border bg-white/90 shadow-sm overflow-hidden">
+	{compact ? (
+		<article class="rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
 			<div class="p-3 flex items-start gap-3">
-			<div class="h-16 w-24 flex-none rounded-md bg-slate-100 overflow-hidden relative grid place-items-center">
+			<div class="h-16 w-24 flex-none rounded-md bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
 				{cover ? (
 					<img src={cover} alt={title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
 				) : null}
-				<div class={`h-full w-full ${cover ? 'hidden' : ''} grid place-items-center text-slate-400 text-xs`}>无封面</div>
+				<div class={`h-full w-full ${cover ? 'hidden' : ''} grid place-items-center text-slate-400 dark:text-slate-500 text-xs`}>无封面</div>
 			</div>
 				<div class="min-w-0 space-y-1">
 					<h3 class="text-sm font-medium truncate">{title}</h3>
-					{summary ? (<p class="text-xs text-slate-600 line-clamp-2">{summary}</p>) : null}
-					<div class="text-[11px] text-slate-500 space-x-2">
+					{summary ? (<p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">{summary}</p>) : null}
+					<div class="text-[11px] text-slate-500 dark:text-slate-400 space-x-2">
 						<time>{fmt(date)}</time>
 					</div>
 			</div>
 		</div>
 	</article>
 ) : (
-	<article class="rounded-lg border bg-white/90 shadow-sm overflow-hidden">
-		<div class="relative aspect-[16/9] bg-slate-100 grid place-items-center" data-card-cover>
+	<article class="rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
+		<div class="relative aspect-[16/9] bg-slate-100 dark:bg-[#2c2c2e] grid place-items-center" data-card-cover>
 			{cover ? (
 				<img src={cover} alt={title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
 			) : null}
-			<div class={`h-full w-full ${cover ? 'hidden' : ''} grid place-items-center text-slate-400 text-sm`}>无封面</div>
+			<div class={`h-full w-full ${cover ? 'hidden' : ''} grid place-items-center text-slate-400 dark:text-slate-500 text-sm`}>无封面</div>
 		</div>
 		<div class="p-3 space-y-1.5">
 				<h3 class="text-base font-semibold leading-snug line-clamp-2">{title}</h3>
-			<div class="text-xs text-slate-500 space-x-2">
+			<div class="text-xs text-slate-500 dark:text-slate-400 space-x-2">
 				<time>{fmt(date)}</time>
 			</div>
 			{tags?.length ? (
 				<div class="flex flex-wrap gap-2">
 					{tags.map((t) => (
-						<span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">{t}</span>
+						<span class="text-xs bg-slate-100 dark:bg-[#2c2c2e] text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded">{t}</span>
 					))}
 				</div>
 			) : null}
-			{summary ? (<p class="text-sm text-slate-600 line-clamp-3">{summary}</p>) : null}
+			{summary ? (<p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3">{summary}</p>) : null}
 		</div>
 	</article>
 )}

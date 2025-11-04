@@ -110,5 +110,15 @@ const groups = defineCollection({
   }),
 })
 
+// About page (singleton) collection
+const about = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    intro: z.string().max(600).optional(),
+    updated: z.date().optional(),
+  }),
+})
+
 // Re-export including new collections
-export const collections = { articles, news, events, links, departments, members, deptGallery, groups }
+export const collections = { articles, news, events, links, departments, members, deptGallery, groups, about }

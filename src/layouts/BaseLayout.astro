@@ -13,6 +13,14 @@ const {
   hideHeaderFooter = false,
   disableWaveBg = false,
 } = Astro.props as Props;
+
+// 当前路径与导航高亮
+const path = Astro.url.pathname;
+const isSection = (prefix: string) => path === prefix || path.startsWith(prefix);
+// 顶格长方形高亮：让链接背景填满整条导航的垂直高度
+const navBase = "relative inline-flex items-center px-3 py-3 -my-3 transition-colors";
+const navActive = "bg-[var(--ios-gray-5)] text-[#1d1d1f] dark:bg-[var(--ios-gray-5)] dark:text-[#f2f2f7]";
+const navInactive = "hover:bg-black/5 dark:hover:bg-white/10";
 ---
 
 <!doctype html>
@@ -22,15 +30,30 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <script is:inline>
+      // 主题初始化：尽可能早地设置，避免亮/暗主题的闪烁
+      (function() {
+        try {
+          var stored = localStorage.getItem('theme');
+          var d = document.documentElement;
+          var preferDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (stored === 'dark' || (!stored && preferDark)) {
+            d.classList.add('dark');
+          } else {
+            d.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="mask-icon" href="/favicon.svg" color="#0ea5e9" />
   </head>
   <body
-    class={`min-h-screen bg-slate-50 text-slate-900 ${hideHeaderFooter ? "hide-header-footer" : ""}`}
+    class={`min-h-screen bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#1c1c1e] dark:text-[#f2f2f7] ${hideHeaderFooter ? "hide-header-footer" : ""}`}
   >
     {!disableWaveBg && <WaveBackground />}
     <header
-      class="site-header border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-10"
+      class="site-header border-b border-slate-200 dark:border-[#2c2c2e] bg-white/80 dark:bg-[#1c1c1e]/75 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#1c1c1e]/60 sticky top-0 z-10"
     >
       <nav class="mx-auto max-w-6xl px-4 py-3 flex items-center gap-6">
         <a href="/" class="flex items-center gap-2">
@@ -43,20 +66,51 @@ const {
           />
           <span class="sr-only">SFA</span>
         </a>
-  <a href="/articles/" class="hover:text-brand-dark">文章</a>
-  <a href="/events/" class="hover:text-brand-dark">活动</a>
-        <a href="/about/" class="hover:text-brand-dark">关于我们</a>
-        <a href="/groups/" class="hover:text-brand-dark">兴趣小组</a>
-        <a href="/links/" class="hover:text-brand-dark ml-auto md:ml-0">友链</a>
+  <a href="/articles/" class={`${navBase} nav-link ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>文章</a>
+  <a href="/events/" class={`${navBase} nav-link ${isSection('/events/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/events/') ? 'page' : undefined}>活动</a>
+  <a href="/about/" class={`${navBase} nav-link ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>关于我们</a>
+  <a href="/groups/" class={`${navBase} nav-link ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>兴趣小组</a>
+    <a href="/links/" class={`${navBase} nav-link ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>友链</a>
+        <div class="ml-auto flex items-center gap-3">
+          <button id="theme-toggle" class="rounded-macos border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 px-2.5 py-1.5 hover:bg-white dark:hover:bg-slate-800 transition-colors" aria-pressed="false" title="切换主题">
+            <span class="sr-only">切换主题</span>
+            <!-- 太阳图标（亮） -->
+            <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 1 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-4a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM12 17a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V18a1 1 0 0 1 1-1ZM4.5 11.5a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM6.34 6.34a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 1 1-1.41 1.41L6.34 7.75a1 1 0 0 1 0-1.41Zm9.85 9.85a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 0 1-1.41 1.41l-1.06-1.06a1 1 0 0 1 0-1.41ZM17.66 6.34a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0ZM7.75 16.19a1 1 0 0 1 0 1.41L6.69 18.66a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0Z"/>
+            </svg>
+            <!-- 月亮图标（暗） -->
+            <svg class="w-5 h-5 hidden dark:block" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+            </svg>
+          </button>
+        </div>
       </nav>
     </header>
     <main class="mx-auto max-w-6xl px-4 py-8 relative z-0">
       <slot />
     </main>
     <footer
-      class="site-footer border-t py-6 text-center text-sm text-slate-500"
+      class="site-footer border-t border-slate-200 dark:border-[#2c2c2e] py-6 text-center text-sm text-slate-500 dark:text-slate-400"
     >
       © {new Date().getFullYear()} SFA 社团
     </footer>
+    <script is:inline>
+      // 主题切换按钮逻辑：在 html 上切换 .dark，并持久化到 localStorage
+      (function() {
+        var btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+        var setPressed = function() {
+          var isDark = document.documentElement.classList.contains('dark');
+          btn.setAttribute('aria-pressed', String(isDark));
+        };
+        setPressed();
+        btn.addEventListener('click', function() {
+          var d = document.documentElement;
+          var isDark = d.classList.toggle('dark');
+          try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+          setPressed();
+        });
+      })();
+    </script>
   </body>
 </html>

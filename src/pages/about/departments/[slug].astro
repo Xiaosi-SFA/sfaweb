@@ -43,13 +43,14 @@ const linkedEvents: any[] = (dept?.data.linkedEvents || [])
 ---
 {dept && hasIntro ? (
   <BaseLayout title={`${dept.data.title} - 关于我们 - SFA`}>
+    <div class="mx-auto w-full md:w-3/4 lg:w-1/2">
     <section class="space-y-6">
       <header class="space-y-2">
         <h1 class="text-2xl font-bold">{dept.data.title}</h1>
         {Array.isArray(dept.data.intro) ? (
-          dept.data.intro.map((p) => <p class="text-slate-600 max-w-3xl">{p}</p>)
+          dept.data.intro.map((p) => <p class="text-slate-600">{p}</p>)
         ) : (
-          dept.data.intro ? <p class="text-slate-600 max-w-3xl">{dept.data.intro}</p> : null
+          dept.data.intro ? <p class="text-slate-600">{dept.data.intro}</p> : null
         )}
       </header>
       {dept.data.duties?.length ? (
@@ -64,7 +65,7 @@ const linkedEvents: any[] = (dept?.data.linkedEvents || [])
       <section class="space-y-3">
         <h2 class="text-lg font-semibold">部门成员</h2>
         {deptMembers.length ? (
-          <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="grid gap-4 md:grid-cols-2">
             {deptMembers.map((m) => (
               <MemberCard avatar={m.data.avatar} name={m.data.name} quote={m.data.quote} bio={m.data.bio} position={m.data.position} />
             ))}
@@ -109,6 +110,7 @@ const linkedEvents: any[] = (dept?.data.linkedEvents || [])
         )}
       </section>
     </section>
+    </div>
   </BaseLayout>
 ) : (
   <NotFound />

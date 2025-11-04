@@ -9,9 +9,9 @@ interface Props {
 }
 const { href, title, date, cover, tags = [], summary } = Astro.props as Props
 ---
-<article class="bg-white rounded-macos overflow-hidden shadow-sm border hover:shadow-md transition-shadow">
+<article class="bg-white/90 dark:bg-[#2c2c2e]/60 rounded-macos overflow-hidden shadow-sm border border-slate-200 dark:border-[#2c2c2e] hover:shadow-md transition-shadow">
   <a href={href} class="block">
-    <div style="aspect-ratio:16/9; width:100%;" class="w-full bg-slate-100 rounded-macos overflow-hidden" data-card-cover>
+    <div style="aspect-ratio:16/9; width:100%;" class="w-full bg-slate-100 dark:bg-[#2c2c2e] rounded-macos overflow-hidden" data-card-cover>
       {cover ? (
         <img src={cover} alt={title} class="w-full h-full object-cover" />
       ) : (
@@ -19,15 +19,15 @@ const { href, title, date, cover, tags = [], summary } = Astro.props as Props
       )}
     </div>
     <div class="p-4">
-      <div class="text-sm text-slate-500">
+      <div class="text-sm text-slate-500 dark:text-slate-400">
         {date ? new Date(date).toISOString().slice(0,10) : ''}
       </div>
       <h3 class="text-lg font-semibold mt-1">{title}</h3>
-      {summary && <p class="text-slate-700 mt-1 line-clamp-2">{summary}</p>}
+      {summary && <p class="text-slate-700 dark:text-slate-200 mt-1 line-clamp-2">{summary}</p>}
       {tags?.length ? (
         <div class="mt-2 flex gap-2 flex-wrap">
           {tags.map((t) => (
-            <span class="text-xs px-2 py-0.5 bg-slate-100 rounded">{t}</span>
+            <span class="text-xs px-2 py-0.5 bg-slate-100 dark:bg-[#2c2c2e] text-slate-700 dark:text-slate-200 rounded">{t}</span>
           ))}
         </div>
       ) : null}

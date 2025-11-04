@@ -9,6 +9,32 @@
   --apple-fg: #1d1d1f;
   --apple-muted: #6e6e73;
   --apple-link: #06c; /* Apple blue */
+
+  /* iOS grayscale (light) */
+  --ios-gray-1: #8e8e93;
+  --ios-gray-2: #aeaeb2;
+  --ios-gray-3: #c7c7cc;
+  --ios-gray-4: #d1d1d6;
+  --ios-gray-5: #e5e5ea;
+  --ios-gray-6: #f2f2f7;
+
+  /* nav active block tuning */
+  /* 通过调整这个值来“加宽”导航高亮的水平内边距 */
+  --nav-active-extra-x: 1rem; /* 默认再加宽 0.5rem */
+  /* 0 = 直角长方形；增大则更圆润 */
+  --nav-active-radius: 6px;
+  /* 与导航链接基础 Tailwind px 对齐：px-3 = 0.75rem，px-2.5 = 0.625rem */
+  --nav-base-px: 0.75rem;
+}
+
+/* iOS grayscale (dark) */
+.dark :root, .dark {
+  --ios-gray-1: #8e8e93;
+  --ios-gray-2: #636366;
+  --ios-gray-3: #48484a;
+  --ios-gray-4: #3a3a3c;
+  --ios-gray-5: #2c2c2e;
+  --ios-gray-6: #1c1c1e;
 }
 
 /* System font stack closer to Apple */
@@ -139,3 +165,11 @@ body.hide-header-footer .site-footer {
   font-weight: 600;
 }
 .link-apple:hover { text-decoration: underline; }
+
+/* 导航胶囊/色块高亮的可调样式 */
+.nav-link.is-active {
+  /* 以 --nav-base-px 为基准，再按变量加宽 */
+  padding-left: calc(var(--nav-base-px) + var(--nav-active-extra-x));
+  padding-right: calc(var(--nav-base-px) + var(--nav-active-extra-x));
+  border-radius: var(--nav-active-radius);
+}

@@ -1,9 +1,10 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro'
-import DeptCard from '../../components/DeptCard.astro'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import DeptCard from '@components/DeptCard.astro'
 import { getCollection } from 'astro:content'
 
-const INTRO = `四川大学科幻协会（SFA）以推广科幻文化为宗旨，组织读书会、讲座、观影、创作交流等活动，鼓励成员在校园内外进行多样化的科幻实践。`
+const aboutEntry = (await (getCollection as any)('about')).find((x: any) => x.slug === 'index')
+const { Content } = aboutEntry ? await aboutEntry.render() : { Content: null }
 
 const departments = (await getCollection('departments')).sort(
   (a, b) => (a.data.order ?? 999) - (b.data.order ?? 999)
@@ -13,9 +14,17 @@ const departments = (await getCollection('departments')).sort(
   <div class="mx-auto w-full md:w-3/4 lg:w-1/2">
     <section class="space-y-8">
       <header class="space-y-2">
-        <h1 class="text-3xl font-bold">关于我们</h1>
-        <p class="text-slate-600">{INTRO}</p>
+        <h1 class="text-3xl font-bold">{aboutEntry?.data.title ?? '关于我们'}</h1>
+        {aboutEntry?.data.intro ? (
+          <p class="text-slate-600">{aboutEntry.data.intro}</p>
+        ) : null}
       </header>
+
+      {Content ? (
+        <article class="prose article-prose max-w-none">
+          <Content />
+        </article>
+      ) : null}
 
       <section class="space-y-3">
         <h2 class="text-xl font-semibold">部门与小组</h2>

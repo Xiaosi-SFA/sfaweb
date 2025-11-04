@@ -2,11 +2,18 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import PostCard from '@components/PostCard.astro'
+import ActivityCard from '@components/ActivityCard.astro'
 
-const allNews = await (getCollection as any)('news')
-  .then((xs: any[]) => xs.sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+// 最新文章（按日期降序，取前 6 条）
+const latestArticles = (await (getCollection as any)('articles'))
+  .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
+  .slice(0, 6)
 
-const latestNews: any[] = allNews.slice(0, 12)
+// 最近活动（仅使用嵌套 slug 的事件，避免与旧单段路由重复；取前 6 条）
+const latestEvents = (await (getCollection as any)('events'))
+  .filter((e: any) => e.slug.includes('/'))
+  .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
+  .slice(0, 6)
 ---
 <BaseLayout title="小四的机密档案库" hideHeaderFooter>
   <!-- Hero 欢迎区（无背景、居中 Logo、欢迎语、向上箭头） -->
@@ -54,20 +61,20 @@ const latestNews: any[] = allNews.slice(0, 12)
       document.addEventListener('DOMContentLoaded', () => {
         const hero = document.querySelector('.hero-anim');
         const arrow = document.querySelector('.arrow-wrap');
-        const newsEl = document.getElementById('news-section');
+  const firstSection = document.getElementById('latest-articles');
 
         setTimeout(() => hero.classList.add('loaded'), 600);
 
-        function scrollToNews() {
+        function scrollToFirst() {
           // reveal header/footer (they are initially hidden via body.hide-header-footer)
           document.body.classList.remove('hide-header-footer');
-          if (newsEl) newsEl.scrollIntoView({ behavior: 'smooth' });
+          if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
         }
 
-        arrow?.addEventListener('click', scrollToNews);
+        arrow?.addEventListener('click', scrollToFirst);
 
         // 鼠标滚轮向下（用户上滑页面内容）
-        let wheelHandler = (e) => { if (e.deltaY > 20) { scrollToNews(); window.removeEventListener('wheel', wheelHandler); } };
+  let wheelHandler = (e) => { if (e.deltaY > 20) { scrollToFirst(); window.removeEventListener('wheel', wheelHandler); } };
         window.addEventListener('wheel', wheelHandler, { passive: true });
 
         // 触摸：记录起始触点，检测上滑（手指向上移动，dy > 30）
@@ -77,19 +84,38 @@ const latestNews: any[] = allNews.slice(0, 12)
           if (startY == null) return;
           const current = e.touches[0].clientY;
           const dy = startY - current;
-          if (dy > 40) { scrollToNews(); startY = null; }
+          if (dy > 40) { scrollToFirst(); startY = null; }
         }, { passive: true });
       });
     </script>
   </section>
 
-  <!-- 最新消息卡片列表（上滑进入） -->
-  <section id="news-section" class="py-12 bg-slate-50">
+  <!-- 最新文章（上滑进入） -->
+  <section id="latest-articles" class="py-12 bg-slate-50 dark:bg-[#1c1c1e]">
     <div class="max-w-6xl mx-auto px-4">
-      <h2 class="text-2xl font-semibold mb-6">最新消息</h2>
+      <h2 class="text-2xl font-semibold mb-6">最新文章</h2>
       <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {latestNews.map((n: any) => (
-          <PostCard href={`/news/${n.slug}/`} title={n.data.title} date={n.data.date} cover={n.data.cover} tags={n.data.tags} summary={n.data.summary} />
+        {latestArticles.map((a: any) => (
+          <PostCard href={`/articles/${a.slug}/`} title={a.data.title} date={a.data.date} cover={a.data.cover} tags={a.data.tags} summary={a.data.summary} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 最近活动（使用与时间轴相同的卡片） -->
+  <section id="latest-events" class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-semibold mb-6">最近活动</h2>
+      <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {latestEvents.map((e: any) => (
+          <a href={`/events/${e.slug}/`} class="block">
+            <ActivityCard title={e.data.title}
+              date={e.data.date}
+              cover={e.data.cover}
+              summary={e.data.summary}
+              tags={e.data.tags}
+            />
+          </a>
         ))}
       </div>
     </div>
