@@ -9,6 +9,10 @@ const articles = defineCollection({
     tags: z.array(z.string()).default([]),
     summary: z.string().max(280).optional(),
     cover: z.string().optional(),
+    // 段首缩进（单位：em），文章详情默认 2
+    indent: z.number().int().nonnegative().default(2),
+    // 兼容字段：int（如提供则可覆盖 indent），单位同上
+    int: z.number().int().nonnegative().optional(),
   }),
 })
 
@@ -26,6 +30,10 @@ const events = defineCollection({
     location: z.string().optional(),
     hostType: z.enum(['group', 'department']).optional(),
     hostSlug: z.string().optional(),
+    // 段首缩进（单位：em），活动详情默认 0
+    indent: z.number().int().nonnegative().default(0),
+    // 兼容字段：int（如提供则可覆盖 indent），单位同上
+    int: z.number().int().nonnegative().optional(),
   }),
 })
 

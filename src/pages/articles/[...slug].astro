@@ -48,7 +48,7 @@ if (entry) {
             ))}
           </div>
         </div>
-        <div class="article-prose prose mt-6 max-w-none">
+        <div class="article-prose prose mt-6 max-w-none" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
           {Content ? <Content /> : null}
         </div>
       </article>

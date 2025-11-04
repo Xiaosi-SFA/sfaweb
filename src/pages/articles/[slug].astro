@@ -31,7 +31,7 @@ if (entry) {
           <RelatedPosts currentSlug={entry.slug} tags={entry.data.tags} />
         </div>
       </div>
-      <article class="order-1 md:order-2 md:col-span-2 max-w-none">
+  <article class="order-1 md:order-2 md:col-span-2 max-w-none">
         {entry.data.cover ? (
           <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
         ) : null}
@@ -47,7 +47,7 @@ if (entry) {
             ))}
           </div>
         </div>
-        <div class="prose article-prose max-w-none mt-6">
+        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
           {Content ? <Content /> : null}
         </div>
       </article>

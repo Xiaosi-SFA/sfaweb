@@ -92,7 +92,11 @@ body.hide-header-footer .site-footer {
 .article-prose p {
   font-size: 1rem;
   line-height: 1.9;
+  /* 段首缩进：由页面容器上的 --para-indent 控制，单位建议使用 em */
+  text-indent: var(--para-indent, 0);
 }
+.article-prose p.no-indent { text-indent: 0 !important; }
+.article-prose p.align-right { text-align: right !important; text-indent: 0 !important; }
 .article-prose h1,
 .article-prose h2,
 .article-prose h3,
@@ -129,6 +133,7 @@ body.hide-header-footer .site-footer {
   padding-left: 0.9rem;
   color: var(--apple-muted);
 }
+.article-prose blockquote p { text-indent: 0; }
 .article-prose pre {
   border-radius: 0.5rem;
   max-width: 100%;

@@ -3,6 +3,7 @@ import node from '@astrojs/node'
 import tailwind from '@astrojs/tailwind'
 import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import remarkNoIndent from './src/remark/noindent.mjs'
 
 const allowedHostsFile = fileURLToPath(new URL('./allowed-hosts.txt', import.meta.url))
 const allowedHosts = fs.existsSync(allowedHostsFile)
@@ -18,6 +19,9 @@ export default defineConfig({
   output: 'server',
   integrations: [tailwind({ applyBaseStyles: true })],
   adapter: node({ mode: 'standalone' }),
+  markdown: {
+    remarkPlugins: [remarkNoIndent],
+  },
   server: {
     port: 4321,
   },
