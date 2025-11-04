@@ -1,16 +1,25 @@
+/*
+  Tailwind 指令层：
+  - base: 注入 Tailwind 预设的 CSS Reset 与基础样式
+  - components: 组合类（可在此层编写复用组件样式）
+  - utilities: 原子类（如 p-4, flex 等）
+  注意：这些 at-rule 由构建器解析，编辑器可能提示“Unknown at rule”，但不影响构建。
+*/
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Apple-like palette and radii */
+  /* —— 全局主题变量（Apple 风格） —— */
+  /* 圆角：模拟 macOS/iOS 卡片圆角 */
   --radius-macos: 14px;
+  /* 亮色主题下的页面前景/背景与弱化文字颜色 */
   --apple-bg: #f5f5f7;
   --apple-fg: #1d1d1f;
   --apple-muted: #6e6e73;
-  --apple-link: #06c; /* Apple blue */
+  --apple-link: #06c; /* Apple 蓝（链接色） */
 
-  /* iOS grayscale (light) */
+  /* iOS 灰阶（亮色）——来源于 iOS 人机界面指南常见灰阶 */
   --ios-gray-1: #8e8e93;
   --ios-gray-2: #aeaeb2;
   --ios-gray-3: #c7c7cc;
@@ -18,16 +27,17 @@
   --ios-gray-5: #e5e5ea;
   --ios-gray-6: #f2f2f7;
 
-  /* nav active block tuning */
-  /* 通过调整这个值来“加宽”导航高亮的水平内边距 */
-  --nav-active-extra-x: 1rem; /* 默认再加宽 0.5rem */
-  /* 0 = 直角长方形；增大则更圆润 */
-  --nav-active-radius: 6px;
-  /* 与导航链接基础 Tailwind px 对齐：px-3 = 0.75rem，px-2.5 = 0.625rem */
-  --nav-base-px: 0.75rem;
+  /* —— 导航高亮与间距（可调）—— */
+  /* 以导航链接的基础水平内边距为基准（配合 BaseLayout 中的 .nav-link） */
+  /* 与 Tailwind 的 px-* 对齐：px-3 = 0.75rem, px-2.5 = 0.625rem */
+  --nav-base-px: 0.75rem; /* 控制每个导航项的基础水平内边距（收窄/加宽） */
+  --nav-active-extra-x: 0.5rem; /* 在基础内边距上额外加宽的量（0 关闭额外加宽） */
+  --nav-active-radius: 6px; /* 0 = 顶格直角长方形；增大则更圆润 */
+  --nav-inline-gap: 0.75rem; /* 导航项之间的间距（替代原 gap-6） */
+  --nav-highlight-h: 80%; /* 导航滑动高亮的高度（相对整条导航的百分比或长度），如 80% / 2rem */
 }
 
-/* iOS grayscale (dark) */
+/* iOS 灰阶（暗色） */
 .dark :root, .dark {
   --ios-gray-1: #8e8e93;
   --ios-gray-2: #636366;
@@ -37,34 +47,32 @@
   --ios-gray-6: #1c1c1e;
 }
 
-/* System font stack closer to Apple */
+/* 更接近 Apple 的系统字体栈与默认前景/背景色 */
 html, body, button, input, select, textarea {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro SC", "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif;
   color: var(--apple-fg);
   background-color: var(--apple-bg);
 }
 
-/* macOS-like corner radius helper */
+/* macOS 风格圆角工具类 */
 .rounded-macos {
   border-radius: var(--radius-macos);
 }
 
-/* Simple prose tweaks */
+/* Markdown/文章图片统一圆角处理 */
 .prose img {
   border-radius: var(--radius-macos);
 }
 
-/* When a page requests header/footer hidden initially, toggle this class on <body>
-   to hide site chrome until client-side code removes it. */
+/* 当页面请求初始隐藏 Header/Footer 时，在 <body> 上加该类；
+   客户端脚本会在合适时机移除它（避免 Hero 首屏时出现导航栏）。 */
 body.hide-header-footer .site-header,
 body.hide-header-footer .site-footer {
   display: none !important;
 }
 
-/* (wave background styles moved to src/styles/wave.css) */
 
-
-/* Article detail typography tuning */
+/* 文章详情排版微调（标题间距、可读行高等） */
 .article-prose p {
   font-size: 1rem;
   line-height: 1.9;
@@ -73,7 +81,7 @@ body.hide-header-footer .site-footer {
 .article-prose h2,
 .article-prose h3,
 .article-prose h4 {
-  scroll-margin-top: 84px; /* avoid being hidden below sticky header */
+  scroll-margin-top: 84px; /* 避免锚点被吸顶导航遮挡 */
 }
 .article-prose h2 {
   font-size: clamp(1.4rem, 1rem + 1.2vw, 1.8rem);
@@ -84,13 +92,13 @@ body.hide-header-footer .site-footer {
   color: var(--apple-fg);
 }
 .article-prose h3 {
-  font-size: 1.2rem; /* 19px */
+  font-size: 1.2rem; /* 约 19px */
   line-height: 1.35;
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
 }
 .article-prose h4 {
-  font-size: 1.05rem; /* ~17px */
+  font-size: 1.05rem; /* 约 17px */
   line-height: 1.42;
   margin-top: 1rem;
   margin-bottom: 0.5rem;
@@ -109,7 +117,7 @@ body.hide-header-footer .site-footer {
   border-radius: 0.5rem;
 }
 
-/* Topic divider used on article listings */
+/* 文章列表的“主题分隔线” */
 .topic-divider {
   --topic-label-width: min(22ch, 90vw);
   --topic-line-length: clamp(3rem, 12vw, 8rem);
@@ -139,11 +147,9 @@ body.hide-header-footer .site-footer {
   border: 1px solid rgba(56, 189, 248, 0.85);
   background: rgba(224, 242, 254, 0.85);
   color: #0c4a6e;
-  font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  text-align: center;
 }
 
 @media (max-width: 640px) {
@@ -159,17 +165,72 @@ body.hide-header-footer .site-footer {
   }
 }
 
-/* Apple-like link treatment (optional utility) */
+/* Apple 风格的链接样式（可选工具类） */
 .link-apple {
   color: var(--apple-link);
   font-weight: 600;
 }
 .link-apple:hover { text-decoration: underline; }
 
-/* 导航胶囊/色块高亮的可调样式 */
-.nav-link.is-active {
-  /* 以 --nav-base-px 为基准，再按变量加宽 */
+/* —— 导航样式 ——
+   1) .nav-link：统一水平内边距与圆角，避免 hover/active 时宽度抖动；
+   2) :hover 与 .is-active 使用相同的“色块”高亮；
+   3) 颜色取自 iOS 灰阶变量，自动随明暗主题切换；
+   4) 需要“顶格长方形”效果时：在 :root 中把 --nav-active-radius 设为 0。
+*/
+.nav-link {
+  /* 统一为所有导航项设置更宽的水平内边距，避免 hover/active 触发布局抖动 */
   padding-left: calc(var(--nav-base-px) + var(--nav-active-extra-x));
   padding-right: calc(var(--nav-base-px) + var(--nav-active-extra-x));
   border-radius: var(--nav-active-radius);
+}
+/* active 与 hover 使用同款块级高亮（颜色在下面 hover/active 选择器中定义） */
+
+/* 悬浮同款高亮：与 active 使用相同的色块与文字颜色 */
+.nav-link:hover,
+.nav-link.is-active {
+  background-color: var(--ios-gray-5);
+  color: #1d1d1f;
+}
+.dark .nav-link:hover,
+.dark .nav-link.is-active {
+  background-color: var(--ios-gray-5);
+  color: #f2f2f7;
+}
+
+/* 导航容器（BaseLayout 中的 <nav>）的项目间距由变量控制 */
+.nav-main { position: relative; gap: var(--nav-inline-gap) !important; }
+
+/* —— 导航滑动高亮 ——
+   通过一个绝对定位的色块在导航容器内左右滑动，
+   脚本在运行时为 .nav-main 添加 .has-navhl 并动态设置 --hl-left / --hl-width。
+*/
+.nav-highlight {
+  position: absolute;
+  height: var(--nav-highlight-h, 80%);
+  top: calc((100% - var(--nav-highlight-h, 100%)) / 2);
+  left: var(--hl-left, 0);
+  width: var(--hl-width, 0);
+  background: var(--ios-gray-5);
+  border-radius: var(--nav-active-radius);
+  transition: left 220ms cubic-bezier(.2,.8,.2,1),
+              width 220ms cubic-bezier(.2,.8,.2,1),
+              background-color 180ms ease,
+              opacity 140ms ease;
+  opacity: 0; /* 初始化时隐藏，脚本会在定位后显示 */
+  pointer-events: none;
+  z-index: 0;
+}
+.nav-main .nav-link { position: relative; z-index: 1; }
+
+/* 启用滑动高亮时，关闭每个链接自身的背景色，保留文字颜色变化 */
+.has-navhl .nav-link:hover,
+.has-navhl .nav-link.is-active {
+  background-color: transparent;
+  color: #1d1d1f;
+}
+.dark .has-navhl .nav-link:hover,
+.dark .has-navhl .nav-link.is-active {
+  background-color: transparent;
+  color: #f2f2f7;
 }

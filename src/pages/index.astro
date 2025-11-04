@@ -13,7 +13,7 @@ const latestArticles = (await (getCollection as any)('articles'))
 const latestEvents = (await (getCollection as any)('events'))
   .filter((e: any) => e.slug.includes('/'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
-  .slice(0, 6)
+  .slice(0, 3)
 ---
 <BaseLayout title="小四的机密档案库" hideHeaderFooter>
   <!-- Hero 欢迎区（无背景、居中 Logo、欢迎语、向上箭头） -->
@@ -86,6 +86,48 @@ const latestEvents = (await (getCollection as any)('events'))
           const dy = startY - current;
           if (dy > 40) { scrollToFirst(); startY = null; }
         }, { passive: true });
+
+        // 首页导航高亮逻辑：根据可视区中间的内容区块切换“文章/活动”高亮
+        const sections = [
+          { id: 'latest-articles', href: '/articles/' },
+          { id: 'latest-events', href: '/events/' }
+        ];
+        const pairs = sections.map(s => ({
+          el: document.getElementById(s.id),
+          link: document.querySelector(`.site-header .nav-link[href="${s.href}"]`)
+        })).filter(p => p.el && p.link);
+
+        // 首页“首页”导航链接（用于在没有任何内容区块突出的情况下高亮）
+        const homeLink = document.querySelector('.site-header .nav-link[href="/"]');
+
+        const ratios = new Map();
+        function updateActive() {
+          let best = { r: 0, link: null };
+          for (const p of pairs) {
+            const r = ratios.get(p.el) || 0;
+            if (r > best.r) best = { r, link: p.link };
+          }
+          // 清除
+          pairs.forEach(p => p.link.classList.remove('is-active'));
+          homeLink?.classList.remove('is-active');
+          // 阈值：当某区块的可见比例 > 0.15 时认为它是当前板块
+          if (best.link && best.r > 0.15) {
+            best.link.classList.add('is-active');
+          } else {
+            // 否则高亮首页（例如停留在 Hero 顶部或两块都几乎不可见）
+            homeLink?.classList.add('is-active');
+          }
+        }
+
+        const io = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            ratios.set(entry.target, entry.intersectionRatio);
+          }
+          updateActive();
+        }, { threshold: [0, 0.25, 0.5, 0.75, 1], rootMargin: '-30% 0px -50% 0px' });
+
+        pairs.forEach(p => io.observe(p.el));
+        updateActive();
       });
     </script>
   </section>

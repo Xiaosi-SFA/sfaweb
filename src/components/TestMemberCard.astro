@@ -1,0 +1,47 @@
+---
+interface Props {
+  name: string
+  subtitle?: string
+  avatar?: string
+  href?: string
+  label?: string
+  wide?: boolean
+}
+const { name, subtitle, avatar, href, label = '我对一般的人类没有兴趣', wide = false } = Astro.props as Props
+const ratioClass = wide ? 'aspect-[21/9]' : 'aspect-[1/1]'
+---
+{href ? (
+  <a href={href} class="block" aria-label={name}>
+    <div class="group relative rounded-macos overflow-hidden border border-slate-200 dark:border-[var(--ios-gray-5)] shadow-sm transition-transform duration-300 will-change-transform hover:-translate-y-0.5">
+      <div class={`relative ${ratioClass} w-full bg-slate-200 dark:bg-[var(--ios-gray-5)]`}>
+        {avatar ? (
+          <img src={avatar} alt={name} class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" />
+        ) : null}
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent"></div>
+        <div class="absolute left-0 top-0 p-4 sm:p-5 max-w-[78%]">
+          <div class="text-[10px] font-semibold tracking-[0.22em] text-white/80 uppercase select-none">{label}</div>
+          <h3 class="mt-1 text-2xl sm:text-3xl font-extrabold leading-tight text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">{name}</h3>
+          {subtitle ? (
+            <p class="mt-1 text-sm sm:text-base text-white/90 leading-snug drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">{subtitle}</p>
+          ) : null}
+        </div>
+      </div>
+    </div>
+  </a>
+) : (
+  <div class="group relative rounded-macos overflow-hidden border border-slate-200 dark:border-[var(--ios-gray-5)] shadow-sm transition-transform duration-300 will-change-transform hover:-translate-y-0.5">
+    <div class={`relative ${ratioClass} w-full bg-slate-200 dark:bg-[var(--ios-gray-5)]`}>
+      {avatar ? (
+        <img src={avatar} alt={name} class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" />
+      ) : null}
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-tr from-black/40 via-black/10 to-transparent"></div>
+      <div class="absolute left-0 top-0 p-4 sm:p-5 max-w-[78%]">
+        <div class="text-[10px] font-semibold tracking-[0.22em] text-white/80 uppercase select-none">{label}</div>
+        <h3 class="mt-1 text-2xl sm:text-3xl font-extrabold leading-tight text-white drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">{name}</h3>
+        {subtitle ? (
+          <p class="mt-1 text-sm sm:text-base text-white/90 leading-snug drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">{subtitle}</p>
+        ) : null}
+      </div>
+    </div>
+  </div>
+)}
