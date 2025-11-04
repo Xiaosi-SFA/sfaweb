@@ -48,7 +48,8 @@ const links = defineCollection({
     title: z.string(), // 站点/名称
     url: z.string().url(),
     description: z.string().max(400),
-    logo: z.string().optional(), // 图片或图标路径
+    // 支持远程 URL 或本地 public 下的路径（以 / 开头），统一使用字符串
+    logo: z.string().optional(),
   }),
 })
 
