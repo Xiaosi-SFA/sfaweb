@@ -10,19 +10,21 @@ const departments = (await getCollection('departments')).sort(
 )
 ---
 <BaseLayout title="关于我们 - SFA">
-  <section class="space-y-8">
-    <header class="space-y-2">
-      <h1 class="text-3xl font-bold">关于我们</h1>
-      <p class="text-slate-600 max-w-3xl">{INTRO}</p>
-    </header>
+  <div class="mx-auto w-full md:w-3/4 lg:w-1/2">
+    <section class="space-y-8">
+      <header class="space-y-2">
+        <h1 class="text-3xl font-bold">关于我们</h1>
+        <p class="text-slate-600">{INTRO}</p>
+      </header>
 
-    <section class="space-y-3">
-      <h2 class="text-xl font-semibold">部门与小组</h2>
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {departments.map((d) => (
-          <DeptCard title={d.data.title} summary={d.data.summary ?? ''} href={`/about/departments/${d.slug}/`} />
-        ))}
-      </div>
+      <section class="space-y-3">
+        <h2 class="text-xl font-semibold">部门与小组</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          {departments.map((d) => (
+            <DeptCard title={d.data.title} summary={d.data.summary ?? ''} href={`/about/departments/${d.slug}/`} />
+          ))}
+        </div>
+      </section>
     </section>
-  </section>
+  </div>
 </BaseLayout>
