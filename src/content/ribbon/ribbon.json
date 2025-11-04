@@ -28,5 +28,20 @@
         "ratio": 0.0,
         "alt": "孤星",
         "copyright": "@鹰角网络"
+    },
+    {
+        "src": "/ribbon/uscsfa.png",
+        "ratio": 0.0,
+        "alt": "南华大学科幻协会"
+    },
+    {
+        "src": "/ribbon/kehuanjianghu.png",
+        "ratio": 0.0,
+        "alt": "科幻江湖"
+    },
+    {
+        "src": "/ribbon/qfw.png",
+        "ratio": 0.0,
+        "alt": "Q幻世界"
     }
 ]
