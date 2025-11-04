@@ -1,40 +1,49 @@
 ---
-import { getCollection } from 'astro:content'
+import { getCollection } from "astro:content";
 
 interface Props {
-  currentSlug: string
-  tags?: string[]
-  limit?: number
+  currentSlug: string;
+  tags?: string[];
+  limit?: number;
 }
-const { currentSlug, tags = [], limit = 3 } = Astro.props as Props
+const { currentSlug, tags = [], limit = 3 } = Astro.props as Props;
 
-const all = await (getCollection as any)('events')
+const all = await (getCollection as any)("events");
 const scored = all
   .filter((e: any) => e.slug !== currentSlug)
   .map((e: any) => {
-    const overlap = (e.data.tags || []).filter((t: string) => tags.includes(t)).length
-    return { e, score: overlap }
+    const overlap = (e.data.tags || []).filter((t: string) =>
+      tags.includes(t),
+    ).length;
+    return { e, score: overlap };
   })
   .sort((a: any, b: any) => {
-    if (b.score !== a.score) return b.score - a.score
-    const ad = a.e.data.date?.valueOf() ?? 0
-    const bd = b.e.data.date?.valueOf() ?? 0
-    return bd - ad
+    if (b.score !== a.score) return b.score - a.score;
+    const ad = a.e.data.date?.valueOf() ?? 0;
+    const bd = b.e.data.date?.valueOf() ?? 0;
+    return bd - ad;
   })
-  .slice(0, limit)
+  .slice(0, limit);
 ---
-{scored.length ? (
-  <aside class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border rounded-lg p-3">
-    <div class="text-sm font-semibold mb-2">相关事件</div>
-    <ul class="space-y-2">
-      {scored.map(({ e }) => (
-        <li>
-          <a href={`/events/${e.slug}/`} class="block">
-            <div class="text-xs text-slate-500">{e.data.date?.toISOString().slice(0,10)}</div>
-            <div class="text-slate-800 hover:text-brand text-sm">{e.data.title}</div>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </aside>
-) : null}
+
+{
+  scored.length ? (
+    <aside class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border rounded-lg p-3">
+      <div class="text-sm font-semibold mb-2">相关事件</div>
+      <ul class="space-y-2">
+        {scored.map(({ e }: { e: any }) => (
+          <li>
+            <a href={`/events/${e.slug}/`} class="block">
+              <div class="text-xs text-slate-500">
+                {e.data.date?.toISOString().slice(0, 10)}
+              </div>
+              <div class="text-slate-800 hover:text-brand text-sm">
+                {e.data.title}
+              </div>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  ) : null
+}
