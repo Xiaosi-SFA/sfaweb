@@ -1,0 +1,45 @@
+:root {
+  /* 全局重叠比例（用于 JS 计算：占上一张高度的比例，默认 0.1 即 1/10） */
+  --ribbon-overlap-ratio: 0.1;
+  /* 纯 CSS 兜底：当未启用 JS 或图片高度未知时使用的固定重叠量 */
+  --ribbon-overlap: 24px;
+  --ribbon-bg: rgba(110,110,115,0.08);
+  --ribbon-bg-dark: #2c2c2e;
+}
+
+.ribbon-wall {
+  border-radius: var(--radius-macos, 14px);
+  padding: 1rem;
+  background: var(--ribbon-bg);
+}
+.dark .ribbon-wall { background: var(--ribbon-bg-dark); }
+
+.ribbon-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.ribbon-item {
+  position: relative;
+  z-index: 0;
+  /* CSS 兜底：使用固定量重叠（首张不重叠，在组件内处理） */
+  margin-top: calc(-1 * var(--item-overlap, var(--ribbon-overlap)));
+  transition: transform 220ms ease, box-shadow 220ms ease, z-index 0s;
+}
+
+.ribbon-item:hover {
+  z-index: 10; /* 悬浮到最顶，完整展示 */
+  /* 可选轻微浮起效果 */
+  transform: translateY(-1px);
+}
+
+.ribbon-img {
+  display: block;
+  width: 100%;
+  height: auto; /* 原图原比例 */
+  border-radius: 0; /* 不应用圆角 */
+  object-fit: contain; /* 保留原图比例 */
+}
+
+/* 可选：在链接上去除默认下划线 */
+.ribbon-link { text-decoration: none; color: inherit; }

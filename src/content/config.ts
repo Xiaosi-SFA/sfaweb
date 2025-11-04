@@ -133,5 +133,18 @@ const lang = defineCollection({
   }),
 })
 
+// Ribbon data collection (JSON arrays under src/content/ribbon/*.json)
+const ribbon = defineCollection({
+  type: 'data',
+  schema: z.array(
+    z.object({
+      src: z.string(),
+      href: z.string().optional(),
+      ratio: z.union([z.number(), z.string()]).optional(),
+      alt: z.string().optional(),
+    })
+  ),
+})
+
 // Re-export including new collections
-export const collections = { articles, events, links, departments, members, deptGallery, groups, about, lang }
+export const collections = { articles, events, links, departments, members, deptGallery, groups, about, lang, ribbon }
