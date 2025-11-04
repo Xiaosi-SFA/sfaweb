@@ -1,7 +1,7 @@
 ---
-avatar: /avatar/publicity/xingxu.jpg
+avatar: /avatar/publicity/xingxu.png
 name: 星许
-quote: a
-bio: a
+quote: 宣传部的应该自己写
+bio: 宣传部的应该自己写
 position: minister
 ---
