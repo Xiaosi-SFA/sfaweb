@@ -12,19 +12,7 @@ const articles = defineCollection({
   }),
 })
 
-const news = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    date: z.date(),
-    tags: z.array(z.string()).default([]),
-    summary: z.string().max(280).optional(),
-    cover: z.string().optional(),
-    link: z.string().url().optional(),
-  }),
-})
 
-// collections export
  
 // Events collection for timeline
 const events = defineCollection({
@@ -138,4 +126,4 @@ const lang = defineCollection({
 })
 
 // Re-export including new collections
-export const collections = { articles, news, events, links, departments, members, deptGallery, groups, about, lang }
+export const collections = { articles, events, links, departments, members, deptGallery, groups, about, lang }
