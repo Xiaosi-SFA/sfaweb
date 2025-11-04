@@ -54,6 +54,9 @@ html, body, button, input, select, textarea {
   background-color: var(--apple-bg);
 }
 
+/* 全局：防止横向溢出导致移动端页面缩放/可横向拖动 */
+body { overflow-x: hidden; }
+
 /* macOS 风格圆角工具类 */
 .rounded-macos {
   border-radius: var(--radius-macos);
@@ -63,6 +66,19 @@ html, body, button, input, select, textarea {
 .prose img {
   border-radius: var(--radius-macos);
 }
+
+/* 文章/富文本中的媒体与长内容自适应屏幕 */
+.article-prose, .prose {
+  overflow-wrap: anywhere; /* 允许任意处换行以避免长串引起溢出 */
+  word-break: break-word;
+}
+.article-prose img,
+.article-prose video,
+.article-prose iframe {
+  max-width: 100%;
+  height: auto;
+}
+.article-prose table { display: block; max-width: 100%; overflow-x: auto; }
 
 /* 当页面请求初始隐藏 Header/Footer 时，在 <body> 上加该类；
    客户端脚本会在合适时机移除它（避免 Hero 首屏时出现导航栏）。 */
@@ -115,6 +131,8 @@ body.hide-header-footer .site-footer {
 }
 .article-prose pre {
   border-radius: 0.5rem;
+  max-width: 100%;
+  overflow-x: auto; /* 避免代码块撑出屏幕宽度 */
 }
 
 /* 深色模式下提升文章区对比度 */
@@ -178,6 +196,10 @@ body.hide-header-footer .site-footer {
   }
 }
 
+/* 部门网格：移动端防溢出，卡片和网格都不超过容器宽度 */
+.dept-grid { max-width: 100%; overflow-x: hidden; }
+.dept-grid > * { min-width: 0; }
+
 /* Apple 风格的链接样式（可选工具类） */
 .link-apple {
   color: var(--apple-link);
@@ -213,6 +235,31 @@ body.hide-header-footer .site-footer {
 
 /* 导航容器（BaseLayout 中的 <nav>）的项目间距由变量控制 */
 .nav-main { position: relative; gap: var(--nav-inline-gap) !important; }
+
+/* 移动端：导航支持左右滑动（保持横向排布、不换行） */
+@media (max-width: 640px) {
+  .nav-main {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
+    scrollbar-width: none; /* Firefox 隐藏滚动条 */
+    padding-top: 0 !important;   /* 覆盖 py-3，避免内容偏移 */
+    padding-bottom: 2px !important; /* 下方保留 2px 给滑动高亮的视觉空间 */
+  }
+  .nav-main::-webkit-scrollbar { display: none; } /* WebKit 隐藏滚动条 */
+  .nav-main .nav-link { flex: 0 0 auto; } /* 不缩小，保持横向滚动 */
+
+  /* 移动端：确保导航项内图标与文字垂直居中 */
+  .site-header .nav-main { align-items: center; height: 48px; }
+  .site-header .nav-main .nav-link {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important; /* 覆盖链接上的 -my-3，避免视觉上偏移 */
+    padding-top: 0.5rem; /* 覆盖 py-3，防止高度溢出导致看起来不居中 */
+    padding-bottom: 0.5rem;
+    line-height: 1.1; /* 避免基线造成的上下不居中 */
+    align-items: center; /* 再次明确居中 */
+  }
+  .site-header .nav-main .nav-link > svg { display: block; }
+}
 
 /* —— 导航滑动高亮 ——
    通过一个绝对定位的色块在导航容器内左右滑动，

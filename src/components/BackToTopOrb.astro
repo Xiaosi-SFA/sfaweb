@@ -1,8 +1,54 @@
-<button type="button" class="back-to-top-orb" data-back-to-top aria-label="返回顶部" data-state="hidden">
+<button type="button" class="back-to-top-orb" data-back-to-top aria-label="目录 / 返回顶部" data-state="hidden" aria-expanded="false">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
-    <path d="M12 5c.28 0 .53.11.71.29l5 5-1.42 1.42L13 9.83V19h-2V9.83l-3.29 3.3-1.42-1.42 5-5A1 1 0 0 1 12 5z" />
+    <path d="M4 7h16v2H4V7Zm0 4h16v2H4v-2Zm0 4h10v2H4v-2Z" />
   </svg>
 </button>
+
+<!-- 移动端底部目录面板 -->
+<div class="orb-overlay" data-orb-overlay hidden></div>
+<div class="orb-sheet" data-orb-sheet hidden aria-hidden="true">
+  <div class="orb-sheet__handle" aria-hidden="true"></div>
+  <div class="orb-sheet__content">
+    <ul class="orb-list" data-orb-list>
+      <!-- JS 注入：第一个固定为 回到顶端，其余为文内标题 -->
+    </ul>
+  </div>
+  <button type="button" class="orb-sheet__close" data-orb-close aria-label="关闭">✕</button>
+  <style is:inline>
+    .orb-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.28); backdrop-filter: blur(1px);
+      z-index: 39; opacity: 0; transition: opacity 180ms ease; pointer-events: none;
+    }
+    .orb-overlay[data-open="true"] { opacity: 1; pointer-events: auto; }
+    .orb-sheet {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+      background: #fff; color: #0f172a; border-top-left-radius: 16px; border-top-right-radius: 16px;
+      box-shadow: 0 -12px 28px rgba(15,23,42,.2);
+      transform: translateY(105%);
+      transition: transform 220ms cubic-bezier(.2,.8,.2,1), background-color .2s ease, color .2s ease;
+      max-height: 70vh; display: grid; grid-template-rows: auto 1fr; overflow: hidden;
+    }
+    .dark .orb-sheet { background: #111827; color: #e5e7eb; box-shadow: 0 -12px 28px rgba(0,0,0,.45); }
+    .orb-sheet[data-open="true"] { transform: translateY(0); }
+    .orb-sheet__handle { height: 22px; display: grid; place-items: center; }
+    .orb-sheet__handle::before { content: ''; width: 36px; height: 4px; border-radius: 9999px; background: rgba(15,23,42,.25); }
+    .dark .orb-sheet__handle::before { background: rgba(229,231,235,.35); }
+    .orb-sheet__content { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 10px 14px; }
+    .orb-list { list-style: none; margin: 0; padding: 0; }
+    .orb-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; }
+    .orb-item--top { font-weight: 600; }
+    .orb-item:hover { background: rgba(15,23,42,.05); }
+    .dark .orb-item:hover { background: rgba(229,231,235,.08); }
+    .orb-item__dot { width: 6px; height: 6px; border-radius: 9999px; background: #94a3b8; flex: none; }
+    .dark .orb-item__dot { background: #9ca3af; }
+    .orb-item__text { font-size: 14px; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .orb-sheet__close { position: absolute; top: 6px; right: 8px; font-size: 16px; line-height: 1; color: inherit; opacity: .8; }
+    .orb-sheet__close:focus-visible { outline: 2px solid #38bdf8; border-radius: 6px; }
+    @media (min-width: 768px) {
+      .orb-overlay, .orb-sheet { display: none; }
+    }
+  </style>
+</div>
 
 <style is:inline>
   .back-to-top-orb {
@@ -47,10 +93,16 @@
 </style>
 
 <script is:inline>
-  const orb = document.querySelector('[data-back-to-top]');
-  if (orb) {
+  (function(){
+    const orb = document.querySelector('[data-back-to-top]');
+    const overlay = document.querySelector('[data-orb-overlay]');
+    const sheet = document.querySelector('[data-orb-sheet]');
+    const list = document.querySelector('[data-orb-list]');
+    const closeBtn = document.querySelector('[data-orb-close]');
+    if (!orb || !overlay || !sheet || !list || !closeBtn) return;
+
     const showAfter = parseInt(orb.getAttribute('data-offset') || '', 10) || 240;
-    const updateState = () => {
+    const updateFabState = () => {
       if (window.scrollY > showAfter) {
         orb.setAttribute('data-state', 'visible');
       } else {
@@ -58,20 +110,57 @@
       }
     };
 
+    function buildTOC() {
+      list.innerHTML = '';
+      // 顶部：回到顶端
+      const liTop = document.createElement('li');
+      liTop.className = 'orb-item orb-item--top';
+      liTop.innerHTML = '<span class="orb-item__dot" style="opacity:0;"></span><span class="orb-item__text">回到顶端</span>';
+      liTop.addEventListener('click', ()=> { window.scrollTo({ top: 0, behavior: 'smooth' }); toggleSheet(false); });
+      list.appendChild(liTop);
+
+      // 收集正文标题（article-prose 内 h2/h3，并带 id）
+      const container = document.querySelector('.article-prose') || document.querySelector('article');
+      const hs = container ? Array.from(container.querySelectorAll('h2[id], h3[id]')) : [];
+      hs.forEach(h => {
+        const li = document.createElement('li');
+        li.className = 'orb-item';
+        const depth = h.tagName.toLowerCase() === 'h3' ? 3 : 2;
+        const text = h.textContent?.trim() || '';
+        const id = h.getAttribute('id') || '';
+        li.innerHTML = `<span class="orb-item__dot" style="margin-left:${depth===3? '8px':'0'}"></span><span class="orb-item__text">${text}</span>`;
+        li.addEventListener('click', () => {
+          if (id) {
+            const target = document.getElementById(id);
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          toggleSheet(false);
+        });
+        list.appendChild(li);
+      });
+    }
+
+    function toggleSheet(open) {
+      const willOpen = open ?? sheet.getAttribute('data-open') !== 'true';
+      sheet.toggleAttribute('hidden', !willOpen);
+      overlay.toggleAttribute('hidden', !willOpen);
+      sheet.setAttribute('data-open', String(willOpen));
+      overlay.setAttribute('data-open', String(willOpen));
+      orb.setAttribute('aria-expanded', String(willOpen));
+      if (willOpen) buildTOC();
+    }
+
     let ticking = false;
     window.addEventListener('scroll', () => {
       if (ticking) return;
-      window.requestAnimationFrame(() => {
-        updateState();
-        ticking = false;
-      });
+      window.requestAnimationFrame(() => { updateFabState(); ticking = false; });
       ticking = true;
     }, { passive: true });
 
-    orb.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    orb.addEventListener('click', () => { toggleSheet(true); });
+    overlay.addEventListener('click', () => toggleSheet(false));
+    closeBtn.addEventListener('click', () => toggleSheet(false));
 
-    updateState();
-  }
+    updateFabState();
+  })();
 </script>
