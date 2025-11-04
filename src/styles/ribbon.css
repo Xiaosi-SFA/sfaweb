@@ -5,14 +5,23 @@
   --ribbon-overlap: 24px;
   --ribbon-bg: rgba(110,110,115,0.08);
   --ribbon-bg-dark: #2c2c2e;
+  /* 电脑端（>=1024px）丝带墙宽度占比，默认 70% */
+  --ribbon-desktop-width: 70%;
 }
 
 .ribbon-wall {
   border-radius: var(--radius-macos, 14px);
   padding: 1rem;
   background: var(--ribbon-bg);
+  width: 100%;
+  margin-inline: auto;
 }
 .dark .ribbon-wall { background: var(--ribbon-bg-dark); }
+
+/* 默认移动端占满容器，电脑端允许通过变量调节整体宽度比例 */
+@media (min-width: 1024px) {
+  .ribbon-wall { width: var(--ribbon-desktop-width, 70%); }
+}
 
 .ribbon-list {
   display: flex;
