@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import PostCard from '@components/PostCard.astro'
 import ActivityCard from '@components/ActivityCard.astro'
+import '@styles/homepage.css'
 
 // 最新文章（按日期降序，取前 6 条）
 const latestArticles = (await (getCollection as any)('articles'))
@@ -19,9 +20,12 @@ const latestEvents = (await (getCollection as any)('events'))
   <!-- Hero 欢迎区（无背景、居中 Logo、欢迎语、向上箭头） -->
   <section class="hero-anim relative min-h-screen p-8 md:p-12 overflow-visible flex items-center justify-center">
     <div class="max-w-3xl mx-auto text-center flex flex-col items-center justify-center" style="min-height:60vh;">
-  <div class="logo-wrap mx-auto mb-6 w-full" style="max-width: min(600px, 60vw); overflow:visible;">
-        <div style="aspect-ratio:16/9; width:100%;" class="rounded-md">
-          <img id="heroLogo" src="/logo1.png" alt="SFA logo" class="w-full h-full object-cover block" />
+      <div class="logo-wrap hero-logo-wrap mx-auto mb-6 w-full">
+        <div class="hero-logo-frame rounded-md">
+          <!-- 亮色主题 Logo -->
+          <img src="/xiaosi.jpg" alt="SFA logo" class="w-full h-full object-cover block dark:hidden" />
+          <!-- 暗色主题 Logo（占位：当前复用亮色版本，可后续替换 /public/logo1-night.png） -->
+          <img src="/xiaosi.jpg" alt="SFA logo night" class="w-full h-full object-cover hidden dark:block" />
         </div>
       </div>
 

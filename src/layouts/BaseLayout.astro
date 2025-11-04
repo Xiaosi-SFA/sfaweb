@@ -6,6 +6,8 @@ interface Props {
   disableWaveBg?: boolean;
 }
 import WaveBackground from "@components/WaveBackground.astro";
+import SiteHeader from "@components/SiteHeader.astro";
+import SiteFooter from "@components/SiteFooter.astro";
 import "@styles/global.css";
 import { getCollection } from 'astro:content';
 const {
@@ -16,7 +18,8 @@ const {
 } = Astro.props as Props;
 
 // i18n: load *.lang files (flat key=value), determine locale from URL prefix
-const langFiles = import.meta.glob('../content/lang/*.lang', { as: 'raw', eager: true }) as Record<string, string>;
+// NOTE: Vite deprecated the 'as: \"raw\"' option. Use query + import instead to avoid warnings.
+const langFiles = import.meta.glob('../content/lang/*.lang', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 function parseLang(raw: string) {
   const map: Record<string, string> = {};
   if (!raw) return map;
@@ -48,13 +51,7 @@ function t(key: string, fallback?: string) {
 // 当前路径与导航高亮
 const path = Astro.url.pathname;
 const pathNoLocale = path.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
-const isSection = (prefix: string) => pathNoLocale === prefix || pathNoLocale.startsWith(prefix);
-const isHome = path == '/';
 const isHomeNormalized = pathNoLocale === '/';
-// 顶格长方形高亮：让链接背景填满整条导航的垂直高度
-const navBase = "relative inline-flex items-center py-3 -my-3 transition-colors nav-link";
-const navActive = "bg-[var(--ios-gray-5)] text-[#1d1d1f] dark:bg-[var(--ios-gray-5)] dark:text-[#f2f2f7]";
-const navInactive = "";
 ---
 
 <!doctype html>
@@ -86,243 +83,10 @@ const navInactive = "";
     class={`min-h-screen bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#1c1c1e] dark:text-[#f2f2f7] ${hideHeaderFooter ? "hide-header-footer" : ""}`}
   >
     {!disableWaveBg && <WaveBackground />}
-    <header
-      class="site-header border-b border-slate-200 dark:border-[#2c2c2e] bg-white/80 dark:bg-[#1c1c1e]/75 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#1c1c1e]/60 sticky top-0 z-10"
-    >
-  <nav class="nav-main mx-auto max-w-6xl px-4 py-3 flex items-center gap-6">
-    <span class="nav-highlight" aria-hidden="true"></span>
-  <a href={localePrefix || '/'} class={`${navBase} ${isHomeNormalized ? `${navActive} is-active` : ''}`}>{t('nav.home','首页')}</a>
-    <a href={`${localePrefix}/articles/`} class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>{t('nav.articles','文章')}</a>
-  <a href={`${localePrefix}/events/`} class={`${navBase} ${isSection('/events/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/events/') ? 'page' : undefined}>{t('nav.events','活动')}</a>
-  <a href={`${localePrefix}/about/`} class={`${navBase} ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>{t('nav.about','关于我们')}</a>
-  <a href={`${localePrefix}/groups/`} class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>{t('nav.groups','兴趣小组')}</a>
-    <a href={`${localePrefix}/links/`} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>
-        <div class="ml-auto flex items-center gap-3">
-          <button id="theme-toggle" class="inline-flex items-center justify-center rounded-macos border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 px-2.5 py-1.5 hover:bg-white dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-white" aria-pressed="false" title={t('actions.toggleTheme','切换主题')}>
-            <span class="sr-only">切换主题</span>
-            <!-- 太阳图标（亮） -->
-            <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 1 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-4a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM12 17a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V18a1 1 0 0 1 1-1ZM4.5 11.5a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM6.34 6.34a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 1 1-1.41 1.41L6.34 7.75a1 1 0 0 1 0-1.41Zm9.85 9.85a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 0 1-1.41 1.41l-1.06-1.06a1 1 0 0 1 0-1.41ZM17.66 6.34a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0ZM7.75 16.19a1 1 0 0 1 0 1.41L6.69 18.66a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0Z"/>
-            </svg>
-            <!-- 月亮图标（暗） -->
-            <svg class="w-5 h-5 hidden dark:block" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
-            </svg>
-          </button>
-        </div>
-      </nav>
-    </header>
+    <SiteHeader localePrefix={localePrefix} isHomeNormalized={isHomeNormalized} pathNoLocale={pathNoLocale} t={t} />
     <main class="mx-auto max-w-6xl px-4 py-8 relative z-0">
       <slot />
     </main>
-    <footer
-      class="site-footer border-t border-slate-200 dark:border-[#2c2c2e] py-6 text-center text-sm text-slate-500 dark:text-slate-400"
-    >
-      <div class="mx-auto max-w-6xl px-4 flex flex-col items-center gap-3">
-        <div>© {new Date().getFullYear()} SFA 社团</div>
-        <div class="flex items-center gap-4">
-          <a href="https://github.com/disillusion-night/sfaweb.git" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200" aria-label="GitHub 仓库">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.486 2 12.021c0 4.424 2.865 8.175 6.839 9.504.5.09.682-.219.682-.485 0-.24-.009-.874-.014-1.716-2.782.605-3.369-1.343-3.369-1.343-.455-1.159-1.111-1.469-1.111-1.469-.908-.622.069-.609.069-.609 1.004.071 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.833.091-.648.35-1.088.636-1.338-2.221-.253-4.555-1.114-4.555-4.955 0-1.094.39-1.99 1.029-2.691-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.751 1.027A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.91-1.297 2.748-1.027 2.748-1.027.546 1.378.202 2.397.1 2.65.64.701 1.027 1.597 1.027 2.691 0 3.849-2.339 4.699-4.566 4.947.359.31.678.922.678 1.859 0 1.341-.012 2.422-.012 2.752 0 .269.18.58.688.481A10.026 10.026 0 0 0 22 12.021C22 6.486 17.523 2 12 2z"/>
-            </svg>
-          </a>
-        </div>
-        <div class="text-xs text-slate-500 dark:text-slate-400">鸣谢：网站设计与制作：Visio Vanitas</div>
-      </div>
-    </footer>
-    <script is:inline>
-      // 主题切换按钮逻辑：在 html 上切换 .dark，并持久化到 localStorage
-      (function() {
-        var btn = document.getElementById('theme-toggle');
-        if (!btn) return;
-        var setPressed = function() {
-          var isDark = document.documentElement.classList.contains('dark');
-          btn.setAttribute('aria-pressed', String(isDark));
-        };
-        setPressed();
-        btn.addEventListener('click', function() {
-          var d = document.documentElement;
-          var isDark = d.classList.toggle('dark');
-          try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
-          setPressed();
-        });
-      })();
-
-      // 导航滑动高亮初始化与交互
-      (function() {
-        var nav = document.querySelector('.site-header .nav-main');
-        if (!nav) return;
-        var links = Array.from(nav.querySelectorAll('.nav-link'));
-        if (!links.length) return;
-        var hl = nav.querySelector('.nav-highlight');
-        if (!hl) {
-          hl = document.createElement('span');
-          hl.className = 'nav-highlight';
-          hl.setAttribute('aria-hidden', 'true');
-          nav.prepend(hl);
-        }
-        nav.classList.add('has-navhl');
-
-        function rect(el) {
-          // 高亮与链接处于同一滚动容器内，绝对定位基于 nav 内容坐标，直接使用 offsetLeft/offsetWidth 即可
-          var left = 0, width = 0;
-          try {
-            left = el.offsetLeft; // 不要减去 scrollLeft，二者坐标系一致
-            width = el.offsetWidth;
-          } catch(e) {
-            var r = el.getBoundingClientRect();
-            var n = nav.getBoundingClientRect();
-            left = r.left - n.left + nav.scrollLeft; // 回退时补偿 scrollLeft
-            width = r.width;
-          }
-          return { left: left, width: width };
-        }
-        function moveTo(el) {
-          if (!el) return;
-          // 当首页初始隐藏 Header（body.hide-header-footer）时，nav 的尺寸为 0；
-          // 延迟到下一帧或等待可见后再定位，避免宽度为 0 导致高亮不可见。
-          var nrect = nav.getBoundingClientRect();
-          if (!nrect || nrect.width === 0 || nrect.height === 0) {
-            requestAnimationFrame(function(){ moveTo(el); });
-            return;
-          }
-          var m = rect(el);
-          hl.style.setProperty('--hl-left', m.left + 'px');
-          hl.style.setProperty('--hl-width', m.width + 'px');
-          hl.style.opacity = '1';
-        }
-        function current() {
-          return nav.querySelector('.nav-link.is-active') || links[0];
-        }
-
-        function isMobile() {
-          return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
-        }
-
-        // 根据当前 URL 判定应高亮的导航（忽略语言前缀），选择“最长匹配”的链接
-        function normalizePath(p){
-          try {
-            var u = new URL(p, window.location.origin);
-            p = u.pathname;
-          } catch(e){}
-          p = p || '/';
-          p = p.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
-          if (!p.endsWith('/')) p += '/';
-          return p;
-        }
-        function setActiveByURL(){
-          var cur = normalizePath(window.location.pathname);
-          var best = { a: null, len: -1 };
-          links.forEach(function(a){
-            var href = a.getAttribute('href') || '/';
-            var base = normalizePath(href);
-            if (base === '/' && cur === '/') {
-              if (base.length > best.len) best = { a: a, len: base.length };
-              return;
-            }
-            if (base !== '/' && cur.indexOf(base) === 0) {
-              if (base.length > best.len) best = { a: a, len: base.length };
-            }
-          });
-          links.forEach(function(a){ a.classList.remove('is-active'); a.removeAttribute('aria-current'); });
-          if (best.a) { best.a.classList.add('is-active'); best.a.setAttribute('aria-current', 'page'); }
-        }
-
-        // 在移动端把激活的导航项滚动到可见区域（尽量居中）
-        function scrollActiveIntoView(behavior) {
-          if (!isMobile()) return;
-          var a = current();
-          if (!a) return;
-          var nrect = nav.getBoundingClientRect();
-          if (!nrect || nrect.width === 0 || nrect.height === 0) return;
-          var arect = a.getBoundingClientRect();
-          var leftWithinNav = arect.left - nrect.left; // 当前可视区域内距离
-          var currentLeft = nav.scrollLeft + leftWithinNav;
-          var target = currentLeft - (nrect.width - arect.width) / 2; // 尝试居中
-          var maxScroll = nav.scrollWidth - nav.clientWidth;
-          if (maxScroll < 0) maxScroll = 0;
-          var next = Math.max(0, Math.min(target, maxScroll));
-          try {
-            nav.scrollTo({ left: next, behavior: behavior || 'auto' });
-          } catch (e) {
-            nav.scrollLeft = next;
-          }
-        }
-
-  function recalc() { moveTo(current()); }
-
-  setActiveByURL();
-  // 先把激活项滚动到可见，再定位高亮，避免初始错位
-  scrollActiveIntoView('auto');
-  recalc();
-  window.addEventListener('resize', function(){
-    recalc();
-    scrollActiveIntoView('auto');
-  });
-  nav.addEventListener('scroll', recalc, { passive: true });
-  window.addEventListener('popstate', function(){ setActiveByURL(); recalc(); scrollActiveIntoView('smooth'); });
-        links.forEach(function(a) {
-          a.addEventListener('mouseenter', function() { moveTo(a); });
-          a.addEventListener('focus', function() { moveTo(a); });
-        });
-        nav.addEventListener('mouseleave', recalc);
-
-        // 监听 body 的 class 变化：当首页去掉 hide-header-footer（显示 Header）时立即重算
-        try {
-          var body = document.body;
-          var mo = new MutationObserver(function(muts){
-            for (var i=0;i<muts.length;i++) {
-              var m = muts[i];
-              if (m.attributeName === 'class' && !body.classList.contains('hide-header-footer')) {
-                recalc();
-                scrollActiveIntoView('auto');
-                break;
-              }
-            }
-          });
-          mo.observe(body, { attributes: true, attributeFilter: ['class'] });
-        } catch (e) {}
-
-        // 字体加载或容器尺寸变化后重算，进一步避免错位
-        try {
-          if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(function(){ recalc(); });
-          }
-          if (window.ResizeObserver) {
-            var ro = new ResizeObserver(function(){ recalc(); });
-            ro.observe(nav);
-          }
-        } catch(e) {}
-      })();
-
-      // 页面滚动时：下滑隐藏 Header，上滑显示；在顶部时始终显示
-      (function(){
-        var header = document.querySelector('.site-header');
-        if (!header) return;
-        var lastY = window.scrollY || 0;
-        var ticking = false;
-        function handle() {
-          var y = window.scrollY || 0;
-          var dy = y - lastY;
-          var atTop = y <= 8;
-          if (atTop) {
-            header.classList.remove('is-hidden');
-          } else if (dy > 6) {
-            // 向下滚动足够距离：隐藏
-            header.classList.add('is-hidden');
-          } else if (dy < -6) {
-            // 向上滚动：显示
-            header.classList.remove('is-hidden');
-          }
-          lastY = y;
-        }
-        window.addEventListener('scroll', function(){
-          if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(function(){ handle(); ticking = false; });
-          }
-        }, { passive: true });
-      })();
-    </script>
+    <SiteFooter />
   </body>
 </html>

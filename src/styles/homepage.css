@@ -1,0 +1,9 @@
+:root {
+  /* 可调：主页 Logo 最大宽度与纵横比 */
+  --hero-logo-max-width: min(400px, 60vw);
+  --hero-logo-aspect: 1/1;
+}
+
+/* 主页 Hero 区 Logo 外容器与比例框 */
+.hero-logo-wrap { max-width: var(--hero-logo-max-width); overflow: visible; }
+.hero-logo-frame { aspect-ratio: var(--hero-logo-aspect); width: 100%; }
