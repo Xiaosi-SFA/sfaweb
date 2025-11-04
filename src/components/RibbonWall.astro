@@ -13,8 +13,14 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[])
   <div class="ribbon-list" id="ribbonList">
     {ribbonConfig?.length ? (
       ribbonConfig.map((item, idx) => {
+        const caption = (item as any).credit ?? (item as any).copyright ?? (item as any).alt;
         const content = (
-          <img src={item.src} alt={item.alt ?? ''} class="ribbon-img" loading={idx > 2 ? 'lazy' : 'eager'} />
+          <>
+            <img src={item.src} alt={item.alt ?? ''} class="ribbon-img" loading={idx > 2 ? 'lazy' : 'eager'} />
+            {caption ? (
+              <div class="ribbon-caption">{caption}</div>
+            ) : null}
+          </>
         )
         const style = typeof item.ratio === 'string' ? `--item-overlap: ${item.ratio}` : undefined
         const dataRatio = typeof item.ratio === 'number' ? String(item.ratio) : undefined
@@ -47,6 +53,11 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[])
         const v = getComputedStyle(document.documentElement).getPropertyValue('--ribbon-overlap-ratio').trim();
         const num = parseFloat(v);
         return isNaN(num) ? 0.1 : num;
+      };
+      const getCaptionGap = () => {
+        const v = getComputedStyle(document.documentElement).getPropertyValue('--ribbon-caption-gap').trim();
+        const num = parseFloat(v);
+        return isNaN(num) ? 20 : num;
       };
 
       const compute = () => {
@@ -105,21 +116,12 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[])
         for (const el of items) el.style.transform = '';
       }
 
-  function hoverAdjust(index: number) {
+      function hoverAdjust(index: number) {
         resetTransforms();
         const defRatio = getDefaultRatio();
+        const captionGap = getCaptionGap();
 
-        // 计算与上一张的重叠（当前项被上一张遮住的部分）
-        let upDelta = 0;
-        if (index > 0) {
-          const prev = items[index - 1];
-          const ratioStr = items[index].getAttribute('data-overlap-ratio');
-          const ratio = ratioStr ? parseFloat(ratioStr) : defRatio;
-          const prevH = prev.getBoundingClientRect().height;
-          upDelta = Math.max(0, Math.round(prevH * (isNaN(ratio) ? defRatio : ratio)));
-        }
-
-        // 计算与下一张的重叠（下一张遮住当前项的部分）
+        // 仅计算并处理“下方让位”
         let downDelta = 0;
         if (index < items.length - 1) {
           const curr = items[index];
@@ -130,12 +132,11 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[])
           downDelta = Math.max(0, Math.round(currH * (isNaN(nextRatio) ? defRatio : nextRatio)));
         }
 
-        // 上方上移、下方下移
+        // 仅下方下移（上方不动）
         for (let i = 0; i < items.length; i++) {
-          if (i < index && upDelta) {
-            items[i].style.transform = `translateY(${-upDelta}px)`;
-          } else if (i > index && downDelta) {
-            items[i].style.transform = `translateY(${downDelta}px)`;
+          if (i > index) {
+            const shift = downDelta + captionGap; // 让位 + 额外空白行
+            if (shift) items[i].style.transform = `translateY(${shift}px)`;
           }
         }
       }

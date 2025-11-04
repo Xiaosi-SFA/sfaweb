@@ -7,6 +7,11 @@
   --ribbon-bg-dark: #2c2c2e;
   /* 电脑端（>=1024px）丝带墙宽度占比，默认 70% */
   --ribbon-desktop-width: 70%;
+  /* 悬浮时在下方额外留白高度（用于让出一行空白并显示版权） */
+  --ribbon-caption-gap: 24px;
+  /* 丝带字幕：字号与行高（可按需调整） */
+  --ribbon-caption-font-size: 16px;
+  --ribbon-caption-line: 1.6;
 }
 
 .ribbon-wall {
@@ -48,6 +53,27 @@
   height: auto; /* 原图原比例 */
   border-radius: 0; /* 不应用圆角 */
   object-fit: contain; /* 保留原图比例 */
+}
+
+.ribbon-caption {
+  /* 静态文流靠右显示，默认折叠高度与透明 */
+  margin-top: 0;
+  text-align: right;
+  font-size: var(--ribbon-caption-font-size, 13px);
+  line-height: var(--ribbon-caption-line, 1.4);
+  color: #475569; /* slate-600 */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 160ms ease, opacity 160ms ease;
+}
+.dark .ribbon-caption { color: #e2e8f0; /* slate-200 更浅以便可读 */ }
+.ribbon-item:hover .ribbon-caption {
+  /* 展开一行高度并显现 */
+  max-height: var(--ribbon-caption-gap, 20px);
+  opacity: 0.9;
 }
 
 /* 可选：在链接上去除默认下划线 */

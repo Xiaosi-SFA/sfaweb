@@ -1,32 +1,32 @@
 [
   {
-    "src": "/ribbon/sfa.jpg",
-    "ratio": 0.2,
-    "alt": "四川大学科幻协会丝带"
+    "src": "/ribbon/scusfa.jpg",
+    "alt": "四川大学科幻协会"
   },
   {
     "src": "/ribbon/swjtusfa.png",
-    "ratio": 0.05,
-    "alt": "西南交通大学科幻协会丝带"
+    "ratio": 0.17,
+    "alt": "西南交通大学科幻协会"
   },
   {
     "src": "/ribbon/cdusfa.png",
     "ratio": 0.05,
-    "alt": "成都大学科幻协会丝带"
+    "alt": "成都大学科幻协会"
   },
   {
-    "src": "/ribbon/sfa.jpg",
-    "ratio": 0.2,
-    "alt": "四川大学科幻协会丝带"
+    "src": "/ribbon/cdutcmsfa.jpg",
+    "ratio": 0.07,
+    "alt": "成都中医药大学科幻协会"
   },
   {
-    "src": "/ribbon/sfa.jpg",
-    "ratio": 0.2,
-    "alt": "四川大学科幻协会丝带"
+    "src": "/ribbon/achieve.png",
+    "ratio": 0.07,
+    "alt": "幻协考古"
   },
   {
-    "src": "/ribbon/sfa.jpg",
-    "ratio": 0.2,
-    "alt": "四川大学科幻协会丝带"
+    "src": "/ribbon/lonetrail.png",
+    "ratio": 0.07,
+    "alt": "孤星",
+    "copyright": "@鹰角网络"
   }
 ]

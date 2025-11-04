@@ -142,6 +142,8 @@ const ribbon = defineCollection({
       href: z.string().optional(),
       ratio: z.union([z.number(), z.string()]).optional(),
       alt: z.string().optional(),
+      credit: z.string().optional(),
+      copyright: z.string().optional(),
     })
   ),
 })
