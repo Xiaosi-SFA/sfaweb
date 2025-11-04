@@ -296,3 +296,12 @@ body.hide-header-footer .site-footer {
   background-color: transparent;
   color: #f2f2f7;
 }
+
+/* —— 向下滚动隐藏 Header，向上滚动显示 —— */
+.site-header {
+  will-change: transform;
+  transition: transform 180ms ease;
+}
+.site-header.is-hidden {
+  transform: translateY(-100%);
+}

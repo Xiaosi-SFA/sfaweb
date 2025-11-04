@@ -294,6 +294,35 @@ const navInactive = "";
           }
         } catch(e) {}
       })();
+
+      // 页面滚动时：下滑隐藏 Header，上滑显示；在顶部时始终显示
+      (function(){
+        var header = document.querySelector('.site-header');
+        if (!header) return;
+        var lastY = window.scrollY || 0;
+        var ticking = false;
+        function handle() {
+          var y = window.scrollY || 0;
+          var dy = y - lastY;
+          var atTop = y <= 8;
+          if (atTop) {
+            header.classList.remove('is-hidden');
+          } else if (dy > 6) {
+            // 向下滚动足够距离：隐藏
+            header.classList.add('is-hidden');
+          } else if (dy < -6) {
+            // 向上滚动：显示
+            header.classList.remove('is-hidden');
+          }
+          lastY = y;
+        }
+        window.addEventListener('scroll', function(){
+          if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(function(){ handle(); ticking = false; });
+          }
+        }, { passive: true });
+      })();
     </script>
   </body>
 </html>

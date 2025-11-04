@@ -68,9 +68,16 @@ const latestEvents = (await (getCollection as any)('events'))
 
         setTimeout(() => hero.classList.add('loaded'), 600);
 
+        function ensureHeaderVisible() {
+          // 解除首页初始隐藏的 Header/Footer
+          if (document.body.classList.contains('hide-header-footer')) {
+            document.body.classList.remove('hide-header-footer');
+          }
+        }
+
         function scrollToFirst() {
           // reveal header/footer (they are initially hidden via body.hide-header-footer)
-          document.body.classList.remove('hide-header-footer');
+          ensureHeaderVisible();
           if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -81,9 +88,15 @@ const latestEvents = (await (getCollection as any)('events'))
 
         // 鼠标滚轮：仅在顶部且向下滚一定阈值时触发
         const wheelHandler = (e) => {
+          // 向下滚（页面上滑）：从顶部进入内容区
           if (e.deltaY > 20 && isAtTop()) {
             removeAccelerators();
             scrollToFirst();
+            return;
+          }
+          // 向上滚（页面下滑）：仅用于解除首页 header 隐藏
+          if (e.deltaY < -20) {
+            ensureHeaderVisible();
           }
         };
         window.addEventListener('wheel', wheelHandler, { passive: true });
@@ -99,6 +112,11 @@ const latestEvents = (await (getCollection as any)('events'))
             removeAccelerators();
             scrollToFirst();
             startY = null;
+            return;
+          }
+          // 手指向下（页面下滑）：解除首页 header 隐藏
+          if (dy < -40) {
+            ensureHeaderVisible();
           }
         };
         window.addEventListener('touchstart', onTouchStart, { passive: true });
