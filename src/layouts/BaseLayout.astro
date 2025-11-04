@@ -7,6 +7,7 @@ interface Props {
 }
 import WaveBackground from "@components/WaveBackground.astro";
 import "@styles/global.css";
+import { getCollection } from 'astro:content';
 const {
   title = "小四的机密档案室",
   description = "社团官网与消息门户",
@@ -14,9 +15,40 @@ const {
   disableWaveBg = false,
 } = Astro.props as Props;
 
+// i18n: load *.lang files (flat key=value), determine locale from URL prefix
+const langFiles = import.meta.glob('../content/lang/*.lang', { as: 'raw', eager: true }) as Record<string, string>;
+function parseLang(raw: string) {
+  const map: Record<string, string> = {};
+  if (!raw) return map;
+  raw.split(/\r?\n/).forEach((line) => {
+    const s = line.trim();
+    if (!s || s.startsWith('#') || s.startsWith('//')) return;
+    const eq = s.indexOf('=');
+    if (eq === -1) return;
+    const k = s.slice(0, eq).trim();
+    const v = s.slice(eq + 1).trim();
+    if (k) map[k] = v;
+  });
+  return map;
+}
+const pathRaw = Astro.url.pathname;
+const m = pathRaw.match(/^\/(?<lc>[a-z]{2}(?:-[a-z]{2})?)(?:\/|$)/i);
+const currentLocale = (m?.groups?.lc || 'zh-cn').toLowerCase();
+const localePrefix = m?.groups?.lc ? `/${currentLocale}` : '';
+function loadLocale(code: string) {
+  const entry = Object.entries(langFiles).find(([p]) => p.toLowerCase().endsWith(`/lang/${code}.lang`));
+  return parseLang(entry ? entry[1] : '');
+}
+const M_CUR = loadLocale(currentLocale);
+const M_EN = loadLocale('en');
+function t(key: string, fallback?: string) {
+  return M_CUR[key] ?? M_EN[key] ?? fallback ?? key;
+}
+
 // 当前路径与导航高亮
 const path = Astro.url.pathname;
-const isSection = (prefix: string) => path === prefix || path.startsWith(prefix);
+const pathNoLocale = path.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
+const isSection = (prefix: string) => pathNoLocale === prefix || pathNoLocale.startsWith(prefix);
 const isHome = path == '/';
 // 顶格长方形高亮：让链接背景填满整条导航的垂直高度
 const navBase = "relative inline-flex items-center py-3 -my-3 transition-colors nav-link";
@@ -58,14 +90,14 @@ const navInactive = "";
     >
   <nav class="nav-main mx-auto max-w-6xl px-4 py-3 flex items-center gap-6">
     <span class="nav-highlight" aria-hidden="true"></span>
-    <a href="/" class={`${navBase} ${isHome ? `${navActive} is-active` : ''}`}>首页</a>
-    <a href="/articles/" class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>文章</a>
-  <a href="/events/" class={`${navBase} ${isSection('/events/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/events/') ? 'page' : undefined}>活动</a>
-  <a href="/about/" class={`${navBase} ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>关于我们</a>
-  <a href="/groups/" class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>兴趣小组</a>
-    <a href="/links/" class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>友链</a>
+    <a href={localePrefix || '/'} class={`${navBase} ${isSection('/') ? `${navActive} is-active` : ''}`}>{t('nav.home','首页')}</a>
+    <a href={`${localePrefix}/articles/`} class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>{t('nav.articles','文章')}</a>
+  <a href={`${localePrefix}/events/`} class={`${navBase} ${isSection('/events/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/events/') ? 'page' : undefined}>{t('nav.events','活动')}</a>
+  <a href={`${localePrefix}/about/`} class={`${navBase} ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>{t('nav.about','关于我们')}</a>
+  <a href={`${localePrefix}/groups/`} class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>{t('nav.groups','兴趣小组')}</a>
+    <a href={`${localePrefix}/links/`} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>
         <div class="ml-auto flex items-center gap-3">
-          <button id="theme-toggle" class="rounded-macos border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 px-2.5 py-1.5 hover:bg-white dark:hover:bg-slate-800 transition-colors" aria-pressed="false" title="切换主题">
+          <button id="theme-toggle" class="rounded-macos border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 px-2.5 py-1.5 hover:bg-white dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-white" aria-pressed="false" title={t('actions.toggleTheme','切换主题')}>
             <span class="sr-only">切换主题</span>
             <!-- 太阳图标（亮） -->
             <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

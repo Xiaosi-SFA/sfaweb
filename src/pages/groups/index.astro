@@ -31,30 +31,30 @@ function initials(title: string) {
       {items.map((it, idx) => {
         const { entry: g, hasBody, Render } = it
         return (
-  <article data-idx={idx} class="group-card w-full max-w-2xl rounded-xl border bg-white/90 shadow-sm overflow-hidden">
+  <article data-idx={idx} class="group-card w-full max-w-2xl rounded-xl border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
           <div class="p-5 sm:p-6 space-y-5">
             {/* 顶部：双栏布局（左：标题与简介；右：大头像 占 1/3） */}
             <div class="grid gap-5 md:grid-cols-3 items-start">
               <div class="md:col-span-1">
-                <div class="aspect-square w-full rounded-lg ring-1 ring-slate-200 bg-slate-100 overflow-hidden grid place-items-center">
+                <div class="aspect-square w-full rounded-lg ring-1 ring-slate-200 dark:ring-[#2c2c2e] bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden grid place-items-center">
                   {g.data.avatar ? (
                     <img src={g.data.avatar} alt={g.data.title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
                   ) : null}
-                  <div class={`h-full w-full ${g.data.avatar ? 'hidden' : ''} grid place-items-center text-slate-400 text-lg`}>{initials(g.data.title)}</div>
+                  <div class={`h-full w-full ${g.data.avatar ? 'hidden' : ''} grid place-items-center text-slate-400 dark:text-slate-500 text-lg`}>{initials(g.data.title)}</div>
                 </div>
               </div>
               <div class="min-w-0 space-y-2 md:col-span-2">
-                <h2 class="text-2xl font-semibold text-slate-800 truncate">{g.data.title}</h2>
+                <h2 class="text-2xl font-semibold text-slate-800 dark:text-slate-200 truncate">{g.data.title}</h2>
                 {hasBody ? (
-                  <div class="text-slate-700 leading-7">
+                  <div class="text-slate-700 dark:text-slate-300 leading-7">
                     <Render />
                   </div>
                 ) : (
-                  <p class="text-slate-700 leading-7">{g.data.intro}</p>
+                  <p class="text-slate-700 dark:text-slate-300 leading-7">{g.data.intro}</p>
                 )}
                 <div class="mt-2">
-                  <h3 class="text-sm font-medium text-slate-600">主要活动</h3>
-                  <ul class="mt-1 list-disc pl-5 text-slate-700 space-y-1">
+                  <h3 class="text-sm font-medium text-slate-600 dark:text-slate-400">主要活动</h3>
+                  <ul class="mt-1 list-disc pl-5 text-slate-700 dark:text-slate-300 space-y-1">
                     {g.data.activities.map((a) => (<li>{a}</li>))}
                   </ul>
                 </div>

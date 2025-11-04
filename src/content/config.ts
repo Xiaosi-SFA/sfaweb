@@ -120,5 +120,21 @@ const about = defineCollection({
   }),
 })
 
+// i18n language data collection
+// Each file under src/content/lang/{locale}/{namespace}.json(yaml) should follow:
+// {
+//   "locale": "zh",
+//   "namespace": "common",
+//   "messages": { "nav": { "home": "首页", ... } }
+// }
+const lang = defineCollection({
+  type: 'data',
+  schema: z.object({
+    locale: z.string(),
+    namespace: z.string().default('common'),
+    messages: z.record(z.any()),
+  }),
+})
+
 // Re-export including new collections
-export const collections = { articles, news, events, links, departments, members, deptGallery, groups, about }
+export const collections = { articles, news, events, links, departments, members, deptGallery, groups, about, lang }

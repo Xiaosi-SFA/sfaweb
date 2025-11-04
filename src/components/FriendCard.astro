@@ -8,18 +8,18 @@ interface Props {
 const { title, url, description, logo } = Astro.props as Props
 ---
 <a href={url} target="_blank" rel="noopener noreferrer"
-   class="group block rounded-lg border bg-white/90 p-4 shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
+   class="group block rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 p-4 shadow-sm transition hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
   <div class="flex items-center gap-4">
-    <div class="flex h-20 w-20 flex-none items-center justify-center overflow-hidden rounded-md bg-slate-50 ring-1 ring-slate-200">
+    <div class="flex h-20 w-20 flex-none items-center justify-center overflow-hidden rounded-md bg-slate-50 dark:bg-[#2c2c2e] ring-1 ring-slate-200 dark:ring-[#2c2c2e]">
       {logo ? (
         <img src={logo} alt={`${title} logo`} class="max-h-20 max-w-20 object-contain" loading="lazy" />
       ) : (
-        <div class="text-slate-400 text-xs">No Logo</div>
+        <div class="text-slate-400 dark:text-slate-500 text-xs">No Logo</div>
       )}
     </div>
     <div class="min-w-0">
-      <h3 class="truncate text-base font-semibold text-slate-800 group-hover:text-sky-700">{title}</h3>
-      <p class="mt-1 line-clamp-3 text-sm leading-6 text-slate-600">{description}</p>
+      <h3 class="truncate text-base font-semibold text-slate-800 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-300">{title}</h3>
+      <p class="mt-1 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{description}</p>
     </div>
   </div>
 </a>

@@ -117,6 +117,19 @@ body.hide-header-footer .site-footer {
   border-radius: 0.5rem;
 }
 
+/* 深色模式下提升文章区对比度 */
+.dark .article-prose { color: #e5e7eb; }
+.dark .article-prose h1,
+.dark .article-prose h2,
+.dark .article-prose h3,
+.dark .article-prose h4 { color: #f3f4f6; }
+.dark .article-prose p,
+.dark .article-prose li { color: #e5e7eb; }
+.dark .article-prose blockquote {
+  border-left-color: rgba(242, 242, 247, 0.28); /* ios-gray-6 近似的半透明 */
+  color: #cbd5e1; /* slate-300 */
+}
+
 /* 文章列表的“主题分隔线” */
 .topic-divider {
   --topic-label-width: min(22ch, 90vw);

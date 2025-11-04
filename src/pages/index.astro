@@ -89,16 +89,21 @@ const latestEvents = (await (getCollection as any)('events'))
 
         // 首页导航高亮逻辑：根据可视区中间的内容区块切换“文章/活动”高亮
         const sections = [
-          { id: 'latest-articles', href: '/articles/' },
-          { id: 'latest-events', href: '/events/' }
+          { id: 'latest-articles', path: '/articles/' },
+          { id: 'latest-events', path: '/events/' }
         ];
+        // 允许 URL 前缀路由（/zh-cn/...），因此用以路径结尾匹配的方式查找链接
         const pairs = sections.map(s => ({
           el: document.getElementById(s.id),
-          link: document.querySelector(`.site-header .nav-link[href="${s.href}"]`)
+          link: Array.from(document.querySelectorAll('.site-header .nav-link')).find(a => a.getAttribute('href')?.endsWith(s.path))
         })).filter(p => p.el && p.link);
 
         // 首页“首页”导航链接（用于在没有任何内容区块突出的情况下高亮）
-        const homeLink = document.querySelector('.site-header .nav-link[href="/"]');
+        // 首页链接：优先匹配以 '/' 结尾或以 '/<locale>/' 形式开头
+        let homeLink = Array.from(document.querySelectorAll('.site-header .nav-link')).find(a => {
+          const href = a.getAttribute('href') || '';
+          return href === '/' || /^\/[a-z]{2}(?:-[a-z]{2})?\/$/i.test(href);
+        });
 
         const ratios = new Map();
         function updateActive() {

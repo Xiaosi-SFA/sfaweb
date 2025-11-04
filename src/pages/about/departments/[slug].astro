@@ -46,24 +46,24 @@ const linkedEvents: any[] = (dept?.data.linkedEvents || [])
     <div class="mx-auto w-full md:w-3/4 lg:w-1/2">
     <section class="space-y-6">
       <header class="space-y-2">
-        <h1 class="text-2xl font-bold">{dept.data.title}</h1>
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">{dept.data.title}</h1>
         {Array.isArray(dept.data.intro) ? (
-          dept.data.intro.map((p) => <p class="text-slate-600">{p}</p>)
+          dept.data.intro.map((p) => <p class="text-slate-700 dark:text-slate-300 leading-7">{p}</p>)
         ) : (
-          dept.data.intro ? <p class="text-slate-600">{dept.data.intro}</p> : null
+          dept.data.intro ? <p class="text-slate-700 dark:text-slate-300 leading-7">{dept.data.intro}</p> : null
         )}
       </header>
       {dept.data.duties?.length ? (
         <section class="space-y-3">
-          <h2 class="text-lg font-semibold">主要职责</h2>
-          <ul class="list-disc pl-5 space-y-1 text-slate-700">
+          <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">主要职责</h2>
+          <ul class="list-disc pl-5 space-y-1 text-slate-700 dark:text-slate-300">
             {dept.data.duties.map((d) => (<li>{d}</li>))}
           </ul>
         </section>
       ) : null}
 
       <section class="space-y-3">
-        <h2 class="text-lg font-semibold">部门成员</h2>
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">部门成员</h2>
         {deptMembers.length ? (
           <div class="grid gap-4 md:grid-cols-2">
             {deptMembers.map((m) => (
@@ -71,12 +71,12 @@ const linkedEvents: any[] = (dept?.data.linkedEvents || [])
             ))}
           </div>
         ) : (
-          <p class="text-slate-500">暂时还没有成员信息，敬请期待。</p>
+          <p class="text-slate-500 dark:text-slate-400">暂时还没有成员信息，敬请期待。</p>
         )}
       </section>
 
       <section class="space-y-3">
-        <h2 class="text-lg font-semibold">活动</h2>
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">活动</h2>
         {linkedEvents.length ? (
           <div class="grid gap-3 sm:grid-cols-2">
             {linkedEvents.slice(0, 4).map((e) => (
@@ -84,29 +84,29 @@ const linkedEvents: any[] = (dept?.data.linkedEvents || [])
             ))}
           </div>
         ) : (
-          <p class="text-slate-500">暂时还没有该部门相关的活动。</p>
+          <p class="text-slate-500 dark:text-slate-400">暂时还没有该部门相关的活动。</p>
         )}
       </section>
 
       <section class="space-y-3">
-        <h2 class="text-lg font-semibold">画廊</h2>
+        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">画廊</h2>
         {gallery.length ? (
           <div class="columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
             {gallery.map((item) => (
-              <article class="mb-4 break-inside-avoid rounded-lg border bg-white/90 shadow-sm overflow-hidden">
+              <article class="mb-4 break-inside-avoid rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
                 <div class="relative">
                   <img src={item.data.image} alt={item.data.intro} class="w-full h-auto block" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
-                  <div class="hidden place-items-center w-full aspect-[4/3] bg-slate-100 text-slate-400 text-sm">图片缺失</div>
+                  <div class="hidden place-items-center w-full aspect-[4/3] bg-slate-100 dark:bg-[#2c2c2e] text-slate-400 dark:text-slate-500 text-sm">图片缺失</div>
                 </div>
                 <div class="p-3 space-y-1">
-                  <time class="text-xs text-slate-500">{fmt(item.data.date)}</time>
-                  <p class="text-sm leading-6 text-slate-700">{item.data.intro}</p>
+                  <time class="text-xs text-slate-500 dark:text-slate-400">{fmt(item.data.date)}</time>
+                  <p class="text-sm leading-6 text-slate-700 dark:text-slate-300">{item.data.intro}</p>
                 </div>
               </article>
             ))}
           </div>
         ) : (
-          <p class="text-slate-500">暂时还没有画廊内容。</p>
+          <p class="text-slate-500 dark:text-slate-400">暂时还没有画廊内容。</p>
         )}
       </section>
     </section>

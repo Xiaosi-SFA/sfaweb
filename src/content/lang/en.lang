@@ -1,0 +1,12 @@
+# English translations
+nav.home=Home
+nav.articles=Articles
+nav.events=Events
+nav.about=About
+nav.groups=Groups
+nav.links=Links
+
+site.title=SFA Archives
+site.description=Club website and news portal
+
+actions.toggleTheme=Toggle theme
