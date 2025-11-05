@@ -3,7 +3,8 @@
 export default function remarkNoIndent(options = {}) {
   const noIndentMarkers = (options.noIndentMarkers || ['[flush]', '[noindent]', '【顶格】']).map(String);
   const rightAlignMarkers = (options.rightAlignMarkers || ['[right]', '【右对齐】', '【署名】']).map(String);
-  const asciiMarkerLabels = new Set(['flush', 'noindent', 'right']);
+  const centerAlignMarkers = (options.centerAlignMarkers || ['[center]', '【居中】']).map(String);
+  const asciiMarkerLabels = new Set(['flush', 'noindent', 'right', 'center']);
 
   return function transformer(tree) {
     function applyMarkerClass(node, className) {
@@ -56,6 +57,15 @@ export default function remarkNoIndent(options = {}) {
             changed = true;
             continue;
           }
+          const c = centerAlignMarkers.find((m) => at(m) >= 0);
+          if (c) {
+            const pos = at(c);
+            first.value = text.slice(pos + c.length).replace(/^[\s\u3000]+/, '');
+            applyMarkerClass(node, 'align-center');
+            applyMarkerClass(node, 'no-indent');
+            changed = true;
+            continue;
+          }
         }
 
         // 2) 链接引用形式的标记（如：[right] 被解析为 linkReference）
@@ -74,6 +84,10 @@ export default function remarkNoIndent(options = {}) {
             }
             if (label === 'right') {
               applyMarkerClass(node, 'align-right');
+              applyMarkerClass(node, 'no-indent');
+            }
+            if (label === 'center') {
+              applyMarkerClass(node, 'align-center');
               applyMarkerClass(node, 'no-indent');
             }
             changed = true;

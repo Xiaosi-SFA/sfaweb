@@ -27,7 +27,7 @@
         "src": "/ribbon/lonetrail.png",
         "ratio": 0.0,
         "alt": "孤星",
-        "copyright": "@鹰角网络"
+        "copyright": "Designed by @宝葫芦 Copyright @鹰角网络"
     },
     {
         "src": "/ribbon/uscsfa.png",
@@ -43,5 +43,10 @@
         "src": "/ribbon/qfw.png",
         "ratio": 0.0,
         "alt": "Q幻世界"
+    },
+    {
+        "src": "/ribbon/cquptsfa.png",
+        "ratio": 0.0,
+        "alt": "重庆邮电大学科幻协会"
     }
 ]

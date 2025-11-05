@@ -9,6 +9,8 @@ const articles = defineCollection({
     tags: z.array(z.string()).default([]),
     summary: z.string().max(280).optional(),
     cover: z.string().optional(),
+    // 全文默认排版：left（默认）、middle（居中）、right（靠右）
+    align: z.enum(['left','middle','right']).default('left'),
     // 段首缩进（单位：em），文章详情默认 2
     indent: z.number().int().nonnegative().default(2),
     // 兼容字段：int（如提供则可覆盖 indent），单位同上

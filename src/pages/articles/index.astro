@@ -27,6 +27,13 @@ const SECTION_META = [
     link: '/articles/reviews/',
     linkLabel: '更多',
   },
+  {
+    slugPrefix: 'classics',
+    title: '诗歌 / 古文',
+    description: '诗词古文与现代诗，文字的韵律与格调在此相遇。',
+    link: '/articles/classics/',
+    linkLabel: '更多',
+  },
 ] as const
 
 const articles = await getCollection('articles')

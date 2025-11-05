@@ -29,9 +29,12 @@ if (entry) {
         </div>
       </div>
       <article class="order-1 md:order-2 md:col-span-2 max-w-none">
-        {entry.data.cover ? (
-          <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
-        ) : null}
+        <img
+          src={entry.data.cover ?? '/back.png'}
+          alt={entry.data.title}
+          class="w-full aspect-[16/9] object-cover rounded-md mb-4"
+          onerror="this.onerror=null;this.src='/back.png'"
+        />
         <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{entry.data.title}</h1>
         <div class="mt-2 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
           <div>

@@ -18,6 +18,8 @@ if (entry) {
 } else {
   Astro.response.status = 404
 }
+const align = (entry?.data as any)?.align ?? 'left'
+const alignClass = align === 'middle' ? 'doc-align-center' : (align === 'right' ? 'doc-align-right' : '')
 ---
 {entry ? (
   <BaseLayout title={`${entry.data.title} - SFA`}>
@@ -32,9 +34,12 @@ if (entry) {
         </div>
       </div>
   <article class="order-1 md:order-2 md:col-span-2 max-w-none">
-        {entry.data.cover ? (
-          <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
-        ) : null}
+        <img
+          src={entry.data.cover ?? '/back.png'}
+          alt={entry.data.title}
+          class="w-full aspect-[16/9] object-cover rounded-md mb-4"
+          onerror="this.onerror=null;this.src='/back.png'"
+        />
         <h1 class="text-3xl md:text-4xl font-extrabold leading-tight text-slate-900 dark:text-slate-100">{entry.data.title}</h1>
         <div class="mt-2 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
           <div>
@@ -47,7 +52,7 @@ if (entry) {
             ))}
           </div>
         </div>
-        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
+        <div class={`prose article-prose max-w-none mt-6 ${alignClass}`} style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
           {Content ? <Content /> : null}
         </div>
       </article>

@@ -1,0 +1,46 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content'
+import PostCard from '@components/PostCard.astro'
+
+const CATEGORY = {
+  slugPrefix: 'classics',
+  title: '诗歌 / 古文',
+  description: '诗词古文与现代诗，文字的韵律与格调在此相遇。',
+  empty: '暂时还没有诗歌或古文类文章，敬请期待。',
+} as const
+
+const articles = await getCollection('articles')
+  .then((xs) => xs
+    .filter((item) => !item.slug.includes('article-template'))
+    .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0)))
+
+const filtered = articles.filter((item) => item.slug.startsWith(`${CATEGORY.slugPrefix}/`))
+---
+<BaseLayout title={`${CATEGORY.title}栏目 - 文章 - SFA`}>
+  <section class="space-y-8">
+    <header class="space-y-4">
+      <div class="topic-divider">
+        <span class="topic-divider__label">{CATEGORY.title}</span>
+      </div>
+      <p class="text-slate-600 dark:text-slate-300 max-w-3xl text-sm md:text-base">{CATEGORY.description}</p>
+    </header>
+
+    {filtered.length ? (
+      <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {filtered.map((a) => (
+          <PostCard
+            href={`/articles/${a.slug}/`}
+            title={a.data.title}
+            date={a.data.date}
+            cover={a.data.cover}
+            tags={a.data.tags}
+            summary={a.data.summary}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="text-slate-500 dark:text-slate-400">{CATEGORY.empty}</p>
+    )}
+  </section>
+</BaseLayout>
