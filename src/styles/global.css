@@ -100,8 +100,11 @@ body.hide-header-footer .site-footer {
 .article-prose p.align-center { text-align: center !important; text-indent: 0 !important; }
 
 /* 全文默认排版：通过容器类控制段落对齐，并清除缩进 */
-.article-prose.doc-align-center p { text-align: center; text-indent: 0; }
-.article-prose.doc-align-right p { text-align: right; text-indent: 0; }
+.article-prose.doc-align-center { text-align: center !important; }
+.article-prose.doc-align-center p { text-align: center !important; text-indent: 0; }
+.article-prose.doc-align-right { text-align: right !important; }
+.article-prose.doc-align-right p { text-align: right !important; text-indent: 0; }
+/* temporary visual-debug removed */
 .article-prose h1,
 .article-prose h2,
 .article-prose h3,

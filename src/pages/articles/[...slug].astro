@@ -20,6 +20,14 @@ if (entry) {
 } else {
   Astro.response.status = 404
 }
+// compute align class for server-side rendering
+const align = entry?.data?.align ?? 'left'
+let alignClass = ''
+if (align === 'middle') {
+  alignClass = 'doc-align-center'
+} else if (align === 'right') {
+  alignClass = 'doc-align-right'
+}
 ---
 {entry ? (
   <BaseLayout title={`${entry.data.title} - SFA`}>
@@ -48,9 +56,38 @@ if (entry) {
             ))}
           </div>
         </div>
-        <div class="article-prose prose mt-6 max-w-none" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
+        <div class={`article-prose prose mt-6 max-w-none ${alignClass}`} data-align={align} style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
           {Content ? <Content /> : null}
         </div>
+        <script>{`(function(){
+          try {
+            var container = document.querySelector('.article-prose');
+            if (!container) return;
+            // Ensure doc-level class based on data-align (defensive)
+            var dataAlign = container.getAttribute('data-align') || '';
+            if (dataAlign === 'middle') container.classList.add('doc-align-center');
+            else if (dataAlign === 'right') container.classList.add('doc-align-right');
+            // Runtime paragraph marker parsing (simple, defensive)
+            var paras = Array.prototype.slice.call(container.querySelectorAll('p'));
+            paras.forEach(function(p){
+              try {
+                var text = (p.textContent || '').replace(/^\s+/, '');
+                var m = text.match(/^\[?\s*(head|center|no-indent|noindent|right|r)\s*\]?/i);
+                if (!m) return;
+                var marker = (m[1] || '').toLowerCase();
+                p.innerHTML = p.innerHTML.replace(/^\s*(?:\[(?:head|center|no-indent|noindent|right|r)\]|\u3000)?\s*/i, '');
+                if (marker === 'center') p.classList.add('align-center');
+                if (marker === 'no-indent' || marker === 'noindent') p.classList.add('no-indent');
+                if (marker === 'right' || marker === 'r') p.classList.add('align-right');
+                if (marker === 'head') container.classList.add('doc-align-center');
+              } catch (err) {
+                // ignore per-paragraph errors
+              }
+            });
+            // Non-visual: log once for verification in console
+            console.log('[align-debug] applied align=' + dataAlign);
+          } catch (err) { try{ console.warn('[align-debug] error', err); } catch(e){} }
+        })();`}</script>
       </article>
     </div>
     <BackToTopOrb />
