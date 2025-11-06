@@ -6,7 +6,6 @@ import { fileURLToPath } from 'node:url'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import { defaultSchema } from 'hast-util-sanitize'
-import rehypeCenterToDiv from './src/rehype/center-to-div.mjs'
 import remarkNoIndent from './src/remark/noindent.mjs'
 import siteConfig from './sfa.config.json' assert { type: 'json' }
  
@@ -43,7 +42,6 @@ export default defineConfig({
     // Order: parse raw HTML -> custom transforms -> sanitize
     rehypePlugins: [
       rehypeRaw,
-      rehypeCenterToDiv,
       [
         rehypeSanitize,
         {
