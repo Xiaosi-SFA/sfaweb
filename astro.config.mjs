@@ -70,6 +70,12 @@ export default defineConfig({
     server: {
       allowedHosts,
     },
+    // 构建产物去除注释：
+    // - JS：通过 esbuild 设置 legalComments: 'none'，移除所有注释（含 license banner）。
+    // - CSS：通过 PostCSS(cssnano) 在生产环境移除注释（见 postcss.config.cjs）。
+    esbuild: {
+      legalComments: 'none',
+    },
   },
   site: 'https://example.com',
 })
