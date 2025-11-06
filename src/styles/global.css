@@ -95,15 +95,18 @@ body.hide-header-footer .site-footer {
   /* 段首缩进：由页面容器上的 --para-indent 控制，单位建议使用 em */
   text-indent: var(--para-indent, 0);
 }
-.article-prose p.no-indent { text-indent: 0 !important; }
-.article-prose p.align-right { text-align: right !important; text-indent: 0 !important; }
-.article-prose p.align-center { text-align: center !important; text-indent: 0 !important; }
+.article-prose p.no-indent { text-indent: 0; }
+.article-prose p.align-right { text-align: right; text-indent: 0; }
+.article-prose p.align-center { text-align: center; text-indent: 0; }
+
+/* 兼容来自内容或插件里使用的 Tailwind 类名或 div 容器 */
+.article-prose .text-center { text-align: center; }
 
 /* 全文默认排版：通过容器类控制段落对齐，并清除缩进 */
-.article-prose.doc-align-center { text-align: center !important; }
-.article-prose.doc-align-center p { text-align: center !important; text-indent: 0; }
-.article-prose.doc-align-right { text-align: right !important; }
-.article-prose.doc-align-right p { text-align: right !important; text-indent: 0; }
+.article-prose.doc-align-center { text-align: center; }
+.article-prose.doc-align-center p { text-align: center; text-indent: 0; }
+.article-prose.doc-align-right { text-align: right; }
+.article-prose.doc-align-right p { text-align: right; text-indent: 0; }
 /* temporary visual-debug removed */
 .article-prose h1,
 .article-prose h2,
@@ -318,3 +321,52 @@ body.hide-header-footer .site-footer {
 .site-header.is-hidden {
   transform: translateY(-100%);
 }
+
+/* —— center-preview: 默认覆盖块（黑/白块），hover 显示下层文本 —— */
+/*
+  使用方式：在解析时将 <center> 转为带有 `.center-preview` 的元素，
+  该元素内部保留原始内容。默认会在元素上方覆盖一个不透明色块；
+  鼠标移入时该色块透明以展示下层文本。
+*/
+.center-preview {
+  position: relative;
+  display: block; /* 适配 <p> / <div> 等块级容器 */
+}
+.center-preview > *:not(.mask):not(.mask__hint) { /* 确保内容位于遮罩层下方，排除 mask 元素 */
+  position: relative;
+  z-index: 0;
+}
+.center-preview .mask {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #000; /* 日间默认黑块 */
+  opacity: 1;
+  transition: opacity 180ms ease;
+  pointer-events: auto; /* 避免鼠标穿透遮罩触发下层链接 */
+}
+.center-preview:hover .mask {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 暗色模式下使用白块以便与背景对比（支持 .dark class 与 prefers-color-scheme） */
+.dark .center-preview .mask { background: #fff; }
+@media (prefers-color-scheme: dark) {
+  .center-preview .mask { background: #fff; }
+}
+
+/* 可选：如果需要在遮罩上显示提示文本（例如“悬停查看”），可在内容中
+   添加一个 .mask__hint 元素并利用下面的样式进行定位。默认不显示。 */
+.center-preview .mask__hint {
+  position: absolute;
+  z-index: 11;
+  inset: auto 0 0 0;
+  display: none;
+  text-align: center;
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  padding: 0.35rem 0;
+}
+.center-preview:hover .mask__hint { display: block; }
+

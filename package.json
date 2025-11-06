@@ -5,7 +5,7 @@
   "type": "module",
   "packageManager": "pnpm@9.12.0",
   "scripts": {
-  "dev": "astro dev --host 10.0.10.2",
+    "dev": "astro dev --host 10.0.10.2",
     "build": "astro build",
     "preview": "astro preview",
     "format": "prettier -w ."
@@ -14,17 +14,20 @@
     "node": ">=18.14.1"
   },
   "dependencies": {
-    "astro": "^4.15.0",
     "@astrojs/node": "^8.3.3",
     "@astrojs/tailwind": "^5.1.0",
+    "astro": "^4.15.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "hast-util-sanitize": "^5.0.2",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
+    "rehype-raw": "^6.1.0",
+    "rehype-sanitize": "^5.0.1",
     "typescript": "^5.6.3"
   }
 }

@@ -18,12 +18,10 @@ if (entry) {
 } else {
   Astro.response.status = 404
 }
-const align = (entry?.data as any)?.align ?? 'left'
-const alignClass = align === 'middle' ? 'doc-align-center' : (align === 'right' ? 'doc-align-right' : '')
 ---
 {entry ? (
   <BaseLayout title={`${entry.data.title} - SFA`}>
-    <!-- grid: left 1/3 (sidebar), right 2/3 (content) -->
+    {/* grid: left 1/3 (sidebar), right 2/3 (content) */}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="order-2 md:order-1 md:col-span-1">
     <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
@@ -52,92 +50,9 @@ const alignClass = align === 'middle' ? 'doc-align-center' : (align === 'right' 
             ))}
           </div>
         </div>
-        <div class={`prose article-prose max-w-none mt-6 ${alignClass}`} data-align={((entry?.data as any)?.align ?? 'left')} style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
+        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
           {Content ? <Content /> : null}
         </div>
-
-        <script is:inline>
-          (function(){
-            const container = document.querySelector('.article-prose');
-            if (!container) return;
-            // Ensure doc-level align class reflects data-align (defensive)
-            const dataAlign = container.getAttribute('data-align');
-            if (dataAlign === 'middle') container.classList.add('doc-align-center');
-            else if (dataAlign === 'right') container.classList.add('doc-align-right');
-            // Non-visual: only log for verification
-            try { console.log('[align-debug] data-align=' + dataAlign); } catch (e) {}
-
-            const markers = {
-              noindent: ['[flush]','[noindent]','【顶格】'],
-              right: ['[right]','【右对齐】','【署名】'],
-              center: ['[center]','【居中】']
-            };
-
-            function matchMarkerText(text, list) {
-              if (!text) return -1;
-              const t = text.trimStart();
-              for (const m of list) {
-                if (t.toLowerCase().startsWith(m.toLowerCase())) return m.length;
-              }
-              return -1;
-            }
-
-            const ps = Array.from(container.querySelectorAll('p'));
-            for (const p of ps) {
-              // if first child is an anchor that contains the marker (linkReference form)
-              const firstEl = p.firstElementChild;
-              if (firstEl && (firstEl.tagName === 'A' || firstEl.tagName === 'SPAN')) {
-                const ln = firstEl.textContent?.trimStart() ?? '';
-                let matched = null;
-                let len = -1;
-                for (const k of Object.keys(markers)) {
-                  len = matchMarkerText(ln, markers[k]);
-                  if (len >= 0) { matched = k; break; }
-                }
-                if (matched) {
-                  // remove the marker node
-                  firstEl.remove();
-                  // trim leading whitespace in the next text node
-                  if (p.firstChild && p.firstChild.nodeType === Node.TEXT_NODE) {
-                    p.firstChild.textContent = p.firstChild.textContent.replace(/^\s+/, '');
-                  }
-                  if (matched === 'noindent') p.classList.add('no-indent');
-                  if (matched === 'right') { p.classList.add('align-right'); p.classList.add('no-indent'); }
-                  if (matched === 'center') { p.classList.add('align-center'); p.classList.add('no-indent'); }
-                  continue;
-                }
-              }
-
-              // else, check text content at start
-              const txt = p.textContent ?? '';
-              for (const [k, list] of Object.entries(markers)) {
-                const pos = matchMarkerText(txt, list);
-                if (pos >= 0) {
-                  // remove marker from start of text
-                  // preserve inner HTML formatting by slicing the textContent of first text node
-                  const firstNode = p.childNodes[0];
-                  if (firstNode && firstNode.nodeType === Node.TEXT_NODE) {
-                    // find index of first non-space to correctly slice when marker had leading spaces
-                    const nonSpaceIdx = firstNode.textContent.search(/\S/);
-                    const startIdx = nonSpaceIdx >= 0 ? nonSpaceIdx + pos : pos;
-                    firstNode.textContent = firstNode.textContent.slice(startIdx).replace(/^\s+/, '');
-                  } else {
-                    // fallback: replace innerHTML using regex escaped marker list
-                    p.innerHTML = p.innerHTML.replace(new RegExp('^\\s*' + listToRegex(list) ), '');
-                  }
-                  if (k === 'noindent') p.classList.add('no-indent');
-                  if (k === 'right') { p.classList.add('align-right'); p.classList.add('no-indent'); }
-                  if (k === 'center') { p.classList.add('align-center'); p.classList.add('no-indent'); }
-                  break;
-                }
-              }
-            }
-
-            function listToRegex(arr){
-              return '(' + arr.map(s => s.replace(/[\[\]{}()*+?^$\\.|]/g,'\\$&')).join('|') + ')';
-            }
-          })();
-        </script>
       </article>
     </div>
     <BackToTopOrb />
