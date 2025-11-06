@@ -8,13 +8,11 @@ import NotFound from '@components/NotFound.astro'
 
 const { slug } = Astro.params as { slug: string }
 const entry = (await (getCollection as any)('events')).find((e: any) => e.slug === slug)
-let Content: any = null
-let headings: Array<{ depth: number; text: string; slug: string }> = []
+let Content, headings: Array<{ depth: number; text: string; slug: string }> = []
 
 if (entry) {
   const rendered = await entry.render()
-  Content = rendered.Content
-  headings = rendered.headings
+  ;({ Content, headings } = rendered)
 } else {
   Astro.response.status = 404
 }
@@ -43,7 +41,7 @@ if (entry) {
             ))}
           </div>
         </div>
-        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 0)}em`}>
+        <div class="prose article-prose max-w-none mt-6">
           {Content ? <Content /> : null}
         </div>
       </article>

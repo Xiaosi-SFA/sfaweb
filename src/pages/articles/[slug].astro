@@ -5,19 +5,23 @@ import TOC from '@components/TOC.astro'
 import RelatedPosts from '@components/RelatedPosts.astro'
 import BackToTopOrb from '@components/BackToTopOrb.astro'
 import NotFound from '@components/NotFound.astro'
+import '@styles/article.css'
 
 const { slug } = Astro.params
 const entry = (await getCollection('articles')).find((e) => e.slug === slug)
-let Content: any = null
-let headings: Array<{ depth: number; text: string; slug: string }> = []
+let Content, headings: Array<{ depth: number; text: string; slug: string }> = []
 
 if (entry) {
   const rendered = await entry.render()
-  Content = rendered.Content
-  headings = rendered.headings
+  ;({ Content, headings } = rendered)
 } else {
   Astro.response.status = 404
 }
+
+// Feature flag from config: optional paragraph first-line indent via CSS variable
+import siteConfig from '../../../sfa.config.json'
+const ENABLE_INDENT = Boolean((siteConfig as any)?.ui?.enableIndent)
+const paraIndent = ENABLE_INDENT ? Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0 : 0
 ---
 {entry ? (
   <BaseLayout title={`${entry.data.title} - SFA`}>
@@ -32,12 +36,13 @@ if (entry) {
         </div>
       </div>
   <article class="order-1 md:order-2 md:col-span-2 max-w-none">
-        <img
-          src={entry.data.cover ?? '/back.png'}
-          alt={entry.data.title}
-          class="w-full aspect-[16/9] object-cover rounded-md mb-4"
-          onerror="this.onerror=null;this.src='/back.png'"
-        />
+        {entry.data.cover ? (
+          <img
+            src={entry.data.cover}
+            alt={entry.data.title}
+            class="w-full aspect-[16/9] object-cover rounded-md mb-4"
+          />
+        ) : null}
         <h1 class="text-3xl md:text-4xl font-extrabold leading-tight text-slate-900 dark:text-slate-100">{entry.data.title}</h1>
         <div class="mt-2 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
           <div>
@@ -45,12 +50,12 @@ if (entry) {
             {entry.data.author ? ` · ${entry.data.author}` : ''}
           </div>
           <div class="hidden sm:flex gap-2">
-            {entry.data.tags?.map((t) => (
+            {entry.data.tags?.map((t: string) => (
               <span class="text-xs bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200 px-2 py-0.5 rounded">#{t}</span>
             ))}
           </div>
         </div>
-        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
+        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${paraIndent}em`}>
           {Content ? <Content /> : null}
         </div>
       </article>

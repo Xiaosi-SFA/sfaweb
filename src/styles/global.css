@@ -1,3 +1,5 @@
+@import './nav.css';
+
 /*
   Tailwind 指令层：
   - base: 注入 Tailwind 预设的 CSS Reset 与基础样式
@@ -10,22 +12,22 @@
 @tailwind utilities;
 
 :root {
-  /* —— 全局主题变量（Apple 风格） —— */
-  /* 圆角：模拟 macOS/iOS 卡片圆角 */
-  --radius-macos: 14px;
+  /* —— 全局主题变量 —— */
+  /* 卡片/控件圆角 */
+  --radius-card: 14px;
   /* 亮色主题下的页面前景/背景与弱化文字颜色 */
-  --apple-bg: #f5f5f7;
-  --apple-fg: #1d1d1f;
-  --apple-muted: #6e6e73;
-  --apple-link: #06c; /* Apple 蓝（链接色） */
+  --surface-bg: #f5f5f7;
+  --text-primary: #1d1d1f;
+  --text-muted: #6e6e73;
+  --link-color: #06c;
 
-  /* iOS 灰阶（亮色）——来源于 iOS 人机界面指南常见灰阶 */
-  --ios-gray-1: #8e8e93;
-  --ios-gray-2: #aeaeb2;
-  --ios-gray-3: #c7c7cc;
-  --ios-gray-4: #d1d1d6;
-  --ios-gray-5: #e5e5ea;
-  --ios-gray-6: #f2f2f7;
+  /* 中性色阶（亮色） */
+  --neutral-1: #8e8e93;
+  --neutral-2: #aeaeb2;
+  --neutral-3: #c7c7cc;
+  --neutral-4: #d1d1d6;
+  --neutral-5: #e5e5ea;
+  --neutral-6: #f2f2f7;
 
   /* —— 导航高亮与间距（可调）—— */
   /* 以导航链接的基础水平内边距为基准（配合 BaseLayout 中的 .nav-link） */
@@ -37,34 +39,34 @@
   --nav-highlight-h: 80%; /* 导航滑动高亮的高度（相对整条导航的百分比或长度），如 80% / 2rem */
 }
 
-/* iOS 灰阶（暗色） */
+/* 中性色阶（暗色） */
 .dark :root, .dark {
-  --ios-gray-1: #8e8e93;
-  --ios-gray-2: #636366;
-  --ios-gray-3: #48484a;
-  --ios-gray-4: #3a3a3c;
-  --ios-gray-5: #2c2c2e;
-  --ios-gray-6: #1c1c1e;
+  --neutral-1: #8e8e93;
+  --neutral-2: #636366;
+  --neutral-3: #48484a;
+  --neutral-4: #3a3a3c;
+  --neutral-5: #2c2c2e;
+  --neutral-6: #1c1c1e;
 }
 
 /* 更接近 Apple 的系统字体栈与默认前景/背景色 */
 html, body, button, input, select, textarea {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro SC", "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif;
-  color: var(--apple-fg);
-  background-color: var(--apple-bg);
+  color: var(--text-primary);
+  background-color: var(--surface-bg);
 }
 
 /* 全局：防止横向溢出导致移动端页面缩放/可横向拖动 */
 body { overflow-x: hidden; }
 
 /* macOS 风格圆角工具类 */
-.rounded-macos {
-  border-radius: var(--radius-macos);
+.rounded-card {
+  border-radius: var(--radius-card);
 }
 
 /* Markdown/文章图片统一圆角处理 */
 .prose img {
-  border-radius: var(--radius-macos);
+  border-radius: var(--radius-card);
 }
 
 /* 文章/富文本中的媒体与长内容自适应屏幕 */
@@ -80,293 +82,10 @@ body { overflow-x: hidden; }
 }
 .article-prose table { display: block; max-width: 100%; overflow-x: auto; }
 
-/* 当页面请求初始隐藏 Header/Footer 时，在 <body> 上加该类；
-   客户端脚本会在合适时机移除它（避免 Hero 首屏时出现导航栏）。 */
-body.hide-header-footer .site-header,
-body.hide-header-footer .site-footer {
-  display: none !important;
-}
-
-
-/* 文章详情排版微调（标题间距、可读行高等） */
-.article-prose p {
-  font-size: 1rem;
-  line-height: 1.9;
-  /* 段首缩进：由页面容器上的 --para-indent 控制，单位建议使用 em */
-  text-indent: var(--para-indent, 0);
-}
-.article-prose p.no-indent { text-indent: 0; }
-.article-prose p.align-right { text-align: right; text-indent: 0; }
-.article-prose p.align-center { text-align: center; text-indent: 0; }
-
-/* 兼容来自内容或插件里使用的 Tailwind 类名或 div 容器 */
-.article-prose .text-center { text-align: center; }
-
-/* 全文默认排版：通过容器类控制段落对齐，并清除缩进 */
-.article-prose.doc-align-center { text-align: center; }
-.article-prose.doc-align-center p { text-align: center; text-indent: 0; }
-.article-prose.doc-align-right { text-align: right; }
-.article-prose.doc-align-right p { text-align: right; text-indent: 0; }
-/* temporary visual-debug removed */
-.article-prose h1,
-.article-prose h2,
-.article-prose h3,
-.article-prose h4 {
-  scroll-margin-top: 84px; /* 避免锚点被吸顶导航遮挡 */
-}
-.article-prose h2 {
-  font-size: clamp(1.4rem, 1rem + 1.2vw, 1.8rem);
-  line-height: 1.22;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
-  letter-spacing: -0.01em;
-  color: var(--apple-fg);
-}
-.article-prose h3 {
-  font-size: 1.2rem; /* 约 19px */
-  line-height: 1.35;
-  margin-top: 1.25rem;
-  margin-bottom: 0.5rem;
-}
-.article-prose h4 {
-  font-size: 1.05rem; /* 约 17px */
-  line-height: 1.42;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
-}
-.article-prose ul,
-.article-prose ol {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-.article-prose blockquote {
-  border-left: 3px solid rgba(29, 29, 31, 0.12);
-  padding-left: 0.9rem;
-  color: var(--apple-muted);
-}
-.article-prose blockquote p { text-indent: 0; }
-.article-prose pre {
-  border-radius: 0.5rem;
-  max-width: 100%;
-  overflow-x: auto; /* 避免代码块撑出屏幕宽度 */
-}
-
-/* 深色模式下提升文章区对比度 */
-.dark .article-prose { color: #e5e7eb; }
-.dark .article-prose h1,
-.dark .article-prose h2,
-.dark .article-prose h3,
-.dark .article-prose h4,
-.dark .article-prose h5,
-.dark .article-prose h6 { color: #f3f4f6; }
-.dark .article-prose p,
-.dark .article-prose li { color: #e5e7eb; }
-.dark .article-prose blockquote {
-  border-left-color: rgba(242, 242, 247, 0.28); /* ios-gray-6 近似的半透明 */
-  color: #cbd5e1; /* slate-300 */
-}
-
-/* 文章列表的“主题分隔线” */
-.topic-divider {
-  --topic-label-width: min(22ch, 90vw);
-  --topic-line-length: clamp(3rem, 12vw, 8rem);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-}
-
-.topic-divider::before,
-.topic-divider::after {
-  content: '';
-  width: var(--topic-line-length);
-  height: 2px;
-  border-radius: 9999px;
-  background: rgba(110, 110, 115, 0.25);
-}
-
-.topic-divider__label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--topic-label-width);
-  min-height: 2.25rem;
-  padding: 0.4rem 1.5rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(56, 189, 248, 0.85);
-  background: rgba(224, 242, 254, 0.85);
-  color: #0c4a6e;
-  font-weight: 600;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-}
-
-@media (max-width: 640px) {
-  .topic-divider {
-    --topic-label-width: min(24ch, 88vw);
-    --topic-line-length: clamp(2.5rem, 18vw, 5rem);
-    gap: 1rem;
-  }
-
-  .topic-divider__label {
-    letter-spacing: 0.24em;
-    padding-inline: 1.25rem;
-  }
-}
-
-/* 部门网格：移动端防溢出，卡片和网格都不超过容器宽度 */
-.dept-grid { max-width: 100%; overflow-x: hidden; }
-.dept-grid > * { min-width: 0; }
-
-/* Apple 风格的链接样式（可选工具类） */
-.link-apple {
-  color: var(--apple-link);
+/* 链接工具类 */
+.link-primary {
+  color: var(--link-color);
   font-weight: 600;
 }
-.link-apple:hover { text-decoration: underline; }
-
-/* —— 导航样式 ——
-   1) .nav-link：统一水平内边距与圆角，避免 hover/active 时宽度抖动；
-   2) :hover 与 .is-active 使用相同的“色块”高亮；
-   3) 颜色取自 iOS 灰阶变量，自动随明暗主题切换；
-   4) 需要“顶格长方形”效果时：在 :root 中把 --nav-active-radius 设为 0。
-*/
-.nav-link {
-  /* 统一为所有导航项设置更宽的水平内边距，避免 hover/active 触发布局抖动 */
-  padding-left: calc(var(--nav-base-px) + var(--nav-active-extra-x));
-  padding-right: calc(var(--nav-base-px) + var(--nav-active-extra-x));
-  border-radius: var(--nav-active-radius);
-}
-/* active 与 hover 使用同款块级高亮（颜色在下面 hover/active 选择器中定义） */
-
-/* 悬浮同款高亮：与 active 使用相同的色块与文字颜色 */
-.nav-link:hover,
-.nav-link.is-active {
-  background-color: var(--ios-gray-5);
-  color: #1d1d1f;
-}
-.dark .nav-link:hover,
-.dark .nav-link.is-active {
-  background-color: var(--ios-gray-5);
-  color: #f2f2f7;
-}
-
-/* 导航容器（BaseLayout 中的 <nav>）的项目间距由变量控制 */
-.nav-main { position: relative; gap: var(--nav-inline-gap) !important; }
-
-/* 移动端：导航支持左右滑动（保持横向排布、不换行） */
-@media (max-width: 640px) {
-  .nav-main {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
-    scrollbar-width: none; /* Firefox 隐藏滚动条 */
-    padding-top: 0 !important;   /* 覆盖 py-3，避免内容偏移 */
-    padding-bottom: 2px !important; /* 下方保留 2px 给滑动高亮的视觉空间 */
-  }
-  .nav-main::-webkit-scrollbar { display: none; } /* WebKit 隐藏滚动条 */
-  .nav-main .nav-link { flex: 0 0 auto; } /* 不缩小，保持横向滚动 */
-
-  /* 移动端：确保导航项内图标与文字垂直居中 */
-  .site-header .nav-main { align-items: center; height: 48px; }
-  .site-header .nav-main .nav-link {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important; /* 覆盖链接上的 -my-3，避免视觉上偏移 */
-    padding-top: 0.5rem; /* 覆盖 py-3，防止高度溢出导致看起来不居中 */
-    padding-bottom: 0.5rem;
-    line-height: 1.1; /* 避免基线造成的上下不居中 */
-    align-items: center; /* 再次明确居中 */
-  }
-  .site-header .nav-main .nav-link > svg { display: block; }
-}
-
-/* —— 导航滑动高亮 ——
-   通过一个绝对定位的色块在导航容器内左右滑动，
-   脚本在运行时为 .nav-main 添加 .has-navhl 并动态设置 --hl-left / --hl-width。
-*/
-.nav-highlight {
-  position: absolute;
-  height: var(--nav-highlight-h, 80%);
-  top: calc((100% - var(--nav-highlight-h, 100%)) / 2);
-  left: var(--hl-left, 0);
-  width: var(--hl-width, 0);
-  background: var(--ios-gray-5);
-  border-radius: var(--nav-active-radius);
-  transition: left 220ms cubic-bezier(.2,.8,.2,1),
-              width 220ms cubic-bezier(.2,.8,.2,1),
-              background-color 180ms ease,
-              opacity 140ms ease;
-  opacity: 0; /* 初始化时隐藏，脚本会在定位后显示 */
-  pointer-events: none;
-  z-index: 0;
-}
-.nav-main .nav-link { position: relative; z-index: 1; }
-
-/* 启用滑动高亮时，关闭每个链接自身的背景色，保留文字颜色变化 */
-.has-navhl .nav-link:hover,
-.has-navhl .nav-link.is-active {
-  background-color: transparent;
-  color: #1d1d1f;
-}
-.dark .has-navhl .nav-link:hover,
-.dark .has-navhl .nav-link.is-active {
-  background-color: transparent;
-  color: #f2f2f7;
-}
-
-/* —— 向下滚动隐藏 Header，向上滚动显示 —— */
-.site-header {
-  will-change: transform;
-  transition: transform 180ms ease;
-}
-.site-header.is-hidden {
-  transform: translateY(-100%);
-}
-
-/* —— center-preview: 默认覆盖块（黑/白块），hover 显示下层文本 —— */
-/*
-  使用方式：在解析时将 <center> 转为带有 `.center-preview` 的元素，
-  该元素内部保留原始内容。默认会在元素上方覆盖一个不透明色块；
-  鼠标移入时该色块透明以展示下层文本。
-*/
-.center-preview {
-  position: relative;
-  display: block; /* 适配 <p> / <div> 等块级容器 */
-}
-.center-preview > *:not(.mask):not(.mask__hint) { /* 确保内容位于遮罩层下方，排除 mask 元素 */
-  position: relative;
-  z-index: 0;
-}
-.center-preview .mask {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  background: #000; /* 日间默认黑块 */
-  opacity: 1;
-  transition: opacity 180ms ease;
-  pointer-events: auto; /* 避免鼠标穿透遮罩触发下层链接 */
-}
-.center-preview:hover .mask {
-  opacity: 0;
-  pointer-events: none;
-}
-
-/* 暗色模式下使用白块以便与背景对比（支持 .dark class 与 prefers-color-scheme） */
-.dark .center-preview .mask { background: #fff; }
-@media (prefers-color-scheme: dark) {
-  .center-preview .mask { background: #fff; }
-}
-
-/* 可选：如果需要在遮罩上显示提示文本（例如“悬停查看”），可在内容中
-   添加一个 .mask__hint 元素并利用下面的样式进行定位。默认不显示。 */
-.center-preview .mask__hint {
-  position: absolute;
-  z-index: 11;
-  inset: auto 0 0 0;
-  display: none;
-  text-align: center;
-  color: rgba(255,255,255,0.9);
-  font-weight: 600;
-  padding: 0.35rem 0;
-}
-.center-preview:hover .mask__hint { display: block; }
+.link-primary:hover { text-decoration: underline; }
 

@@ -9,9 +9,9 @@ interface Props {
 }
 const { href, title, date, cover, tags = [], summary } = Astro.props as Props
 ---
-<article class="bg-white/90 dark:bg-[#2c2c2e]/60 rounded-macos overflow-hidden shadow-sm border border-slate-200 dark:border-[#2c2c2e] hover:shadow-md transition-shadow">
+<article class="bg-white/90 dark:bg-[#2c2c2e]/60 rounded-card overflow-hidden shadow-sm border border-slate-200 dark:border-[#2c2c2e] hover:shadow-md transition-shadow">
   <a href={href} class="block">
-    <div style="aspect-ratio:16/9; width:100%;" class="w-full bg-slate-100 dark:bg-[#2c2c2e] rounded-macos overflow-hidden" data-card-cover>
+  <div style="aspect-ratio:16/9; width:100%;" class="w-full bg-slate-100 dark:bg-[#2c2c2e] rounded-card overflow-hidden" data-card-cover>
       <img
         src={cover ?? '/back.png'}
         alt={title}
@@ -35,12 +35,4 @@ const { href, title, date, cover, tags = [], summary } = Astro.props as Props
     </div>
   </a>
   
-  <style>
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical; 
-      overflow: hidden;
-    }
-  </style>
 </article>

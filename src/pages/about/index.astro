@@ -4,6 +4,8 @@ import DeptCard from '@components/DeptCard.astro'
 import MemberCard from '@components/MemberCard.astro'
 import TestMemberCard from '@components/TestMemberCard.astro'
 import { getCollection } from 'astro:content'
+import '@styles/article.css'
+import '@styles/about.css'
 
 const aboutEntry = (await (getCollection as any)('about')).find((x: any) => x.slug === 'index')
 const { Content } = aboutEntry ? await aboutEntry.render() : { Content: null }

@@ -1,0 +1,85 @@
+/* 导航项：统一内边距与圆角，避免 hover/active 抖动 */
+.nav-link {
+  padding-left: calc(var(--nav-base-px) + var(--nav-active-extra-x));
+  padding-right: calc(var(--nav-base-px) + var(--nav-active-extra-x));
+  border-radius: var(--nav-active-radius);
+}
+
+.nav-link:hover,
+.nav-link.is-active {
+  background-color: var(--neutral-5);
+  color: #1d1d1f;
+}
+.dark .nav-link:hover,
+.dark .nav-link.is-active {
+  background-color: var(--neutral-5);
+  color: #f2f2f7;
+}
+
+/* 导航容器：允许放置滑动高亮 */
+.nav-main { position: relative; }
+
+/* 移动端：导航支持横向滚动并保持高度对齐 */
+@media (max-width: 640px) {
+  .nav-main {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* iOS 惯性滚动 */
+    scrollbar-width: none; /* Firefox 隐藏滚动条 */
+    padding-top: 0 !important;   /* 覆盖 py-3，避免内容偏移 */
+    padding-bottom: 2px !important; /* 为滑动高亮留出空间 */
+  }
+  .nav-main::-webkit-scrollbar { display: none; } /* WebKit 隐藏滚动条 */
+  .nav-main .nav-link { flex: 0 0 auto; } /* 不缩小，保持横排 */
+
+  .site-header .nav-main { align-items: center; height: 48px; }
+  .site-header .nav-main .nav-link {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important; /* 覆盖 -my-3，避免视觉偏移 */
+    padding-top: 0.5rem; /* 覆盖 py-3，防止高度溢出 */
+    padding-bottom: 0.5rem;
+    line-height: 1.1; /* 避免基线造成的上下不居中 */
+    align-items: center;
+  }
+  .site-header .nav-main .nav-link > svg { display: block; }
+}
+
+/* 导航滑动高亮：绝对定位的色块在容器内左右滑动 */
+.nav-highlight {
+  position: absolute;
+  height: var(--nav-highlight-h, 80%);
+  top: calc((100% - var(--nav-highlight-h, 100%)) / 2);
+  left: var(--hl-left, 0);
+  width: var(--hl-width, 0);
+  background: var(--neutral-5);
+  border-radius: var(--nav-active-radius);
+  transition: left 220ms cubic-bezier(.2,.8,.2,1),
+              width 220ms cubic-bezier(.2,.8,.2,1),
+              background-color 180ms ease,
+              opacity 140ms ease;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.nav-main .nav-link { position: relative; z-index: 1; }
+
+/* 启用滑动高亮时，关闭链接自身背景，只改文字色 */
+.has-navhl .nav-link:hover,
+.has-navhl .nav-link.is-active {
+  background-color: transparent;
+  color: #1d1d1f;
+}
+.dark .has-navhl .nav-link:hover,
+.dark .has-navhl .nav-link.is-active {
+  background-color: transparent;
+  color: #f2f2f7;
+}
+
+/* 头部在下滑时隐藏，上滑时显示 */
+.site-header { will-change: transform; transition: transform 180ms ease; }
+.site-header.is-hidden { transform: translateY(-100%); }
+
+/* 页面初始化时可隐藏头/尾部，首屏动画或交互后再显示 */
+body.hide-header-footer .site-header,
+body.hide-header-footer .site-footer {
+  display: none !important;
+}

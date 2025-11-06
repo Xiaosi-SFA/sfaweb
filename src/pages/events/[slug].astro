@@ -8,13 +8,11 @@ import NotFound from '@components/NotFound.astro'
 
 const { slug } = Astro.params
 const entry = (await (getCollection as any)('events')).find((e: any) => e.slug === slug)
-let Content: any = null
-let headings: Array<{ depth: number; text: string; slug: string }> = []
+let Content, headings: Array<{ depth: number; text: string; slug: string }> = []
 
 if (entry) {
   const rendered = await entry.render()
-  Content = rendered.Content
-  headings = rendered.headings
+  ;({ Content, headings } = rendered)
 } else {
   Astro.response.status = 404
 }
@@ -29,12 +27,9 @@ if (entry) {
         </div>
       </div>
       <article class="order-1 md:order-2 md:col-span-2 max-w-none">
-        <img
-          src={entry.data.cover ?? '/back.png'}
-          alt={entry.data.title}
-          class="w-full aspect-[16/9] object-cover rounded-md mb-4"
-          onerror="this.onerror=null;this.src='/back.png'"
-        />
+        {entry.data.cover ? (
+          <img src={entry.data.cover} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-md mb-4" />
+        ) : null}
         <h1 class="text-3xl md:text-4xl font-extrabold leading-tight">{entry.data.title}</h1>
         <div class="mt-2 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
           <div>
@@ -46,7 +41,7 @@ if (entry) {
             ))}
           </div>
         </div>
-        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 0)}em`}>
+        <div class="prose article-prose max-w-none mt-6">
           {Content ? <Content /> : null}
         </div>
       </article>

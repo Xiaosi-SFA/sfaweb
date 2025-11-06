@@ -1,0 +1,3 @@
+/* 关于页面：部门网格布局微调（从 global.css 迁移） */
+.dept-grid { max-width: 100%; overflow-x: hidden; }
+.dept-grid > * { min-width: 0; }

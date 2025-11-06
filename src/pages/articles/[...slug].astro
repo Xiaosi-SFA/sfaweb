@@ -6,10 +6,13 @@ import RelatedPosts from '../../components/RelatedPosts.astro'
 import BackToTopOrb from '../../components/BackToTopOrb.astro'
 import NotFound from '../../components/NotFound.astro'
 
+// Catch-all 文章详情路由：支持多级路径（如 foo/bar -> slug 为 "foo/bar"）
 const rawSlug = Astro.params.slug
+// 将路由参数规整为字符串：string[] 时用 "/" 连接，undefined 则退回空串
 const slug = Array.isArray(rawSlug) ? rawSlug.join('/') : rawSlug ?? ''
 
-const entry = slug ? (await getCollection('articles')).find((e) => e.slug === slug) : undefined
+// 从内容集合中查找与 slug 对应的文章；未找到则返回 404
+const entry = slug ? (await (getCollection as any)('articles')).find((e: any) => e.slug === slug) : undefined
 let Content: any = null
 let headings: Array<{ depth: number; text: string; slug: string }> = []
 
@@ -25,6 +28,7 @@ if (entry) {
   <BaseLayout title={`${entry.data.title} - SFA`}>
     <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
       <div class="order-2 md:order-1 md:col-span-1">
+        <!-- 侧栏：目录（TOC）与相关推荐；在桌面端吸附（sticky） -->
         <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
           <div class="hidden md:block">
             <TOC headings={headings} />
@@ -34,6 +38,7 @@ if (entry) {
       </div>
       <article class="order-1 md:order-2 md:col-span-2 max-w-none">
         {entry.data.cover ? (
+          <!-- 封面图：按 16:9 比例展示，避免布局跳动 -->
           <img src={entry.data.cover} alt={entry.data.title} class="mb-4 w-full rounded-md object-cover" style="aspect-ratio: 16 / 9;" />
         ) : null}
         <h1 class="text-3xl font-extrabold leading-tight md:text-4xl">{entry.data.title}</h1>
@@ -43,12 +48,15 @@ if (entry) {
             {entry.data.author ? ` · ${entry.data.author}` : ''}
           </div>
           <div class="hidden gap-2 sm:flex">
-            {entry.data.tags?.map((t) => (
+            {entry.data.tags?.map((t: string) => (
               <span class="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">#{t}</span>
             ))}
           </div>
         </div>
-        <div class="article-prose prose mt-6 max-w-none" style={`--para-indent: ${((entry.data as any).int ?? (entry.data as any).indent ?? 2)}em`}>
+        <!-- 正文渲染：当前基线不启用段首缩进
+             若需恢复，请在 sfa.config.json 将 ui.enableIndent 设为 true，
+             并可参考 src/pages/articles/[slug].astro 中注入 --para-indent 的做法。 -->
+        <div class="article-prose prose mt-6 max-w-none">
           {Content ? <Content /> : null}
         </div>
       </article>

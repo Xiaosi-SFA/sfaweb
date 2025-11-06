@@ -47,25 +47,38 @@
 └── .gitignore
 ```
 
-## 开发（pnpm）
+## 特性开关与回滚（配置文件）
 
-1) 安装依赖：
+核心行为统一由配置文件管理：
 
-```sh
-pnpm install
+- 配置文件位置：项目根目录 `sfa.config.json`
+- 建议做法：提交一份标准配置到仓库（已提供默认），按环境修改后重新构建即可生效。
+
+示例（`sfa.config.json`）：
+
+```json
+{
+  "markdown": {
+    "enableDialect": false
+  },
+  "ui": {
+    "enableIndent": true
+  }
+}
 ```
 
-2) 本地运行：
+字段说明：
+
+- markdown.enableDialect：启用自定义方言（段落标记 `[flush]`、`[noindent]`、`[right]`、`[center]` 等），默认 false。
+- ui.enableIndent：是否按 frontmatter 的 `indent`/`int` 恢复段首缩进，默认 true（文章页）。
+
+说明：本项目已移除 GFM（表格/任务列表/删除线等）与 LaTeX（KaTeX）支持，保留原生 HTML 与必要的安全清洗，并在构建阶段将 `<center>` 转为可交互遮罩容器。
+
+修改完配置文件后，执行构建即可：
 
 ```sh
-pnpm run dev
-```
-
-3) 构建产物并预览：
-
-```sh
-pnpm run build
-pnpm run preview
+pnpm build
+pnpm preview
 ```
 
 ## 部署
@@ -80,6 +93,8 @@ pnpm run preview
 - RSS 输出（/rss.xml）
 
 ## 文章/活动详情的段首缩进配置
+
+> 当前基线（baseline）默认不启用段首缩进，且自定义方言关闭；如需恢复，请编辑 `sfa.config.json` 中的 `ui.enableIndent` 或 `markdown.enableDialect` 并重新构建。
 
 - 在 Markdown 前言区（frontmatter）中可通过 `indent` 字段配置段首缩进（单位：em，对段落 `<p>` 的首行生效）。
 - 默认值：
