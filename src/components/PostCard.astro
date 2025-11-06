@@ -1,10 +1,22 @@
 ---
+/**
+ * PostCard
+ * - 用途：文章卡片，包含封面、日期、标题、摘要与标签。
+ * - 交互：hover 阴影；图片加载失败回退。
+ * - 无障碍：封面 alt=标题；日期文字化显示。
+ */
 interface Props {
+  /** 详情页链接 */
   href: string
+  /** 标题 */
   title: string
+  /** 日期（可选） */
   date?: Date
+  /** 封面 URL（可选） */
   cover?: string
+  /** 标签（可选） */
   tags?: string[]
+  /** 摘要（可选） */
   summary?: string
 }
 const { href, title, date, cover, tags = [], summary } = Astro.props as Props

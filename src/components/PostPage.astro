@@ -1,4 +1,13 @@
 ---
+/**
+ * PostPage
+ * - 用途：文章详情页骨架，包含封面、标题、作者/日期、标签、正文与移动端 TOC 浮层。
+ * - 输入：
+ *   - Content：来自 entry.render() 的渲染结果组件
+ *   - headings：来自 entry.render() 的标题数组（用于 TOC）
+ * - 交互：移动端悬浮按钮打开/关闭 TOC；点击目录项平滑滚动至对应锚点。
+ * - 无障碍：封面 alt=标题；TOC 按钮包含 aria-label。
+ */
 import BaseLayout from '@layouts/BaseLayout.astro'
 
 interface Props {

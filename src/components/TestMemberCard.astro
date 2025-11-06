@@ -1,10 +1,22 @@
 ---
+/**
+ * TestMemberCard
+ * - 用途：成员卡片（测试/示例版），支持可选链接与横向/方形比例。
+ * - 交互：hover 轻微上浮；图片 hover 轻微缩放。
+ * - 无障碍：img alt=姓名；外层链接可聚焦。
+ */
 interface Props {
+  /** 姓名 */
   name: string
+  /** 副标题（可选） */
   subtitle?: string
+  /** 头像 URL（可选） */
   avatar?: string
+  /** 外链（可选） */
   href?: string
+  /** 左上角小标签（可选） */
   label?: string
+  /** 是否使用 21:9 宽图比例（可选，默认 1:1） */
   wide?: boolean
 }
 const { name, subtitle, avatar, href, label = '我对一般的人类没有兴趣', wide = false } = Astro.props as Props

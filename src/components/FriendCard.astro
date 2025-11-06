@@ -1,8 +1,18 @@
 ---
+/**
+ * FriendCard
+ * - 用途：友链/外部站点卡片，展示 logo、标题与描述，点击新开页面。
+ * - 交互：hover 提升阴影；logo 懒加载。
+ * - 无障碍：外链 rel="noopener noreferrer"；logo alt 使用“{title} logo”。
+ */
 interface Props {
+  /** 标题 */
   title: string
+  /** 站点 URL */
   url: string
+  /** 描述 */
   description: string
+  /** Logo URL（可选） */
   logo?: string
 }
 const { title, url, description, logo } = Astro.props as Props

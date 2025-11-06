@@ -1,8 +1,18 @@
 ---
+/**
+ * DeptCard
+ * - 用途：部门/栏目入口卡片，含图标、标题与简介，整卡可点击跳转。
+ * - 交互：无脚本逻辑，hover 显示阴影。
+ * - 无障碍：外层 <a> 包裹，可键盘聚焦；图标 img 无语义，alt 为空字符串。
+ */
 interface Props {
+  /** 标题 */
   title: string
+  /** 跳转链接 */
   href: string
+  /** 简介 */
   summary: string
+  /** 图标 URL（可选） */
   icon?: string
 }
 const { title, href, summary, icon } = Astro.props as Props

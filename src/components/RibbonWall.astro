@@ -1,4 +1,14 @@
 ---
+/**
+ * RibbonWall
+ * - 用途：以“丝带墙”形式展示多张图片，支持按前一项高度的重叠布局与 hover 让位。
+ * - 数据：来自 content collection `ribbon`，每项：{ src, href?, ratio?, alt?, credit? }
+ * - 比例：
+ *   - item.ratio 为 number 时：表示相对上一项高度的比例；
+ *   - item.ratio 为 string 时：作为 CSS 长度写入 --item-overlap；
+ *   - 未设置时：回退到全局 CSS 变量 --ribbon-overlap-ratio。
+ * - 交互：窗口/图片尺寸变化时重算；悬浮时下方项让位以露出当前项。
+ */
 import "@styles/ribbon.css";
 import { getCollection } from "astro:content";
 // 配置来源：src/content/ribbon/*.json（data collection，每个文件为数组）

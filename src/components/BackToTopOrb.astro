@@ -1,3 +1,19 @@
+---
+/**
+ * BackToTopOrb
+ * - 用途：移动端“返回顶部 / 目录”悬浮球 + 底部抽屉式目录。
+ * - 结构：
+ *   - 悬浮按钮 [data-back-to-top]
+ *   - 遮罩层 [data-orb-overlay]
+ *   - 抽屉面板 [data-orb-sheet]，内容列表 [data-orb-list]
+ * - 行为：
+ *   - 滚动超过一定距离后显示悬浮球。
+ *   - 点击悬浮球打开目录，目录包含“回到顶端”及正文 h2/h3 标题。
+ *   - 点击列表项滚动到对应锚点并关闭抽屉。
+ * - 无障碍：aria-expanded、aria-label；按钮使用可聚焦元素。
+ * - 注意：本组件含内联 <style>/<script>，保持注释简短，避免影响产物体积。
+ */
+---
 <button type="button" class="back-to-top-orb" data-back-to-top aria-label="目录 / 返回顶部" data-state="hidden" aria-expanded="false">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
     <path d="M4 7h16v2H4V7Zm0 4h16v2H4v-2Zm0 4h10v2H4v-2Z" />

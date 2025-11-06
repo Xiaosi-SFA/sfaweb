@@ -1,9 +1,19 @@
 ---
+/**
+ * RelatedPosts
+ * - 用途：基于标签重叠度 + 时间新近度推荐相关文章。
+ * - 细节：
+ *   - 先按标签重叠数降序，再按日期降序。
+ *   - 截取 limit 条，避免侧栏过长。
+ */
 import { getCollection } from 'astro:content'
 
 interface Props {
+  /** 当前文章 slug（用于排重） */
   currentSlug: string
+  /** 标签集合（可选） */
   tags?: string[]
+  /** 最大返回条数（默认 3） */
   limit?: number
 }
 const { currentSlug, tags = [], limit = 3 } = Astro.props as Props

@@ -1,5 +1,13 @@
 ---
+/**
+ * TOC（侧边目录）
+ * - 用途：在桌面端显示文章目录，支持点击滚动到对应标题。
+ * - 输入：headings 数组，包含 depth/text/slug。
+ * - 交互：监听点击代理，平滑滚动到对应 id。
+ */
+/** 单个标题项 */
 interface Heading { depth: number; text: string; slug: string }
+/** 输入的标题数组（可选） */
 interface Props { headings?: Heading[] }
 const { headings = [] } = Astro.props as Props
 ---

@@ -1,10 +1,22 @@
 ---
+/**
+ * MemberCard
+ * - 用途：成员名片，展示头像、姓名、身份标签、语录与简介。
+ * - 交互：头像加载失败回退为“头像缺失”占位。
+ * - 无障碍：img 提供 alt；文本类信息按语义标签渲染。
+ */
 interface Props {
+  /** 头像 URL（可选） */
   avatar?: string
+  /** 姓名 */
   name: string
+  /** 语录/座右铭（可选） */
   quote?: string
+  /** 简介（可选） */
   bio?: string
+  /** 职务标签（默认 member） */
   position?: 'minister' | 'vice-minister' | 'member'
+  /** 自定义标签文本（可选，优先级高于 position） */
   labelOverride?: string
 }
 const { avatar, name, quote, bio, position, labelOverride } = Astro.props as Props

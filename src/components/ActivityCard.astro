@@ -1,10 +1,23 @@
 ---
+/**
+ * ActivityCard
+ * - 用途：展示单个活动卡片，支持紧凑与标准两种布局。
+ * - 交互：无脚本逻辑，纯样式与静态渲染。
+ * - 无障碍：img 提供 alt，时间使用 <time> 标签。
+ * - 性能：封面图片懒加载；缺省封面回退到 /back.png。
+ */
 interface Props {
+	/** 卡片标题 */
 	title: string
+	/** 活动/新闻日期 */
 	date: Date
+	/** 封面图片 URL（可选） */
 	cover?: string
+	/** 是否使用紧凑模式（默认 false） */
 	compact?: boolean
+	/** 标签列表（可选） */
 	tags?: string[]
+	/** 摘要（可选） */
 	summary?: string
 }
 

@@ -1,9 +1,22 @@
 ---
+/**
+ * RelatedEvents
+ * - 用途：基于标签重叠度与时间新近度推荐相关事件。
+ * - 算法：
+ *   1) 过滤当前条目
+ *   2) 统计标签重叠数作为 primary score
+ *   3) 次要排序：按日期降序
+ *   4) 截取 limit 条
+ * - 无障碍：日期文本化展示；列表项使用可点区域。
+ */
 import { getCollection } from "astro:content";
 
 interface Props {
+  /** 当前详情的 slug，用于排重 */
   currentSlug: string;
+  /** 当前条目的标签列表（可选） */
   tags?: string[];
+  /** 最大返回数量（默认 3） */
   limit?: number;
 }
 const { currentSlug, tags = [], limit = 3 } = Astro.props as Props;
