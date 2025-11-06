@@ -18,8 +18,7 @@ const articles = defineCollection({
 
 
  
-// Events collection for timeline
-const events = defineCollection({
+const activity = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
@@ -60,7 +59,7 @@ const departments = defineCollection({
     intro: z.union([z.string(), z.array(z.string())]).optional(),
     duties: z.array(z.string()).optional(),
     order: z.number().optional(),
-    linkedEvents: z.array(z.string()).optional(), // 手动引用的活动 slug 列表
+    linkedActivities: z.array(z.string()).optional(),
   }),
 })
 
@@ -94,7 +93,7 @@ const groups = defineCollection({
     intro: z.string().max(400),
     activities: z.array(z.string()).min(1),
     avatar: z.string().optional(),
-    linkedEvents: z.array(z.string()).optional(), // 手动引用的活动 slug 列表
+    linkedActivities: z.array(z.string()).optional(),
     leader: z
       .object({
         name: z.string(),
@@ -149,4 +148,4 @@ const ribbon = defineCollection({
 })
 
 // Re-export including new collections
-export const collections = { articles, events, links, departments, members, deptGallery, groups, about, lang, ribbon }
+export const collections = { articles, activity, links, departments, members, deptGallery, groups, about, lang, ribbon }

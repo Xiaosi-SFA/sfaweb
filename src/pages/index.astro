@@ -10,8 +10,8 @@ const latestArticles = (await (getCollection as any)('articles'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   .slice(0, 6)
 
-// 最近活动（仅使用嵌套 slug 的事件，避免与旧单段路由重复；取前 6 条）
-const latestEvents = (await (getCollection as any)('events'))
+// 最近活动（仅使用嵌套 slug，避免与旧单段路由重复；取前 3 条）
+const latestActivity = (await (getCollection as any)('activity'))
   .filter((e: any) => e.slug.includes('/'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   .slice(0, 3)
@@ -135,7 +135,7 @@ const latestEvents = (await (getCollection as any)('events'))
         // 首页导航高亮逻辑：根据可视区中间的内容区块切换“文章/活动”高亮
         const sections = [
           { id: 'latest-articles', path: '/articles/' },
-          { id: 'latest-events', path: '/events/' }
+          { id: 'latest-activity', path: '/activity/' }
         ];
         // 允许 URL 前缀路由（/zh-cn/...），因此用以路径结尾匹配的方式查找链接
         const pairs = sections.map(s => ({
@@ -195,12 +195,12 @@ const latestEvents = (await (getCollection as any)('events'))
   </section>
 
   <!-- 最近活动（使用与时间轴相同的卡片） -->
-  <section id="latest-events" class="py-12">
+  <section id="latest-activity" class="py-12">
     <div class="max-w-6xl mx-auto px-4">
-      <h2 class="text-2xl font-semibold mb-6">最近活动</h2>
+  <h2 class="text-2xl font-semibold mb-6">最近活动</h2>
       <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {latestEvents.map((e: any) => (
-          <a href={`/events/${e.slug}/`} class="block">
+        {latestActivity.map((e: any) => (
+          <a href={`/activity/${e.slug}/`} class="block">
             <ActivityCard title={e.data.title}
               date={e.data.date}
               cover={e.data.cover}

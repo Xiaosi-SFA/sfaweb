@@ -14,9 +14,9 @@ export const GET: APIRoute = async ({ site, url }) => {
   // Fallback site origin from request when config.site is not set (dev/preview)
   const origin = (site ?? new URL(url)).origin;
 
-  const [articles, events] = await Promise.all([
+  const [articles, activity] = await Promise.all([
     getCollection('articles'),
-    getCollection('events'),
+    (getCollection as any)('activity'),
   ]);
 
   type Entry = {
@@ -33,14 +33,14 @@ export const GET: APIRoute = async ({ site, url }) => {
     pubDate: a.data.date,
   }));
 
-  const mapEvents: Entry[] = (events as any[]).map((e: any) => ({
+  const mapActivity: Entry[] = (activity as any[]).map((e: any) => ({
     title: e.data.title,
-    link: new URL(`/events/${e.slug}/`, origin).toString(),
+    link: new URL(`/activity/${e.slug}/`, origin).toString(),
     description: e.data.summary ?? '',
     pubDate: e.data.date,
   }));
 
-  const items = [...mapArticles, ...mapEvents]
+  const items = [...mapArticles, ...mapActivity]
     .sort((a, b) => (b.pubDate?.valueOf() ?? 0) - (a.pubDate?.valueOf() ?? 0))
     .slice(0, 30);
 

@@ -33,7 +33,7 @@ const navInactive = "";
     <span class="nav-highlight" aria-hidden="true"></span>
     <a href={localePrefix || '/'} class={`${navBase} ${isHomeNormalized ? `${navActive} is-active` : ''}`}>{t('nav.home','首页')}</a>
     <a href={`${localePrefix}/articles/`} class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>{t('nav.articles','文章')}</a>
-    <a href={`${localePrefix}/events/`} class={`${navBase} ${isSection('/events/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/events/') ? 'page' : undefined}>{t('nav.events','活动')}</a>
+  <a href={`${localePrefix}/activity/`} class={`${navBase} ${isSection('/activity/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/activity/') ? 'page' : undefined}>{t('nav.activity','活动')}</a>
     <a href={`${localePrefix}/about/`} class={`${navBase} ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>{t('nav.about','关于我们')}</a>
     <a href={`${localePrefix}/groups/`} class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>{t('nav.groups','兴趣小组')}</a>
     <a href={`${localePrefix}/links/`} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>

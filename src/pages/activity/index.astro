@@ -4,7 +4,7 @@ import ActivityCard from '@components/ActivityCard.astro'
 import { getCollection } from 'astro:content'
 import '@styles/timeline.css'
 
-const events = (await (getCollection as any)('events'))
+const activities = (await (getCollection as any)('activity'))
   .filter((e: any) => e.slug.includes('/'))
   .sort((a: any, b: any) => {
   const ad = a.data.date?.valueOf() ?? 0
@@ -12,12 +12,12 @@ const events = (await (getCollection as any)('events'))
   return bd - ad
 })
 
-type TimelineEvent = { type: 'event'; entry: any; side: 'left' | 'right' }
+type TimelineItem = { type: 'activity'; entry: any; side: 'left' | 'right' }
 type TimelineYear = { type: 'year'; year: number; side: 'left' | 'right' }
-const timeline: Array<TimelineEvent | TimelineYear> = []
+const timeline: Array<TimelineItem | TimelineYear> = []
 
 const groups: Array<{ year: number; items: any[] }> = []
-for (const e of events) {
+for (const e of activities) {
   const y = new Date(e.data.date).getFullYear()
   const last = groups[groups.length - 1]
   if (!last || last.year !== y) {
@@ -32,7 +32,7 @@ for (const g of groups) {
   timeline.push({ type: 'year', year: g.year, side: startSide })
   g.items.forEach((entry, i) => {
     const side = startSide === 'left' ? (i % 2 === 0 ? 'left' : 'right') : (i % 2 === 0 ? 'right' : 'left')
-    timeline.push({ type: 'event', entry, side })
+    timeline.push({ type: 'activity', entry, side })
   })
   startSide = startSide === 'left' ? 'right' : 'left'
 }
@@ -58,7 +58,7 @@ for (const g of groups) {
               <>
                 <div class="md:pr-10 flex justify-end">
                   <div class="timeline-card">
-                    <a href={`/events/${item.entry.slug}/`} class="block">
+                    <a href={`/activity/${item.entry.slug}/`} class="block">
                       <ActivityCard title={item.entry.data.title}
                         date={item.entry.data.date}
                         cover={item.entry.data.cover}
@@ -75,7 +75,7 @@ for (const g of groups) {
                 <div></div>
                 <div class="md:pl-10 flex justify-start">
                   <div class="timeline-card">
-                    <a href={`/events/${item.entry.slug}/`} class="block">
+                    <a href={`/activity/${item.entry.slug}/`} class="block">
                       <ActivityCard title={item.entry.data.title}
                         date={item.entry.data.date}
                         cover={item.entry.data.cover}

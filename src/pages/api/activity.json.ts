@@ -6,9 +6,9 @@ export const GET: APIRoute = async ({ request }) => {
   const limitParam = url.searchParams.get('limit')
   const limit = limitParam ? Math.max(1, Math.min(100, Number.parseInt(limitParam))) : undefined
 
-  const events = (await (getCollection as any)('events') as any[]).filter((e) => e.slug.includes('/'))
+  const activity = (await (getCollection as any)('activity') as any[]).filter((e) => e.slug.includes('/'))
 
-  const sorted = [...events].sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
+  const sorted = [...activity].sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   let items = sorted
   if (limit) items = items.slice(0, limit)
 
@@ -20,7 +20,7 @@ export const GET: APIRoute = async ({ request }) => {
     cover: x.data.cover,
     hostType: x.data.hostType,
     hostSlug: x.data.hostSlug,
-    url: `/events/${x.slug}/`,
+    url: `/activity/${x.slug}/`,
   }))
 
   return new Response(JSON.stringify({ count: data.length, items: data }), {
