@@ -6,7 +6,7 @@ activities:
   - 主题向作品深挖（导演、作画、配乐与世界观）
   - 新番导视与片单分享、二创展示
 avatar: https://images.unsplash.com/photo-1549692520-acc6669e2f0c?q=80&w=256&auto=format&fit=crop
-linkedEvents:
+linkedActivities:
   - anime/2025-04-20-anime-marathon
   - anime/2025-12-31-anime-year-end
   - anime/2026-03-15-anime-workshop
