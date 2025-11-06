@@ -35,10 +35,9 @@ const gallery = (await getCollection('deptGallery' as any) as unknown as Gallery
 
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 
-// 统一改用 activity 集合（兼容旧字段：linkedActivities / linkedEvents）
 const allActivities: any[] = await (getCollection as any)('activity')
 const activityMap = new Map(allActivities.map((e) => [e.slug, e]))
-const linkedActivities: any[] = ((dept?.data.linkedActivities || dept?.data.linkedEvents || []) as string[])
+const linkedActivities: any[] = ((dept?.data.linkedActivities || []) as string[])
   .map((s: string) => activityMap.get(s))
   .filter(Boolean)
 ---
