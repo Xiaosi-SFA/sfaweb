@@ -35,16 +35,16 @@ const scored = all
 ---
 
 {scored.length ? (
-  <aside class="bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border rounded-lg p-3">
-    <div class="text-sm font-semibold mb-2">相关活动</div>
+  <aside class="bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border dark:border-[#2c2c2e] rounded-lg p-3">
+    <div class="text-sm font-semibold mb-2 text-slate-800 dark:text-slate-100">相关活动</div>
     <ul class="space-y-2">
       {scored.map(({ e }: { e: any }) => (
         <li>
           <a href={`/activity/${e.slug}/`} class="block">
-            <div class="text-xs text-slate-500">
+            <div class="text-xs text-slate-500 dark:text-slate-400">
               {e.data.date?.toISOString().slice(0, 10)}
             </div>
-            <div class="text-slate-800 hover:text-brand text-sm">
+            <div class="text-slate-800 dark:text-slate-200 hover:text-brand dark:hover:text-sky-300 text-sm">
               {e.data.title}
             </div>
           </a>
