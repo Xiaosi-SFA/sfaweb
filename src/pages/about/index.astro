@@ -36,7 +36,7 @@ const departments = (await getCollection('departments')).sort(
       </header>
 
       {Content ? (
-        <MarkdownContent Content={Content} variant="about" />
+        <MarkdownContent Content={Content} variant="about" align={aboutEntry?.data?.align} />
       ) : null}
       <section class="space-y-3">
         <h2 class="text-xl font-semibold">部门简介</h2>

@@ -57,7 +57,7 @@ const paraIndent = ENABLE_INDENT ? Number(entry?.data?.int ?? entry?.data?.inden
             ))}
           </div>
         </div>
-        <MarkdownContent Content={Content} indent={paraIndent} />
+  <MarkdownContent Content={Content} indent={paraIndent} align={entry.data?.align} />
       </article>
     </div>
     <BackToTopOrb />

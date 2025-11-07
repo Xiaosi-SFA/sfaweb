@@ -23,12 +23,14 @@ const {
 	proseClass,
 	indent = 0,
 	variant = 'article',
+	align = undefined,
 }: {
 	Content?: any
 	paragraphs?: string | string[]
 	proseClass?: string
 	indent?: number
 	variant?: 'article' | 'activity' | 'about' | 'plain'
+	align?: 'left' | 'center' | 'right' | string
 } = Astro.props
 
 const ENABLE_INDENT = Boolean((siteConfig as any)?.ui?.enableIndent)
@@ -40,9 +42,15 @@ const defaultClassByVariant: Record<string, string> = {
 	plain: 'max-w-none mt-6',
 }
 const cls = proseClass ?? defaultClassByVariant[variant] ?? defaultClassByVariant.article
+const alignMap: Record<string, string> = {
+	left: 'text-left',
+	center: 'text-center',
+	right: 'text-right',
+}
+const alignCls = align ? (alignMap[String(align).toLowerCase()] ?? '') : ''
 ---
 
-<div class={cls} data-indent={IND > 0 ? 'true' : 'false'} style={IND > 0 ? `--para-indent: ${IND}em` : undefined}>
+<div class={`${cls} ${alignCls}`} data-indent={IND > 0 ? 'true' : 'false'} style={IND > 0 ? `--para-indent: ${IND}em` : undefined}>
 	{Content ? (
 		<Content />
 	) : Array.isArray(paragraphs) ? (
