@@ -2,6 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import NotFound from '@components/NotFound.astro'
 import MemberCard from '@components/MemberCard.astro'
+import MarkdownContent from '@components/MarkdownContent.astro'
 import { getCollection } from 'astro:content'
 import ActivityCard from '@components/ActivityCard.astro'
 
@@ -47,11 +48,7 @@ const linkedActivities: any[] = ((dept?.data.linkedActivities || []) as string[]
     <section class="space-y-6">
       <header class="space-y-2">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">{dept.data.title}</h1>
-        {Array.isArray(dept.data.intro) ? (
-          dept.data.intro.map((p) => <p class="text-slate-700 dark:text-slate-300 leading-7">{p}</p>)
-        ) : (
-          dept.data.intro ? <p class="text-slate-700 dark:text-slate-300 leading-7">{dept.data.intro}</p> : null
-        )}
+        <MarkdownContent paragraphs={dept.data.intro} proseClass="prose article-prose max-w-none" />
       </header>
       {dept.data.duties?.length ? (
         <section class="space-y-3">

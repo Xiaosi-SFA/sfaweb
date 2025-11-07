@@ -1,7 +1,51 @@
 ---
 /**
- * MarkdownContent (占位)
- * - 目前为空组件，作为 Markdown 渲染容器预留位置。
- * - 可在后续根据内容管线（remark/rehype 配置）扩展为统一包装组件。
+ * MarkdownContent
+ * 统一的正文渲染容器：
+ * - 支持传入 Astro 内容集合的渲染产物 Component（entry.render().Content）
+ * - 或传入普通字符串/字符串数组（用于部门简介等纯文本段落）
+ * - 统一套上 prose/article-prose 样式，并按站点配置可选开启段首缩进
+ *
+ * Props:
+ * - Content?: any — 可选，来自 entry.render() 的组件
+ * - paragraphs?: string | string[] — 可选，纯文本段落
+ * - proseClass?: string — 可选，自定义容器类名（默认 'prose article-prose max-w-none mt-6'）
+ * - indent?: number — 可选，段首缩进（单位 em）；是否生效由 sfa.config.json 的 ui.enableIndent 决定
  */
+import siteConfig from '../../sfa.config.json'
+
+interface Heading { depth: number; text: string; slug: string }
+
+const {
+	Content,
+	paragraphs,
+	proseClass = 'prose article-prose max-w-none mt-6',
+	indent = 0,
+}: {
+	Content?: any
+	paragraphs?: string | string[]
+	proseClass?: string
+	indent?: number
+} = Astro.props
+
+const ENABLE_INDENT = Boolean((siteConfig as any)?.ui?.enableIndent)
+const IND = ENABLE_INDENT ? (Number(indent) || 0) : 0
 ---
+
+<div class={proseClass} data-indent={IND > 0 ? 'true' : 'false'} style={IND > 0 ? `--para-indent: ${IND}em` : undefined}>
+	{Content ? (
+		<Content />
+	) : Array.isArray(paragraphs) ? (
+		paragraphs.filter((p) => typeof p === 'string' && p.trim().length > 0).map((p) => (<p>{p}</p>))
+	) : typeof paragraphs === 'string' && paragraphs.trim().length > 0 ? (
+		<p>{paragraphs}</p>
+	) : null}
+</div>
+
+<style>
+	/* 当启用 data-indent 时，为普通 p 元素应用段首缩进；
+		 具体段落的细粒度控制（比如首段不缩进）可在各页面追加覆盖规则。*/
+	:global(.article-prose[data-indent="true"]) p {
+		text-indent: var(--para-indent);
+	}
+</style>

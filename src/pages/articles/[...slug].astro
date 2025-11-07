@@ -5,6 +5,7 @@ import TOC from '../../components/TOC.astro'
 import RelatedPosts from '../../components/RelatedPosts.astro'
 import BackToTopOrb from '../../components/BackToTopOrb.astro'
 import NotFound from '../../components/NotFound.astro'
+import MarkdownContent from '../../components/MarkdownContent.astro'
 
 // Catch-all 文章详情路由：支持多级路径（如 foo/bar -> slug 为 "foo/bar"）
 const rawSlug = Astro.params.slug
@@ -23,6 +24,8 @@ if (entry) {
 } else {
   Astro.response.status = 404
 }
+// 文章可能设置 indent/int；具体是否生效由组件内部开关判定
+const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.indent ?? 0) || 0
 ---
 {entry ? (
   <BaseLayout title={`${entry.data.title} - SFA`}>
@@ -53,12 +56,7 @@ if (entry) {
             ))}
           </div>
         </div>
-        <!-- 正文渲染：当前基线不启用段首缩进
-             若需恢复，请在 sfa.config.json 将 ui.enableIndent 设为 true，
-             并可参考 src/pages/articles/[slug].astro 中注入 --para-indent 的做法。 -->
-        <div class="article-prose prose mt-6 max-w-none">
-          {Content ? <Content /> : null}
-        </div>
+        <MarkdownContent Content={Content} indent={paraIndent} />
       </article>
     </div>
     <BackToTopOrb />

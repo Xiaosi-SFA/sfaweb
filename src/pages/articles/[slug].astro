@@ -6,6 +6,7 @@ import RelatedPosts from '@components/RelatedPosts.astro'
 import BackToTopOrb from '@components/BackToTopOrb.astro'
 import NotFound from '@components/NotFound.astro'
 import '@styles/article.css'
+import MarkdownContent from '@components/MarkdownContent.astro'
 
 const { slug } = Astro.params
 const entry = (await getCollection('articles')).find((e) => e.slug === slug)
@@ -55,9 +56,7 @@ const paraIndent = ENABLE_INDENT ? Number(entry?.data?.int ?? entry?.data?.inden
             ))}
           </div>
         </div>
-        <div class="prose article-prose max-w-none mt-6" style={`--para-indent: ${paraIndent}em`}>
-          {Content ? <Content /> : null}
-        </div>
+        <MarkdownContent Content={Content} indent={paraIndent} />
       </article>
     </div>
     <BackToTopOrb />

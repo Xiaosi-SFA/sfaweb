@@ -5,6 +5,7 @@ import TOC from '@components/TOC.astro'
 import RelatedActivity from '@components/RelatedActivity.astro'
 import BackToTopOrb from '@components/BackToTopOrb.astro'
 import NotFound from '@components/NotFound.astro'
+import MarkdownContent from '@components/MarkdownContent.astro'
 
 const { slug } = Astro.params
 const entry = (await (getCollection as any)('activity')).find((e: any) => e.slug === slug)
@@ -16,6 +17,8 @@ if (entry) {
 } else {
   Astro.response.status = 404
 }
+// Feature flag & indent are handled inside MarkdownContent; here仅传具体值（int 优先于 indent）
+const paraIndent = Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0
 ---
 {entry ? (
   <BaseLayout title={`${entry.data.title} - 活动 - SFA`} disableWaveBg={true}>
@@ -41,9 +44,7 @@ if (entry) {
             ))}
           </div>
         </div>
-        <div class="prose article-prose max-w-none mt-6">
-          {Content ? <Content /> : null}
-        </div>
+        <MarkdownContent Content={Content} indent={paraIndent} />
       </article>
     </div>
     <BackToTopOrb />
