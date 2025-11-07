@@ -1,0 +1,68 @@
+/* Shared card styles for PostCard and ActivityCard */
+
+.card {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.9));
+  box-shadow: 0 1px 4px rgba(16,24,40,0.04);
+  transition: box-shadow 160ms ease, transform 160ms ease;
+  border: 1px solid var(--neutral-5);
+}
+
+.dark .card {
+  background: rgba(44,44,46,0.38);
+  border-color: var(--neutral-4);
+}
+
+.card:hover { box-shadow: 0 6px 18px rgba(16,24,40,0.08); transform: translateY(-2px); }
+
+.card-cover {
+  width: 100%;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+}
+
+.card-thumb {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Ensure card images always fill the cover area with object-fit: cover
+   - supports elements using the .card-cover class or the data attribute used in templates
+   - also covers .card-thumb images */
+.card-cover img,
+[data-card-cover] img,
+.card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Provide a default aspect ratio for card covers when not set inline */
+.card-cover,
+[data-card-cover] {
+  aspect-ratio: 16 / 9;
+}
+
+.card-content { padding: 1rem; }
+
+.card-title a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.card-title a:hover { text-decoration: underline; }
+
+/* compact variant adjustments */
+.card--compact .card-content { padding: 0.75rem; }
+.card--compact .card-title { font-size: 0.95rem; }
+
+/* Timeline integration: when a card appears inside a timeline wrapper,
+   the inner <article> should receive the same visual treatment. */
+.timeline-card article {
+  border-radius: var(--radius-card);
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+  border: 1px solid rgba(15,23,42,0.06);
+}

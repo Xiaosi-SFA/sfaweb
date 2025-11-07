@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
+import '@styles/tag.css'
+import '@styles/article.css'
 import { getCollection } from 'astro:content'
 import TOC from '@components/TOC.astro'
 import RelatedPosts from '@components/RelatedPosts.astro'
@@ -49,9 +51,9 @@ const paraIndent = ENABLE_INDENT ? Number(entry?.data?.int ?? entry?.data?.inden
             {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
             {entry.data.author ? ` · ${entry.data.author}` : ''}
           </div>
-          <div class="hidden sm:flex gap-2">
+          <div class="hidden sm:flex tag-list">
             {entry.data.tags?.map((t: string) => (
-              <span class="text-xs bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200 px-2 py-0.5 rounded">#{t}</span>
+              <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--article hash">#{t}</a>
             ))}
           </div>
         </div>

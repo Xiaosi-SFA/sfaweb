@@ -9,6 +9,7 @@
  * - 无障碍：封面 alt=标题；TOC 按钮包含 aria-label。
  */
 import BaseLayout from '@layouts/BaseLayout.astro'
+import '@styles/tag.css'
 
 interface Props {
   title: string
@@ -39,9 +40,9 @@ const { title, date, author, tags = [], cover, Content, headings = [] } = Astro.
           {date ? new Date(date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' }) : ''}
           {author ? ` · ${author}` : ''}
         </div>
-        <div class="hidden sm:flex gap-2">
+        <div class="hidden sm:flex tag-list">
           {tags?.map((t) => (
-            <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
+            <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--article hash">#{t}</a>
           ))}
         </div>
       </div>
@@ -52,9 +53,9 @@ const { title, date, author, tags = [], cover, Content, headings = [] } = Astro.
     </div>
 
     {tags?.length ? (
-      <div class="mt-6 sm:hidden flex gap-2 flex-wrap">
+      <div class="mt-6 sm:hidden tag-list">
         {tags.map((t) => (
-          <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">#{t}</span>
+          <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--article hash">#{t}</a>
         ))}
       </div>
     ) : null}

@@ -20,31 +20,35 @@ interface Props {
   summary?: string
 }
 const { href, title, date, cover, tags = [], summary } = Astro.props as Props
+import '@styles/tag.css'
+import '@styles/card.css'
 ---
-<article class="bg-white/90 dark:bg-[#2c2c2e]/60 rounded-card overflow-hidden shadow-sm border border-slate-200 dark:border-[#2c2c2e] hover:shadow-md transition-shadow">
-  <a href={href} class="block">
-  <div style="aspect-ratio:16/9; width:100%;" class="w-full bg-slate-100 dark:bg-[#2c2c2e] rounded-card overflow-hidden" data-card-cover>
+<article class="card bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm hover:shadow-md transition-shadow">
+  <div style="aspect-ratio:16/9; width:100%;" class="card-cover bg-slate-100 dark:bg-[#2c2c2e]" data-card-cover>
+    <a href={href} aria-label={title} class="block">
       <img
         src={cover ?? '/back.png'}
         alt={title}
         class="w-full h-full object-cover"
         onerror="this.onerror=null;this.src='/back.png'"
       />
-    </div>
-    <div class="p-4">
+    </a>
+  </div>
+  <div class="card-content p-4">
       <div class="text-sm text-slate-500 dark:text-slate-400">
         {date ? new Date(date).toISOString().slice(0,10) : ''}
       </div>
-      <h3 class="text-lg font-semibold mt-1">{title}</h3>
+      <h3 class="text-lg font-semibold mt-1 card-title">
+        <a href={href} class="text-slate-900 dark:text-slate-100">{title}</a>
+      </h3>
       {summary && <p class="text-slate-700 dark:text-slate-200 mt-1 line-clamp-2">{summary}</p>}
       {tags?.length ? (
-        <div class="mt-2 flex gap-2 flex-wrap">
+        <div class="mt-2 tag-list tag-list--right">
           {tags.map((t) => (
-            <span class="text-xs px-2 py-0.5 bg-slate-100 dark:bg-[#2c2c2e] text-slate-700 dark:text-slate-200 rounded">{t}</span>
+            <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--card">#{t}</a>
           ))}
         </div>
       ) : null}
-    </div>
-  </a>
+  </div>
   
 </article>

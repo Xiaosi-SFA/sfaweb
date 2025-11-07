@@ -24,11 +24,14 @@ interface Props {
 const { title, date, cover, compact = false, tags = [], summary } = Astro.props as Props
 
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
+
+import '@styles/tag.css'
+import '@styles/card.css'
 ---
 	{compact ? (
-		<article class="rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
+		<article class="rounded-card border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
 			<div class="p-3 flex items-start gap-3">
-				<div class="h-16 w-24 flex-none rounded-md bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
+				<div class="h-16 w-24 flex-none rounded-card bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
 					<img
 						src={cover ?? '/back.png'}
 						alt={title}
@@ -47,8 +50,8 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
 			</div>
 		</article>
 	) : (
-		<article class="rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
-			<div class="relative aspect-[16/9] bg-slate-100 dark:bg-[#2c2c2e] grid place-items-center" data-card-cover>
+		<article class="rounded-card border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
+			<div class="relative aspect-[16/9] bg-slate-100 dark:bg-[#2c2c2e] rounded-card grid place-items-center" data-card-cover>
 				<img
 					src={cover ?? '/back.png'}
 					alt={title}
@@ -63,9 +66,9 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
 					<time>{fmt(date)}</time>
 				</div>
 				{tags?.length ? (
-					<div class="flex flex-wrap gap-2">
+					<div class="tag-list tag-list--right">
 						{tags.map((t) => (
-							<span class="text-xs bg-slate-100 dark:bg-[#2c2c2e] text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded">{t}</span>
+							<a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--card">#{t}</a>
 						))}
 					</div>
 				) : null}

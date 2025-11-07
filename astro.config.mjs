@@ -5,6 +5,7 @@ import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
+import rehypeCenter from './src/rehype/rehype-center.mjs'
 import { defaultSchema } from 'hast-util-sanitize'
 import remarkGfm from 'remark-gfm'
 import remarkNoIndent from './src/remark/noindent.mjs'
@@ -45,6 +46,8 @@ export default defineConfig({
     // Order: parse raw HTML -> custom transforms -> sanitize
     rehypePlugins: [
       rehypeRaw,
+      // Convert legacy <center> tags into a styled div, then sanitize
+      rehypeCenter,
       [
         rehypeSanitize,
         {

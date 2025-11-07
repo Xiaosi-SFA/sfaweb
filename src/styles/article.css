@@ -1,2 +1,3 @@
-/* Deprecated: 此文件仅保留兼容性导入，正文样式已迁移至 markdown.css */
+/* Deprecated: 此文件仅保留兼容性导入，正文样式已迁移至 markdown.css。
+	 标签样式已迁移至 tag.css。 */
 @import './markdown.css';

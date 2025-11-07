@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import ActivityCard from '@components/ActivityCard.astro'
 import { getCollection } from 'astro:content'
 import '@styles/timeline.css'
+import '@styles/card.css'
 
 const activities = (await (getCollection as any)('activity'))
   .filter((e: any) => e.slug.includes('/'))

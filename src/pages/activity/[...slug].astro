@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
+import '@styles/tag.css'
 import { getCollection } from 'astro:content'
 import TOC from '@components/TOC.astro'
 import RelatedActivity from '@components/RelatedActivity.astro'
@@ -37,9 +38,9 @@ const paraIndent = Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0
           <div>
             {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
           </div>
-          <div class="hidden sm:flex gap-2 flex-nowrap max-w-full overflow-hidden">
+          <div class="hidden sm:flex tag-list flex-nowrap max-w-full overflow-hidden">
             {entry.data.tags?.slice(0, 4).map((t: string) => (
-              <span class="text-xs bg-slate-100 dark:bg-[#2c2c2e] text-slate-700 dark:text-slate-200 px-2 py-0.5 rounded whitespace-nowrap">#{t}</span>
+              <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--article hash whitespace-nowrap">#{t}</a>
             ))}
           </div>
         </div>

@@ -80,18 +80,14 @@
 .timeline-card {
   width: var(--card-width);
   max-width: 100%;
-  border-radius: var(--radius-macos);
+  border-radius: var(--radius-macos, var(--radius-card));
   overflow: hidden;
   opacity: 0;
   transform: translate(var(--slide-x), 32px);
   transition: transform var(--duration) var(--easing), opacity var(--duration) var(--easing);
 }
-.timeline-card article {
-  border-radius: var(--radius-macos);
-  background: #ffffff;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-  border: 1px solid rgba(15,23,42,0.06);
-}
+/* Visual styling for the inner article has been moved to card.css
+   timeline.css now only contains layout and overlap rules. */
 
 .timeline-item.is-left .timeline-card {
   margin-left: auto;

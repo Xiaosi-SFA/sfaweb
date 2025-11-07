@@ -1,11 +1,12 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro'
+import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
-import TOC from '../../components/TOC.astro'
-import RelatedPosts from '../../components/RelatedPosts.astro'
-import BackToTopOrb from '../../components/BackToTopOrb.astro'
-import NotFound from '../../components/NotFound.astro'
-import MarkdownContent from '../../components/MarkdownContent.astro'
+import TOC from '@components/TOC.astro'
+import RelatedPosts from '@components/RelatedPosts.astro'
+import BackToTopOrb from '@components/BackToTopOrb.astro'
+import NotFound from '@components/NotFound.astro'
+import MarkdownContent from '@components/MarkdownContent.astro'
+import '@styles/tag.css'
 
 // Catch-all 文章详情路由：支持多级路径（如 foo/bar -> slug 为 "foo/bar"）
 const rawSlug = Astro.params.slug
@@ -50,9 +51,9 @@ const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.ind
             {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
             {entry.data.author ? ` · ${entry.data.author}` : ''}
           </div>
-          <div class="hidden gap-2 sm:flex">
+          <div class="hidden sm:flex tag-list">
             {entry.data.tags?.map((t: string) => (
-              <span class="rounded bg-slate-100 px-2 py-0.5 text-xs text-slate-700">#{t}</span>
+              <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--article hash">#{t}</a>
             ))}
           </div>
         </div>
