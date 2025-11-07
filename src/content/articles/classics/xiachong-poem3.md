@@ -1,6 +1,6 @@
 ---
 title: "行香子"
-date: "2025-11-07"
+date: 2025-11-07
 author: "@夏虫"
 tags: [诗歌]
 summary: ""

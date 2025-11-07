@@ -1,6 +1,6 @@
 ---
 title: "校尉斟金罍"
-date: "2025-11-07"
+date: 2025-11-07
 author: "@夏虫"
 tags: [诗歌]
 summary: ""
