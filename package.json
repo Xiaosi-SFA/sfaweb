@@ -29,6 +29,7 @@
     "prettier-plugin-astro": "^0.14.1",
     "rehype-raw": "^6.1.0",
     "rehype-sanitize": "^5.0.1",
+    "remark-gfm": "^4.0.1",
     "typescript": "^5.6.3"
   }
 }

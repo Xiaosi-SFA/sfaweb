@@ -20,6 +20,8 @@
   --text-primary: #1d1d1f;
   --text-muted: #6e6e73;
   --link-color: #06c;
+  --light-green: rgb(52, 119, 89); /* 浅色主题推荐 */
+  --dark-green: rgb(48, 209, 88);  /* 深色主题推荐 */
 
   /* 中性色阶（亮色） */
   --neutral-1: #8e8e93;

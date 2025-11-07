@@ -1,0 +1,194 @@
+/* MarkdownContent 专用正文样式（与页面布局/组件样式解耦） */
+
+/* 容器与通用排版 */
+.article-prose, .prose {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 标题锚点偏移，避免被吸顶导航遮挡 */
+.article-prose h1,
+.article-prose h2,
+.article-prose h3,
+.article-prose h4 {
+  scroll-margin-top: 84px;
+}
+
+/* 标题层级与间距（可按需精简/扩展） */
+.article-prose h1,
+.article-prose h2,
+.article-prose h3,
+.article-prose h4,
+.article-prose h5,
+.article-prose h6 {
+  color: var(--text-primary);
+}
+.article-prose h2 {
+  font-size: clamp(1.4rem, 1rem + 1.2vw, 1.8rem);
+  line-height: 1.22;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+.article-prose h3 {
+  font-size: 1.2rem;
+  line-height: 1.35;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.article-prose h4 {
+  font-size: 1.05rem;
+  line-height: 1.42;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 段落 */
+.article-prose p {
+  font-size: 1rem;
+  line-height: 1.9;
+  text-indent: var(--para-indent, 0);
+}
+.article-prose p.no-indent { text-indent: 0; }
+/* 对齐辅助类（供内容中内联 class 使用） */
+.article-prose p.align-right { text-align: right; text-indent: 0; }
+.article-prose p.align-center { text-align: center; text-indent: 0; }
+.article-prose .text-center { text-align: center; }
+.article-prose.doc-align-center { text-align: center; }
+.article-prose.doc-align-center p { text-align: center; text-indent: 0; }
+.article-prose.doc-align-right { text-align: right; }
+.article-prose.doc-align-right p { text-align: right; text-indent: 0; }
+
+/* 引用 */
+.article-prose blockquote {
+  border-left: 3px solid rgba(29, 29, 31, 0.12);
+  padding-left: 0.9rem;
+  color: var(--text-muted);
+}
+.article-prose blockquote p { text-indent: 0; }
+
+/* center-preview：遮罩预览（用于手动隐藏/揭示内容） */
+.center-preview { position: relative; display: block; }
+.center-preview > *:not(.mask):not(.mask__hint) { position: relative; z-index: 0; }
+.center-preview .mask {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #000; /* 日间默认黑块 */
+  opacity: 1;
+  transition: opacity 180ms ease;
+  pointer-events: auto;
+}
+.center-preview:hover .mask { opacity: 0; pointer-events: none; }
+.dark .center-preview .mask { background: #fff; }
+@media (prefers-color-scheme: dark) { .center-preview .mask { background: #fff; } }
+.center-preview .mask__hint {
+  position: absolute;
+  z-index: 11;
+  inset: auto 0 0 0;
+  display: none;
+  text-align: center;
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  padding: 0.35rem 0;
+}
+.center-preview:hover .mask__hint { display: block; }
+
+/* 链接：继承站点链接色并带下划线 */
+.article-prose a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.article-prose a:hover { text-decoration-thickness: 2px; }
+
+/* 列表（支持多级缩进） */
+.article-prose ul,
+.article-prose ol {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+}
+.article-prose ul { list-style: disc outside; }
+.article-prose ol { list-style: decimal outside; }
+.article-prose li { margin: 0.25rem 0; }
+/* 次级列表减小缩进并切换标记样式 */
+.article-prose ul ul { list-style: circle outside; padding-left: 1.1rem; }
+.article-prose ul ul ul { list-style: square outside; }
+.article-prose ol ol { list-style: lower-alpha outside; padding-left: 1.1rem; }
+.article-prose ol ol ol { list-style: lower-roman outside; }
+/* 列表项标记颜色轻微弱化（保持可读性） */
+.article-prose li::marker { color: var(--text-muted); }
+
+/* 任务列表（GFM） */
+.article-prose .task-list-item { list-style: none; }
+.article-prose .task-list-item + .task-list-item { margin-top: 0.25rem; }
+.article-prose .task-list-item input[type="checkbox"] {
+  accent-color: rgb(52, 119, 89); /* 浅色 */
+  width: 1.05em;
+  height: 1.05em;
+  transform: translateY(1px);
+  margin-right: 0.5rem;
+}
+.dark .article-prose .task-list-item input[type="checkbox"] {
+  accent-color: rgb(48, 209, 88); /* 深色 */
+}
+
+/* 代码块 */
+.article-prose pre {
+  border-radius: 0.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* 图片/媒体 */
+.article-prose img,
+.article-prose video,
+.article-prose iframe { max-width: 100%; height: auto; }
+
+/* 表格（与全站变量配色保持一致） */
+.article-prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.article-prose thead th {
+  font-weight: 600;
+  text-align: left;
+  background: var(--neutral-5); /* 与斑马纹 neutral-6 区分 */
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--neutral-4);
+}
+.article-prose th,
+.article-prose td {
+  padding: 0.6rem 0.75rem;
+  vertical-align: top;
+  border-bottom: 1px solid var(--neutral-4);
+}
+.article-prose tr > * { border-left: 1px solid var(--neutral-4); }
+.article-prose tbody tr:last-child > * { border-bottom: none; }
+.article-prose table caption {
+  caption-side: bottom;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-top: 0.5rem;
+}
+/* 斑马纹 */
+.article-prose tbody tr:nth-child(odd) { background: var(--neutral-6); }
+
+/* 深色模式调整 */
+.dark .article-prose { color: #e5e7eb; }
+.dark .article-prose h1,
+.dark .article-prose h2,
+.dark .article-prose h3,
+.dark .article-prose h4,
+.dark .article-prose h5,
+.dark .article-prose h6 { color: #f3f4f6; }
+.dark .article-prose p,
+.dark .article-prose li { color: #e5e7eb; }
+.dark .article-prose blockquote { border-left-color: rgba(242, 242, 247, 0.28); color: #cbd5e1; }
+.dark .article-prose tbody tr:nth-child(odd) { background: var(--neutral-5); }
+.dark .article-prose thead th { background: var(--neutral-4); color: #e5e7eb; }
+.dark .article-prose table caption { color: #94a3b8; }

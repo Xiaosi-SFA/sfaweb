@@ -4,8 +4,8 @@ import DeptCard from '@components/DeptCard.astro'
 import MemberCard from '@components/MemberCard.astro'
 import TestMemberCard from '@components/TestMemberCard.astro'
 import { getCollection } from 'astro:content'
-import '@styles/article.css'
 import '@styles/about.css'
+import MarkdownContent from '@components/MarkdownContent.astro'
 
 const aboutEntry = (await (getCollection as any)('about')).find((x: any) => x.slug === 'index')
 const { Content } = aboutEntry ? await aboutEntry.render() : { Content: null }
@@ -36,9 +36,7 @@ const departments = (await getCollection('departments')).sort(
       </header>
 
       {Content ? (
-        <article class="prose article-prose max-w-none">
-          <Content />
-        </article>
+        <MarkdownContent Content={Content} variant="about" />
       ) : null}
       <section class="space-y-3">
         <h2 class="text-xl font-semibold">部门简介</h2>

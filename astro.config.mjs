@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import { defaultSchema } from 'hast-util-sanitize'
+import remarkGfm from 'remark-gfm'
 import remarkNoIndent from './src/remark/noindent.mjs'
 import siteConfig from './sfa.config.json' assert { type: 'json' }
  
@@ -30,6 +31,8 @@ export default defineConfig({
   markdown: {
     // Build remarkPlugins based on feature flags (GFM/LaTeX removed)
     remarkPlugins: [
+      // Enable GitHub Flavored Markdown (tables, task lists, strikethrough, autolinks)
+      remarkGfm,
       ...(ENABLE_DIALECT ? [remarkNoIndent] : []),
     ],
     // allow inline/raw HTML in markdown content but sanitize it to avoid XSS
@@ -57,6 +60,13 @@ export default defineConfig({
               'role',
               'tabindex',
               'title',
+            ],
+            // Allow limited attributes for GFM task list checkboxes
+            input: [
+              ...(defaultSchema.attributes?.input || []),
+              'type',
+              'checked',
+              'disabled',
             ],
           },
         },
