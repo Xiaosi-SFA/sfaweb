@@ -43,11 +43,12 @@ const defaultClassByVariant: Record<string, string> = {
 }
 const cls = proseClass ?? defaultClassByVariant[variant] ?? defaultClassByVariant.article
 const alignMap: Record<string, string> = {
-	left: 'text-left',
-	center: 'text-center',
-	right: 'text-right',
+	left: 'doc-align-left',
+	center: 'doc-align-center',
+	right: 'doc-align-right',
 }
 const alignCls = align ? (alignMap[String(align).toLowerCase()] ?? '') : ''
+
 ---
 
 <div class={`${cls} ${alignCls}`} data-indent={IND > 0 ? 'true' : 'false'} style={IND > 0 ? `--para-indent: ${IND}em` : undefined}>

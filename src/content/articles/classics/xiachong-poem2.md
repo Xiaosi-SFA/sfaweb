@@ -4,6 +4,7 @@ date: 2025-11-07
 author: "@夏虫"
 tags: [诗歌]
 summary: ""
+align: "center"
 ---
 
 灰如雪，重山叠水渐星月。

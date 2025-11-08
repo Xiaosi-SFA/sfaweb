@@ -4,7 +4,7 @@ date: 2025-11-05
 author: "@百里秦"
 tags: [诗歌]
 summary: "" 
-align: "middle"
+align: "center"
 ---
 
 久在蜀云居，今拜青城山。

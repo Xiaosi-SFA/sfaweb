@@ -13,6 +13,8 @@ const articles = defineCollection({
     indent: z.number().int().nonnegative().default(2),
     // 兼容字段：int（如提供则可覆盖 indent），单位同上
     int: z.number().int().nonnegative().optional(),
+    // 页面默认正文对齐：left | center | right
+    align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 
@@ -33,6 +35,8 @@ const activity = defineCollection({
     indent: z.number().int().nonnegative().default(0),
     // 兼容字段：int（如提供则可覆盖 indent），单位同上
     int: z.number().int().nonnegative().optional(),
+    // 页面默认正文对齐：left | center | right
+    align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 
@@ -60,6 +64,8 @@ const departments = defineCollection({
     duties: z.array(z.string()).optional(),
     order: z.number().optional(),
     linkedActivities: z.array(z.string()).optional(),
+    // 部门简介正文对齐
+    align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 
@@ -103,6 +109,8 @@ const groups = defineCollection({
       })
       .optional(),
     order: z.number().optional(),
+    // 小组页面正文对齐
+    align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 
@@ -113,6 +121,8 @@ const about = defineCollection({
     title: z.string(),
     intro: z.string().max(600).optional(),
     updated: z.date().optional(),
+    // 关于页正文对齐
+    align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 

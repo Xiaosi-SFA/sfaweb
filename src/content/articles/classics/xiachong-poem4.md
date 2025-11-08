@@ -3,6 +3,8 @@ title: "无题"
 date: 2025-11-07
 author: "@夏虫"
 tags: [诗歌]
+summery: ""
+align: "center"
 ---
 
 我本野庐客，误闯入天家。
