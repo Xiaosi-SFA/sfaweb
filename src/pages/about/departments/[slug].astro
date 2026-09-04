@@ -1,22 +1,27 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import NotFound from '@components/NotFound.astro'
 import MemberCard from '@components/MemberCard.astro'
 import MarkdownContent from '@components/MarkdownContent.astro'
 import { getCollection } from 'astro:content'
 import ActivityCard from '@components/ActivityCard.astro'
 
-const { slug } = Astro.params
-const departments = await getCollection('departments')
-const dept = departments.find((d) => d.slug === slug)
-const hasIntro = !!(dept && (
-  Array.isArray(dept.data.intro)
-    ? dept.data.intro.some((p) => typeof p === 'string' && p.trim().length > 0)
-    : typeof dept.data.intro === 'string' && dept.data.intro.trim().length > 0
-))
-if (!dept || !hasIntro) {
-  Astro.response.status = 404
+export async function getStaticPaths() {
+  const departments = await getCollection('departments')
+  return departments
+    .filter((d) => {
+      return Array.isArray(d.data.intro)
+        ? d.data.intro.some((p: any) => typeof p === 'string' && p.trim().length > 0)
+        : typeof d.data.intro === 'string' && d.data.intro.trim().length > 0
+    })
+    .map((dept) => ({
+      params: { slug: dept.slug },
+      props: { dept },
+    }))
 }
+
+const { dept } = Astro.props
+const slug = dept.slug
+
 const members = await getCollection('members')
 const deptMembers = members
   .filter((m) => (m.slug.split('/')[0] === slug))
@@ -42,73 +47,69 @@ const linkedActivities: any[] = ((dept?.data.linkedActivities || []) as string[]
   .map((s: string) => activityMap.get(s))
   .filter(Boolean)
 ---
-{dept && hasIntro ? (
-  <BaseLayout title={`${dept.data.title} - 关于我们 - SFA`}>
-    <div class="mx-auto w-full md:w-3/4 lg:w-1/2">
-    <section class="space-y-6">
-      <header class="space-y-2">
-        <h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">{dept.data.title}</h1>
-  <MarkdownContent paragraphs={dept.data.intro} proseClass="prose article-prose max-w-none" align={dept.data?.align} />
-      </header>
-      {dept.data.duties?.length ? (
-        <section class="space-y-3">
-          <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">主要职责</h2>
-          <ul class="list-disc pl-5 space-y-1 text-slate-700 dark:text-slate-300">
-            {dept.data.duties.map((d) => (<li>{d}</li>))}
-          </ul>
-        </section>
-      ) : null}
-
+<BaseLayout title={`${dept.data.title} - 关于我们 - SFA`}>
+  <div class="mx-auto w-full md:w-3/4 lg:w-1/2">
+  <section class="space-y-8">
+    <header class="space-y-3 pb-6 border-b border-slate-200/80 dark:border-white/10">
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{dept.data.title}</h1>
+      <MarkdownContent paragraphs={dept.data.intro} proseClass="prose article-prose max-w-none text-slate-600 dark:text-slate-300" align={dept.data?.align} />
+    </header>
+    {dept.data.duties?.length ? (
       <section class="space-y-3">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">部门成员</h2>
-        {deptMembers.length ? (
-          <div class="grid gap-4 md:grid-cols-2">
-            {deptMembers.map((m) => (
-              <MemberCard avatar={m.data.avatar} name={m.data.name} quote={m.data.quote} bio={m.data.bio} position={m.data.position} />
-            ))}
-          </div>
-        ) : (
-          <p class="text-slate-500 dark:text-slate-400">暂时还没有成员信息，敬请期待。</p>
-        )}
+        <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">主要职责</h2>
+        <ul class="list-disc pl-5 space-y-1 text-slate-700 dark:text-slate-300">
+          {dept.data.duties.map((d: string) => (<li>{d}</li>))}
+        </ul>
       </section>
+    ) : null}
 
-      <section class="space-y-3">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">活动</h2>
-        {linkedActivities.length ? (
-          <div class="grid gap-3 sm:grid-cols-2">
-            {linkedActivities.slice(0, 4).map((e) => (
-              <ActivityCard title={e.data.title} date={e.data.date} cover={e.data.cover} compact={true} summary={e.data.summary} />
-            ))}
-          </div>
-        ) : (
-          <p class="text-slate-500 dark:text-slate-400">暂时还没有该部门相关的活动。</p>
-        )}
-      </section>
-
-      <section class="space-y-3">
-        <h2 class="text-lg font-semibold text-slate-900 dark:text-slate-100">画廊</h2>
-        {gallery.length ? (
-          <div class="columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
-            {gallery.map((item) => (
-              <article class="mb-4 break-inside-avoid rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
-                <div class="relative">
-                  <img src={item.data.image} alt={item.data.intro} class="w-full h-auto block" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
-                  <div class="hidden place-items-center w-full aspect-[4/3] bg-slate-100 dark:bg-[#2c2c2e] text-slate-400 dark:text-slate-500 text-sm">图片缺失</div>
-                </div>
-                <div class="p-3 space-y-1">
-                  <time class="text-xs text-slate-500 dark:text-slate-400">{fmt(item.data.date)}</time>
-                  <p class="text-sm leading-6 text-slate-700 dark:text-slate-300">{item.data.intro}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <p class="text-slate-500 dark:text-slate-400">暂时还没有画廊内容。</p>
-        )}
-      </section>
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">部门成员</h2>
+      {deptMembers.length ? (
+        <div class="grid gap-4 md:grid-cols-2">
+          {deptMembers.map((m) => (
+            <MemberCard avatar={m.data.avatar} name={m.data.name} quote={m.data.quote} bio={m.data.bio} position={m.data.position} />
+          ))}
+        </div>
+      ) : (
+        <p class="text-slate-500 dark:text-slate-400 text-sm">暂时还没有成员信息，敬请期待。</p>
+      )}
     </section>
-    </div>
-  </BaseLayout>
-) : (
-  <NotFound />
-)}
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">活动</h2>
+      {linkedActivities.length ? (
+        <div class="grid gap-4 sm:grid-cols-2">
+          {linkedActivities.slice(0, 4).map((e) => (
+            <ActivityCard title={e.data.title} date={e.data.date} cover={e.data.cover} compact={true} summary={e.data.summary} />
+          ))}
+        </div>
+      ) : (
+        <p class="text-slate-500 dark:text-slate-400 text-sm">暂时还没有该部门相关的活动。</p>
+      )}
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">画廊</h2>
+      {gallery.length ? (
+        <div class="columns-1 sm:columns-2 lg:columns-3 gap-4 [column-fill:_balance]">
+          {gallery.map((item) => (
+            <article class="mb-4 break-inside-avoid rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden backdrop-blur">
+              <div class="relative">
+                <img src={item.data.image} alt={item.data.intro} class="w-full h-auto block" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
+                <div class="hidden place-items-center w-full aspect-[4/3] bg-slate-100 dark:bg-[#2c2c2e] text-slate-400 dark:text-slate-500 text-sm">图片缺失</div>
+              </div>
+              <div class="p-3 space-y-1">
+                <time class="text-xs text-slate-500 dark:text-slate-400">{fmt(item.data.date)}</time>
+                <p class="text-sm leading-6 text-slate-700 dark:text-slate-300">{item.data.intro}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <p class="text-slate-500 dark:text-slate-400 text-sm">暂时还没有画廊内容。</p>
+      )}
+    </section>
+  </section>
+  </div>
+</BaseLayout>

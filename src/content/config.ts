@@ -18,13 +18,12 @@ const articles = defineCollection({
   }),
 })
 
-
- 
 const activity = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
     date: z.date(),
+    author: z.string().optional(),
     tags: z.array(z.string()).default([]),
     summary: z.string().max(280).optional(),
     cover: z.string().optional(),
@@ -52,8 +51,6 @@ const links = defineCollection({
   }),
 })
 
-// (moved to bottom export)
-
 // ——— Departments and Members ———
 const departments = defineCollection({
   type: 'content',
@@ -80,7 +77,7 @@ const members = defineCollection({
   }),
 })
 
-// Department gallery entries, organized by folder: src/content/dept-gallery/{dept}/...
+// Department gallery entries, organized by folder: src/content/deptGallery/{dept}/...
 const deptGallery = defineCollection({
   type: 'content',
   schema: z.object({
@@ -126,22 +123,6 @@ const about = defineCollection({
   }),
 })
 
-// i18n language data collection
-// Each file under src/content/lang/{locale}/{namespace}.json(yaml) should follow:
-// {
-//   "locale": "zh",
-//   "namespace": "common",
-//   "messages": { "nav": { "home": "首页", ... } }
-// }
-const lang = defineCollection({
-  type: 'data',
-  schema: z.object({
-    locale: z.string(),
-    namespace: z.string().default('common'),
-    messages: z.record(z.any()),
-  }),
-})
-
 // Ribbon data collection (JSON arrays under src/content/ribbon/*.json)
 const ribbon = defineCollection({
   type: 'data',
@@ -157,5 +138,5 @@ const ribbon = defineCollection({
   ),
 })
 
-// Re-export including new collections
-export const collections = { articles, activity, links, departments, members, deptGallery, groups, about, lang, ribbon }
+// Re-export valid collections
+export const collections = { articles, activity, links, departments, members, deptGallery, groups, about, ribbon }

@@ -1,132 +1,173 @@
-# SFA 社团官网
+# SFA 社团官网（小四的机密档案室）
 
-使用 Astro + Tailwind 构建的社团文章与消息门户，Node 适配器提供 API 路由。
+四川大学科幻协会（SFA）官方文章与活动纪实门户，基于 Astro 4 + Tailwind CSS 构建的静态站点（SSG），采用 Apple 风格极简设计语言，支持多语言与明暗主题，并通过 GitHub Actions 自动部署至 GitHub Pages。
 
-## 目标
+---
 
-- 存放社团产出的文章（Markdown，支持标签、作者、摘要）
-- 提供消息门户（公告/更新）
-- 提供 JSON API（文章、消息）便于后续小程序/飞书机器人接入
+## 特性亮点
+
+- **Apple 风格极简设计**：高质感毛玻璃效果（Frosted Glass）、深浅主题自由切换、弹性卡片动效与精致排版。
+- **纯静态构建（SSG）**：使用 Astro 4 原生静态输出，极速加载，无需 Node 服务端即可在 GitHub Pages 等任何静态服务商托管。
+- **结构化内容管理**：基于 Astro Content Collections，严格校验文章、活动、部门、成员、友链及兴趣小组数据。
+- **全动态多级路由**：完整支持多层级文章与活动分类，自动生成对应的静态 HTML 详情页与按标签聚合页。
+- **RSS 静态订阅**：自动在构建期静态生成 `/rss.xml`，方便 RSS 订阅者获取社团最新文章与活动动态。
+- **CI/CD 自动化**：内置 GitHub Actions 工作流，主分支有更新自动触发构建与发布。
+
+---
 
 ## 技术栈
 
-- 前端：Astro 4、Tailwind CSS
-- 后端：Astro Endpoint（Node 适配器）
-- 内容：Astro Content Collections（`src/content`）
+- **构建框架**：[Astro 4](https://astro.build/)（Static 输出模式）
+- **样式方案**：[Tailwind CSS](https://tailwindcss.com/)
+- **内容引擎**：Astro Content Collections + Markdown（支持 rehype/remark 安全清洗与中心对齐渲染）
+- **部署平台**：GitHub Pages（通过 GitHub Actions）
+- **包管理器**：pnpm (v9)
 
-## 项目结构设计
+---
+
+## 项目目录结构
 
 ```text
-. 
-├── astro.config.mjs                 # Astro 配置（Node 适配器 + Tailwind 集成）
-├── package.json                     # 脚本与依赖
-├── postcss.config.cjs               # PostCSS 配置
-├── tailwind.config.cjs              # Tailwind 配置
-├── tsconfig.json                    # TS 严格配置
+.
+├── .github/workflows/
+│   └── deploy.yml                   # GitHub Actions 自动构建与部署流水线
 ├── public/
-│   └── favicon.svg                  # 站点图标
+│   ├── xiaosi.png                   # 首页 Hero 徽标
+│   ├── favicon.svg                  # 站点矢量图标
+│   └── back.png                     # 缺省卡片封面回退图
 ├── src/
-│   ├── content/
-│   │   ├── config.ts               # 内容集合定义（articles、news）
-│   │   ├── articles/               # 文章 Markdown 内容
-│   │   └── news/                   # 消息 Markdown 内容
+│   ├── components/                  # 复用 UI 组件（卡片、导航栏、页脚等）
+│   ├── content/                     # 内容集合 Markdown 数据源
+│   │   ├── config.ts                # 内容集合 Schema 严格类型定义
+│   │   ├── about/                   # 社团介绍
+│   │   ├── activity/                # 活动纪实（支持 anime/organization 等子目录）
+│   │   ├── articles/                # 社团文章（classics/essays/reviews/contributions）
+│   │   ├── departments/             # 各部门简介
+│   │   ├── deptGallery/             # 部门工作展示画廊
+│   │   ├── groups/                  # 兴趣爱好小组
+│   │   ├── lang/                    # 中英文界面文案（zh-cn.lang, en.lang）
+│   │   ├── links/                   # 外部友链数据
+│   │   ├── members/                 # 部门成员数据
+│   │   └── ribbon/                  # 徽章墙数据
 │   ├── layouts/
-│   │   └── BaseLayout.astro        # 站点基础布局
-│   ├── pages/
-│   │   ├── index.astro             # 首页（最新消息 + 最新文章）
-│   │   ├── articles/
-│   │   │   ├── [slug].astro        # 文章详情页
-│   │   │   └── index.astro         # 文章列表页
-│   │   ├── news/
-│   │   │   └── index.astro         # 消息列表页
-│   │   └── api/
-│   │       ├── articles.json.ts    # 文章 JSON API：/api/articles.json?tag=xxx
-│   │       └── news.json.ts        # 消息 JSON API：/api/news.json?limit=20
-│   └── styles/
-│       └── global.css              # Tailwind 全局样式
-└── .gitignore
+│   │   └── BaseLayout.astro         # 站点全局基础布局
+│   ├── pages/                       # 静态路由页面
+│   │   ├── 404.astro                # 404 错误页面（编译为 404.html）
+│   │   ├── index.astro              # 首页
+│   │   ├── rss.xml.ts               # RSS 订阅静态生成器
+│   │   ├── about/                   # 关于我们页面与部门详情
+│   │   ├── activity/                # 活动列表与 [...slug] 详情
+│   │   ├── articles/                # 文章列表与 [...slug] 详情
+│   │   ├── groups/                  # 兴趣小组页面
+│   │   ├── links/                   # 友链页面
+│   │   ├── tags/                    # 标签列表与 [tag] 聚合页面
+│   │   └── [lang]/                  # 多语言静态路由代理
+│   ├── styles/                      # 样式定义（包含 global.css, card.css, tag.css 等）
+│   └── env.d.ts                     # Astro 类型支持
+├── astro.config.mjs                 # Astro 核心配置文件
+├── sfa.config.json                  # 排版与渲染特性开关
+└── package.json                     # 项目配置与依赖
 ```
 
-## 特性开关与回滚（配置文件）
+---
 
-核心行为统一由配置文件管理：
+## 本地开发指南
 
-- 配置文件位置：项目根目录 `sfa.config.json`
-- 建议做法：提交一份标准配置到仓库（已提供默认），按环境修改后重新构建即可生效。
+### 1. 安装依赖
 
-示例（`sfa.config.json`）：
+推荐使用 `pnpm`：
 
-```json
-{
-  "markdown": {
-    "enableDialect": false
-  },
-  "ui": {
-    "enableIndent": true
-  }
-}
+```bash
+pnpm install
 ```
 
-字段说明：
+### 2. 本地开发调试
 
-- markdown.enableDialect：启用自定义方言（段落标记 `[flush]`、`[noindent]`、`[right]`、`[center]` 等），默认 false。
-- ui.enableIndent：是否按 frontmatter 的 `indent`/`int` 恢复段首缩进，默认 true（文章页）。
+启动本地开发服务器：
 
-说明：本项目已移除 GFM（表格/任务列表/删除线等）与 LaTeX（KaTeX）支持，保留原生 HTML 与必要的安全清洗，并在构建阶段将 `<center>` 转为可交互遮罩容器。
+```bash
+pnpm dev
+```
 
-修改完配置文件后，执行构建即可：
+默认将在 `http://localhost:4321` 运行。
 
-```sh
+### 3. 本地静态构建与预览
+
+执行静态编译：
+
+```bash
 pnpm build
+```
+
+产物将输出在 `dist/` 目录下。您可以使用以下命令本地预览构建效果：
+
+```bash
 pnpm preview
 ```
 
-## 部署
-
-- Node 运行（内置独立 server）：使用 `@astrojs/node` 适配器，`pnpm run build` 后可 `pnpm run preview` 启动。
-- 静态托管也可（若不使用动态 API 路由，可改用静态适配器）。
-
-## 后续规划
-
-- 文章搜索与标签页
-- 管理端（登录 + MD 编辑）或接入 Headless CMS
-- RSS 输出（/rss.xml）
-
-## 文章/活动详情的段首缩进配置
-
-> 当前基线（baseline）默认不启用段首缩进，且自定义方言关闭；如需恢复，请编辑 `sfa.config.json` 中的 `ui.enableIndent` 或 `markdown.enableDialect` 并重新构建。
-
-- 在 Markdown 前言区（frontmatter）中可通过 `indent` 字段配置段首缩进（单位：em，对段落 `<p>` 的首行生效）。
-- 默认值：
-  - 文章详情：`indent: 2`
-  - 活动详情：`indent: 0`
-
-- 特殊标记：将某段落首行顶格（不缩进）
-  - 在段落开头加任一标记：`[flush]`、`[noindent]` 或 `【顶格】`
-  - 标记会被移除，不会显示在页面上；仅该段落首行顶格，其余段落仍按 `indent` 生效。
-
-- 特殊标记：将某段落整体右对齐（用于署名等）
-  - 在段落开头加任一标记：`[right]`、`【右对齐】` 或 `【署名】`
-  - 段落将 `text-align: right;`，并自动顶格（不受段首缩进影响）。
-
-示例（文章）：
-
-```yaml
 ---
-title: 一篇文章
-date: 2025-11-04
-tags: [示例]
-indent: 2 # 段首缩进 2em（可按需调整为 0/1/2/...）
+
+## 部署至 GitHub Pages
+
+项目已包含完整的 GitHub Actions 持续部署配置（`.github/workflows/deploy.yml`）。
+
+### 部署准备
+
+1. **启用 GitHub Pages**：
+   - 进入您的 GitHub 仓库：**Settings** -> **Pages**。
+   - 在 **Build and deployment** 下的 **Source** 中选择 **GitHub Actions**。
+2. **分支触发**：
+   - 向 `main` 分支提交或推送代码，GitHub Actions 会自动触发构建并部署。
+
+### 自定义域名或子路径支持
+
+- **默认站点地址**：`https://<username>.github.io`
+- 如果您部署在子路径（例如 `https://<username>.github.io/sfaweb/`），可以通过仓库的 **Settings** -> **Secrets and variables** -> **Actions** 添加变量：
+  - `BASE_PATH`：例如 `/sfaweb/`
+  - `SITE_URL`：例如 `https://<username>.github.io`
+- 如果绑定了自定义独立域名（如 `https://sfa.scu.edu.cn`），保持 `BASE_PATH=/` 并设置 `SITE_URL` 即可。
+
 ---
+
+## 验收与转为公开仓库指南
+
+当您验收完毕并准备将当前私有仓库转为公开仓库时，如果希望提交历史干净整齐（没有多余的草稿或杂乱历史），建议按以下步骤操作：
+
+### 方案 A：保留当前提交，直接转公开
+
+在命令行运行：
+
+```bash
+gh repo edit --visibility public
 ```
 
-示例（活动）：
+### 方案 B：重置为一个干净的全新初始提交（推荐）
 
-```yaml
----
-title: 一次活动
-date: 2025-11-04
-tags: [活动]
-indent: 0 # 活动默认 0，也可根据需要覆盖
----
+如果您希望公开仓库只有 1 个干净的 `Initial commit`：
+
+```bash
+# 1. 创建并切换到一个没有历史记录的全新孤立分支
+git checkout --orphan clean-main
+
+# 2. 将当前所有清理后的文件加入暂存区
+git add -A
+
+# 3. 提交全新起点
+git commit -m "feat: initial commit for SFA website"
+
+# 4. 删除旧的 main 分支并重命名新分支
+git branch -D main
+git branch -m main
+
+# 5. 强制推送到 GitHub
+git push -f origin main
+
+# 6. 将仓库转为公开
+gh repo edit --visibility public
 ```
+
+---
+
+## 许可证
+
+本项目内容与代码归四川大学科幻协会（SFA）所有。

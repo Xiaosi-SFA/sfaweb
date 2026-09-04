@@ -4,64 +4,57 @@ import { getCollection } from 'astro:content'
 import TOC from '@components/TOC.astro'
 import RelatedPosts from '@components/RelatedPosts.astro'
 import BackToTopOrb from '@components/BackToTopOrb.astro'
-import NotFound from '@components/NotFound.astro'
 import MarkdownContent from '@components/MarkdownContent.astro'
 import '@styles/tag.css'
 
-// Catch-all 文章详情路由：支持多级路径（如 foo/bar -> slug 为 "foo/bar"）
-const rawSlug = Astro.params.slug
-// 将路由参数规整为字符串：string[] 时用 "/" 连接，undefined 则退回空串
-const slug = Array.isArray(rawSlug) ? rawSlug.join('/') : rawSlug ?? ''
-
-// 从内容集合中查找与 slug 对应的文章；未找到则返回 404
-const entry = slug ? (await (getCollection as any)('articles')).find((e: any) => e.slug === slug) : undefined
-let Content: any = null
-let headings: Array<{ depth: number; text: string; slug: string }> = []
-
-if (entry) {
-  const rendered = await entry.render()
-  Content = rendered.Content
-  headings = rendered.headings
-} else {
-  Astro.response.status = 404
+export async function getStaticPaths() {
+  const articles = await getCollection('articles')
+  return articles.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }))
 }
+
+const { entry } = Astro.props
+const { Content, headings } = await entry.render()
+
 // 文章可能设置 indent/int；具体是否生效由组件内部开关判定
 const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.indent ?? 0) || 0
 ---
-{entry ? (
-  <BaseLayout title={`${entry.data.title} - SFA`}>
-    <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-      <div class="order-2 md:order-1 md:col-span-1">
-        <!-- 侧栏：目录（TOC）与相关推荐；在桌面端吸附（sticky） -->
-        <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
-          <div class="hidden md:block">
-            <TOC headings={headings} />
-          </div>
-          <RelatedPosts currentSlug={entry.slug} tags={entry.data.tags} />
+<BaseLayout title={`${entry.data.title} - SFA`}>
+  <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+    <div class="order-2 md:order-1 md:col-span-1">
+      <!-- 侧栏：目录（TOC）与相关推荐；在桌面端吸附（sticky） -->
+      <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
+        <div class="hidden md:block">
+          <TOC headings={headings} />
+        </div>
+        <RelatedPosts currentSlug={entry.slug} tags={entry.data.tags} />
+      </div>
+    </div>
+    <article class="order-1 md:order-2 md:col-span-2 max-w-none">
+      {entry.data.cover ? (
+        <!-- 封面图：按 16:9 比例展示，避免布局跳动 -->
+        <img src={entry.data.cover} alt={entry.data.title} class="mb-4 w-full rounded-2xl object-cover shadow-sm border border-slate-200/60 dark:border-white/10" style="aspect-ratio: 16 / 9;" />
+      ) : null}
+      <h1 class="text-3xl font-extrabold tracking-tight leading-tight md:text-4xl text-slate-900 dark:text-slate-100">{entry.data.title}</h1>
+      <div class="mt-3 pb-6 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
+        <div class="flex items-center gap-2">
+          <time datetime={entry.data.date?.toISOString()}>
+            {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
+          </time>
+          {entry.data.author ? <span>· {entry.data.author}</span> : ''}
+        </div>
+        <div class="hidden sm:flex tag-list">
+          {entry.data.tags?.map((t: string) => (
+            <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--article hash">#{t}</a>
+          ))}
         </div>
       </div>
-      <article class="order-1 md:order-2 md:col-span-2 max-w-none">
-        {entry.data.cover ? (
-          <!-- 封面图：按 16:9 比例展示，避免布局跳动 -->
-          <img src={entry.data.cover} alt={entry.data.title} class="mb-4 w-full rounded-md object-cover" style="aspect-ratio: 16 / 9;" />
-        ) : null}
-        <h1 class="text-3xl font-extrabold leading-tight md:text-4xl">{entry.data.title}</h1>
-        <div class="mt-2 flex items-center justify-between text-sm text-slate-500">
-          <div>
-            {new Date(entry.data.date).toLocaleDateString('zh-CN', { year: 'numeric', month: 'short', day: 'numeric' })}
-            {entry.data.author ? ` · ${entry.data.author}` : ''}
-          </div>
-          <div class="hidden sm:flex tag-list">
-            {entry.data.tags?.map((t: string) => (
-              <a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--article hash">#{t}</a>
-            ))}
-          </div>
-        </div>
-  <MarkdownContent Content={Content} indent={paraIndent} align={entry.data?.align} />
-      </article>
-    </div>
-    <BackToTopOrb />
-  </BaseLayout>
-) : (
-  <NotFound />
-)}
+      <div class="pt-6">
+        <MarkdownContent Content={Content} indent={paraIndent} align={entry.data?.align} />
+      </div>
+    </article>
+  </div>
+  <BackToTopOrb />
+</BaseLayout>

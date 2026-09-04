@@ -22,30 +22,33 @@ interface Props {
 const { localePrefix, isHomeNormalized, pathNoLocale, t } = Astro.props as Props;
 
 const isSection = (prefix: string) => pathNoLocale === prefix || pathNoLocale.startsWith(prefix);
-const navBase = "relative inline-flex items-center py-3 -my-3 transition-colors nav-link";
-const navActive = "bg-[var(--neutral-5)] text-[#1d1d1f] dark:bg-[var(--neutral-5)] dark:text-[#f2f2f7]";
+const navBase = "relative inline-flex items-center py-2 px-3 text-[13px] sm:text-sm font-medium tracking-tight rounded-full transition-colors nav-link text-slate-700 dark:text-slate-200 hover:text-black dark:hover:text-white";
+const navActive = "bg-black/[0.05] dark:bg-white/[0.1] text-black dark:text-white";
 const navInactive = "";
 ---
 <header
-  class="site-header border-b border-slate-200 dark:border-[#2c2c2e] bg-white/80 dark:bg-[#1c1c1e]/75 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#1c1c1e]/60 sticky top-0 z-10"
+  class="site-header border-b border-black/[0.06] dark:border-white/[0.08] bg-white/75 dark:bg-[#161617]/75 backdrop-blur-xl sticky top-0 z-30 transition-all duration-300"
 >
-  <nav class="nav-main mx-auto max-w-6xl px-4 py-3 flex items-center gap-[var(--nav-inline-gap)]">
+  <nav class="nav-main mx-auto max-w-6xl px-4 py-2.5 flex items-center gap-[var(--nav-inline-gap)]">
     <span class="nav-highlight" aria-hidden="true"></span>
+    <a href={localePrefix || '/'} class="inline-flex items-center gap-2 mr-2 group shrink-0" aria-label="SFA Home">
+      <img src="/favicon.svg" alt="SFA" class="w-6 h-6 rounded-md object-contain transition-transform group-hover:scale-105" />
+    </a>
     <a href={localePrefix || '/'} class={`${navBase} ${isHomeNormalized ? `${navActive} is-active` : ''}`}>{t('nav.home','首页')}</a>
     <a href={`${localePrefix}/articles/`} class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>{t('nav.articles','文章')}</a>
-  <a href={`${localePrefix}/activity/`} class={`${navBase} ${isSection('/activity/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/activity/') ? 'page' : undefined}>{t('nav.activity','活动')}</a>
+    <a href={`${localePrefix}/activity/`} class={`${navBase} ${isSection('/activity/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/activity/') ? 'page' : undefined}>{t('nav.activity','活动')}</a>
     <a href={`${localePrefix}/about/`} class={`${navBase} ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>{t('nav.about','关于我们')}</a>
     <a href={`${localePrefix}/groups/`} class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>{t('nav.groups','兴趣小组')}</a>
     <a href={`${localePrefix}/links/`} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>
     <div class="ml-auto flex items-center gap-3">
-  <button id="theme-toggle" class="inline-flex items-center justify-center rounded-card border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-slate-800/70 px-2.5 py-1.5 hover:bg-white dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-white" aria-pressed="false" title={t('actions.toggleTheme','切换主题')}>
+      <button id="theme-toggle" class="w-9 h-9 inline-flex items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.12] bg-white/60 dark:bg-white/[0.06] hover:bg-black/[0.04] dark:hover:bg-white/[0.12] transition-colors text-slate-700 dark:text-slate-200 shadow-2xs" aria-pressed="false" title={t('actions.toggleTheme','切换主题')}>
         <span class="sr-only">切换主题</span>
         <!-- 太阳图标（亮） -->
-        <svg class="w-5 h-5 dark:hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg class="w-4.5 h-4.5 dark:hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 1 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-4a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM12 17a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V18a1 1 0 0 1 1-1ZM4.5 11.5a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM6.34 6.34a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 1 1-1.41 1.41L6.34 7.75a1 1 0 0 1 0-1.41Zm9.85 9.85a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 0 1-1.41 1.41l-1.06-1.06a1 1 0 0 1 0-1.41ZM17.66 6.34a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0ZM7.75 16.19a1 1 0 0 1 0 1.41L6.69 18.66a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0Z"/>
         </svg>
         <!-- 月亮图标（暗） -->
-        <svg class="w-5 h-5 hidden dark:block" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg class="w-4.5 h-4.5 hidden dark:block" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
         </svg>
       </button>

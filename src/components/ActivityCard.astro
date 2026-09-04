@@ -2,9 +2,7 @@
 /**
  * ActivityCard
  * - 用途：展示单个活动卡片，支持紧凑与标准两种布局。
- * - 交互：无脚本逻辑，纯样式与静态渲染。
- * - 无障碍：img 提供 alt，时间使用 <time> 标签。
- * - 性能：封面图片懒加载；缺省封面回退到 /back.png。
+ * - 风格：Apple 极简圆角卡片设计，支持半透明毛玻璃与微动效。
  */
 interface Props {
 	/** 卡片标题 */
@@ -28,52 +26,53 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
 import '@styles/tag.css'
 import '@styles/card.css'
 ---
-	{compact ? (
-		<article class="rounded-card border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
-			<div class="p-3 flex items-start gap-3">
-				<div class="h-16 w-24 flex-none rounded-card bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
-					<img
-						src={cover ?? '/back.png'}
-						alt={title}
-						class="h-full w-full object-cover"
-						loading="lazy"
-						onerror="this.onerror=null;this.src='/back.png'"
-					/>
-				</div>
-				<div class="min-w-0 space-y-1">
-					<h3 class="text-sm font-medium truncate">{title}</h3>
-					{summary ? (<p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">{summary}</p>) : null}
-					<div class="text-[11px] text-slate-500 dark:text-slate-400 space-x-2">
-						<time>{fmt(date)}</time>
-					</div>
-				</div>
-			</div>
-		</article>
-	) : (
-		<article class="rounded-card border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
-			<div class="relative aspect-[16/9] bg-slate-100 dark:bg-[#2c2c2e] rounded-card grid place-items-center" data-card-cover>
+{compact ? (
+	<article class="group rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#2c2c2e]/60 shadow-xs hover:shadow-md backdrop-blur-md transition-all duration-300 overflow-hidden">
+		<div class="p-3 flex items-start gap-3">
+			<div class="h-16 w-24 flex-none rounded-xl bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
 				<img
 					src={cover ?? '/back.png'}
 					alt={title}
-					class="h-full w-full object-cover"
+					class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 					loading="lazy"
 					onerror="this.onerror=null;this.src='/back.png'"
 				/>
 			</div>
-			<div class="p-3 space-y-1.5">
-				<h3 class="text-base font-semibold leading-snug line-clamp-2">{title}</h3>
-				<div class="text-xs text-slate-500 dark:text-slate-400 space-x-2">
-					<time>{fmt(date)}</time>
+			<div class="min-w-0 space-y-1">
+				<h3 class="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors truncate">{title}</h3>
+				{summary ? (<p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">{summary}</p>) : null}
+				<div class="text-[11px] text-slate-500 dark:text-slate-400">
+					<time datetime={date ? new Date(date).toISOString() : ''}>{fmt(date)}</time>
 				</div>
-				{tags?.length ? (
-					<div class="tag-list tag-list--right">
-						{tags.map((t) => (
-							<a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--card">#{t}</a>
-						))}
-					</div>
-				) : null}
-				{summary ? (<p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3">{summary}</p>) : null}
 			</div>
-		</article>
-	)}
-
+		</div>
+	</article>
+) : (
+	<article class="group rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#2c2c2e]/60 shadow-xs hover:shadow-lg backdrop-blur-md transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full">
+		<div class="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-[#2c2c2e] grid place-items-center" data-card-cover>
+			<img
+				src={cover ?? '/back.png'}
+				alt={title}
+				class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+				loading="lazy"
+				onerror="this.onerror=null;this.src='/back.png'"
+			/>
+		</div>
+		<div class="p-5 flex flex-col flex-1 justify-between">
+			<div>
+				<div class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+					<time datetime={date ? new Date(date).toISOString() : ''}>{fmt(date)}</time>
+				</div>
+				<h3 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-sky-500 transition-colors">{title}</h3>
+				{summary ? (<p class="mt-2 text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">{summary}</p>) : null}
+			</div>
+			{tags?.length ? (
+				<div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06] tag-list tag-list--right">
+					{tags.map((t) => (
+						<a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--card">#{t}</a>
+					))}
+				</div>
+			) : null}
+		</div>
+	</article>
+)}

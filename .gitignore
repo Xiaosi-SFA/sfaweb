@@ -13,4 +13,5 @@ dist
 # Local server config
 allowed-hosts.txt
 
-public/*
+# Claude Code
+.claude
