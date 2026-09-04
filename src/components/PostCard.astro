@@ -3,6 +3,7 @@
  * PostCard
  * - 用途：文章卡片，包含封面、日期、标题、摘要与标签。
  * - 风格：Apple 极简圆角卡片设计，支持半透明毛玻璃与悬浮微动效。
+ * - 素材缺失特性：当未提供封面或图片资源缺失/加载失败时，静默降级为极简矢量相框底纹，不展示破图或文本占位符号。
  */
 interface Props {
   href: string
@@ -18,15 +19,30 @@ import '@styles/card.css'
 ---
 <article class="group rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#2c2c2e]/60 shadow-xs hover:shadow-lg backdrop-blur-md transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full">
   <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-[#2c2c2e]/80 relative" data-card-cover>
-    <a href={href} aria-label={title} class="block w-full h-full">
-      <img
-        src={cover ?? '/back.png'}
-        alt={title}
-        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        loading="lazy"
-        onerror="this.onerror=null;this.src='/back.png'"
-      />
-    </a>
+    {cover ? (
+      <a href={href} aria-label={title} class="block w-full h-full relative">
+        <img
+          src={cover}
+          alt={title}
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <!-- 素材缺失特性：图片不存在时静默降级展示中性渐变，不展示破图或文本占位符号 -->
+        <div class="w-full h-full hidden items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#2c2c2e] dark:to-[#1c1c1e] text-slate-300 dark:text-slate-600">
+          <svg class="w-10 h-10 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+        </div>
+      </a>
+    ) : (
+      <!-- 素材缺失特性：未配置封面时展示极简中性渐变底纹 -->
+      <a href={href} aria-label={title} class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#2c2c2e] dark:to-[#1c1c1e] text-slate-300 dark:text-slate-600">
+        <svg class="w-10 h-10 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+      </a>
+    )}
   </div>
   <div class="p-5 flex flex-col flex-1 justify-between">
     <div>

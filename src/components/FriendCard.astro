@@ -20,11 +20,14 @@ const { title, url, description, logo } = Astro.props as Props
 <a href={url} target="_blank" rel="noopener noreferrer"
    class="group block rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
   <div class="flex items-center gap-4">
-    <div class="flex h-20 w-20 flex-none items-center justify-center overflow-hidden rounded-xl bg-slate-50 dark:bg-[#2c2c2e] ring-1 ring-black/[0.06] dark:ring-white/10 shadow-xs">
+    <div class="flex h-20 w-20 flex-none items-center justify-center overflow-hidden rounded-xl bg-slate-50 dark:bg-[#2c2c2e] ring-1 ring-black/[0.06] dark:ring-white/10 shadow-xs text-slate-400 dark:text-slate-500">
       {logo ? (
         <img src={logo} alt={`${title} logo`} class="max-h-20 max-w-20 object-contain" loading="lazy" />
       ) : (
-        <div class="text-slate-400 dark:text-slate-400 text-xs">No Logo</div>
+        <!-- 素材缺失特性：当友链 Logo 素材缺失时，展示极简外链矢量图标，不显示“No Logo”占位文本符号 -->
+        <svg class="w-8 h-8 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+        </svg>
       )}
     </div>
     <div class="min-w-0">

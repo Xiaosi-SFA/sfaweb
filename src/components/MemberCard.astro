@@ -2,7 +2,7 @@
 /**
  * MemberCard
  * - 用途：成员名片，展示头像、姓名、身份标签、语录与简介。
- * - 交互：头像加载失败回退为“头像缺失”占位。
+ * - 素材缺失：当成员头像素材缺失或加载失败时，静默降级展示极简矢量人形剪影，移除占位符号与文本。
  * - 无障碍：img 提供 alt；文本类信息按语义标签渲染。
  */
 interface Props {
@@ -32,9 +32,14 @@ const { avatar, name, quote, bio, position, labelOverride } = Astro.props as Pro
         style={avatar ? '' : 'display:none'}
         onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
       />
-      <div class="h-full w-full hidden grid place-items-center text-slate-400 dark:text-slate-500 text-[11px] tracking-wider"
-           style={avatar ? '' : 'display:grid'}>
-        头像缺失
+      <!-- 素材缺失：当头像不存在或加载失败时，降级显示极简轮廓，不显示占位文本符号 -->
+      <div
+        class="h-full w-full hidden grid place-items-center text-slate-300 dark:text-slate-600"
+        style={avatar ? '' : 'display:grid'}
+      >
+        <svg class="w-8 h-8 opacity-70" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.6-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+        </svg>
       </div>
     </div>
     <div class="min-w-0">
@@ -50,7 +55,7 @@ const { avatar, name, quote, bio, position, labelOverride } = Astro.props as Pro
         )}
         <h3 class="text-base font-semibold text-slate-800 dark:text-slate-200 truncate">{name}</h3>
       </div>
-  {quote ? <p class="mt-1 text-xs text-sky-700 dark:text-sky-300 italic whitespace-pre-line break-words">“{quote}”</p> : null}
+      {quote ? <p class="mt-1 text-xs text-sky-700 dark:text-sky-300 italic whitespace-pre-line break-words">“{quote}”</p> : null}
       {bio ? <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300 line-clamp-3">{bio}</p> : null}
     </div>
   </div>
