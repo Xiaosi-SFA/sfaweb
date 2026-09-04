@@ -212,16 +212,16 @@ const latestActivity = (await (getCollection as any)('activity'))
           <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-6 grid-cols-1 md:grid-cols-3">
         {latestActivity.map((e: any) => (
-          <a href={`/activity/${e.slug}/`} class="block h-full">
-            <ActivityCard title={e.data.title}
-              date={e.data.date}
-              cover={e.data.cover}
-              summary={e.data.summary}
-              tags={e.data.tags}
-            />
-          </a>
+          <ActivityCard
+            href={`/activity/${e.slug}/`}
+            title={e.data.title}
+            date={e.data.date}
+            cover={e.data.cover}
+            summary={e.data.summary}
+            tags={e.data.tags}
+          />
         ))}
       </div>
     </div>

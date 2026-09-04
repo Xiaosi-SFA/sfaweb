@@ -5,6 +5,8 @@
  * - 风格：Apple 极简圆角卡片设计，支持半透明毛玻璃与微动效。
  */
 interface Props {
+	/** 详情页链接（可选） */
+	href?: string
 	/** 卡片标题 */
 	title: string
 	/** 活动/新闻日期 */
@@ -19,7 +21,7 @@ interface Props {
 	summary?: string
 }
 
-const { title, date, cover, compact = false, tags = [], summary } = Astro.props as Props
+const { href, title, date, cover, compact = false, tags = [], summary } = Astro.props as Props
 
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 
@@ -30,16 +32,30 @@ import '@styles/card.css'
 	<article class="group rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#2c2c2e]/60 shadow-xs hover:shadow-md backdrop-blur-md transition-all duration-300 overflow-hidden">
 		<div class="p-3 flex items-start gap-3">
 			<div class="h-16 w-24 flex-none rounded-xl bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
-				<img
-					src={cover ?? '/back.png'}
-					alt={title}
-					class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-					loading="lazy"
-					onerror="this.onerror=null;this.src='/back.png'"
-				/>
+				{href ? (
+					<a href={href} aria-label={title} class="block w-full h-full">
+						<img
+							src={cover ?? '/back.png'}
+							alt={title}
+							class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+							loading="lazy"
+							onerror="this.onerror=null;this.src='/back.png'"
+						/>
+					</a>
+				) : (
+					<img
+						src={cover ?? '/back.png'}
+						alt={title}
+						class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+						loading="lazy"
+						onerror="this.onerror=null;this.src='/back.png'"
+					/>
+				)}
 			</div>
 			<div class="min-w-0 space-y-1">
-				<h3 class="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors truncate">{title}</h3>
+				<h3 class="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors truncate">
+					{href ? <a href={href}>{title}</a> : title}
+				</h3>
 				{summary ? (<p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">{summary}</p>) : null}
 				<div class="text-[11px] text-slate-500 dark:text-slate-400">
 					<time datetime={date ? new Date(date).toISOString() : ''}>{fmt(date)}</time>
@@ -50,20 +66,34 @@ import '@styles/card.css'
 ) : (
 	<article class="group rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#2c2c2e]/60 shadow-xs hover:shadow-lg backdrop-blur-md transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full">
 		<div class="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-[#2c2c2e] grid place-items-center" data-card-cover>
-			<img
-				src={cover ?? '/back.png'}
-				alt={title}
-				class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-				loading="lazy"
-				onerror="this.onerror=null;this.src='/back.png'"
-			/>
+			{href ? (
+				<a href={href} aria-label={title} class="block w-full h-full">
+					<img
+						src={cover ?? '/back.png'}
+						alt={title}
+						class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+						loading="lazy"
+						onerror="this.onerror=null;this.src='/back.png'"
+					/>
+				</a>
+			) : (
+				<img
+					src={cover ?? '/back.png'}
+					alt={title}
+					class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+					loading="lazy"
+					onerror="this.onerror=null;this.src='/back.png'"
+				/>
+			)}
 		</div>
 		<div class="p-5 flex flex-col flex-1 justify-between">
 			<div>
 				<div class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
 					<time datetime={date ? new Date(date).toISOString() : ''}>{fmt(date)}</time>
 				</div>
-				<h3 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-sky-500 transition-colors">{title}</h3>
+				<h3 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-sky-500 transition-colors">
+					{href ? <a href={href}>{title}</a> : title}
+				</h3>
 				{summary ? (<p class="mt-2 text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">{summary}</p>) : null}
 			</div>
 			{tags?.length ? (

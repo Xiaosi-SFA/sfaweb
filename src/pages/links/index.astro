@@ -2,7 +2,6 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import FriendCard from '../../components/FriendCard.astro'
-import RibbonWall from '../../components/RibbonWall.astro'
 
 const links = await getCollection('links')
   .then((xs) => xs.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh-Hans-CN')))
@@ -22,10 +21,5 @@ const links = await getCollection('links')
     ) : (
       <p class="text-slate-500 text-sm">尚无友链。</p>
     )}
-
-    <!-- 丝带墙：友链下方的单列重叠图带 -->
-    <div class="mt-10">
-      <RibbonWall />
-    </div>
   </section>
 </BaseLayout>
