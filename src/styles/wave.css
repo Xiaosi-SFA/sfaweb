@@ -1,12 +1,83 @@
-/* ECG Background styles extracted from global.css */
+/* ECG Background & Liquid Ambient Glow styles */
 .wave-bg {
   position: fixed;
   inset: 0;
   z-index: -1; /* behind page content */
   pointer-events: none;
+  overflow: hidden;
 }
+
+/* 液态环境光流层 Liquid Ambient Layer */
+.liquid-ambient-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -2;
+}
+
+.liquid-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.38;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.dark .liquid-orb {
+  filter: blur(105px);
+  opacity: 0.24;
+}
+
+.liquid-orb-1 {
+  width: min(600px, 75vw);
+  height: min(600px, 75vw);
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.75) 0%, rgba(56, 189, 248, 0.25) 60%, transparent 80%);
+  top: -10%;
+  left: 15%;
+  animation: floatLiquid1 22s ease-in-out infinite alternate;
+}
+
+.liquid-orb-2 {
+  width: min(500px, 65vw);
+  height: min(500px, 65vw);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.65) 0%, rgba(139, 92, 246, 0.2) 60%, transparent 80%);
+  bottom: 10%;
+  right: 5%;
+  animation: floatLiquid2 26s ease-in-out infinite alternate;
+}
+
+.liquid-orb-3 {
+  width: min(450px, 55vw);
+  height: min(450px, 55vw);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.5) 0%, rgba(45, 212, 191, 0.18) 60%, transparent 80%);
+  top: 45%;
+  left: -5%;
+  animation: floatLiquid3 24s ease-in-out infinite alternate;
+}
+
+@keyframes floatLiquid1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(10vw, 12vh) scale(1.1); }
+  100% { transform: translate(-6vw, 20vh) scale(0.94); }
+}
+
+@keyframes floatLiquid2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-12vw, -14vh) scale(1.12); }
+  100% { transform: translate(4vw, -8vh) scale(0.92); }
+}
+
+@keyframes floatLiquid3 {
+  0% { transform: translate(0, 0) scale(0.96); }
+  50% { transform: translate(14vw, -10vh) scale(1.14); }
+  100% { transform: translate(8vw, 15vh) scale(1); }
+}
+
+/* ECG Waveform */
 .wave-path {
-  stroke: rgba(14, 165, 233, 0.75); /* sky-500 */
+  stroke: rgba(14, 165, 233, 0.7); /* sky-500 */
   stroke-width: 2;
   fill: none;
   vector-effect: non-scaling-stroke;

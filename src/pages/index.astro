@@ -21,20 +21,20 @@ const latestActivity = (await (getCollection as any)('activity'))
   <section class="hero-anim relative min-h-screen p-8 md:p-12 overflow-visible flex items-center justify-center">
     <div class="max-w-3xl mx-auto text-center flex flex-col items-center justify-center" style="min-height:60vh;">
       <div class="logo-wrap hero-logo-wrap mx-auto mb-6 w-full">
-        <div class="hero-logo-frame rounded-md">
+        <div class="hero-logo-frame relative p-6 rounded-3xl liquid-glass flex items-center justify-center shadow-xl">
           <!-- 亮色主题 Logo -->
-          <img src="/xiaosi.png" alt="SFA logo" class="w-full h-full object-cover block dark:hidden" />
-          <!-- 暗色主题 Logo（占位：当前复用亮色版本，可后续替换 /public/logo1-night.png） -->
-          <img src="/xiaosi.png" alt="SFA logo night" class="w-full h-full object-cover hidden dark:block" />
+          <img src="/xiaosi.png" alt="SFA logo" class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(14,165,233,0.25)] block dark:hidden" />
+          <!-- 暗色主题 Logo -->
+          <img src="/xiaosi.png" alt="SFA logo night" class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(14,165,233,0.35)] hidden dark:block" />
         </div>
       </div>
 
       <h1 id="welcomeText" class="welcome-text text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-3 text-slate-900 dark:text-slate-100">欢迎来到小四的机密档案室</h1>
       <p class="welcome-sub text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-3 font-normal max-w-md mx-auto">四川大学科幻协会 · 官方文章与航程纪实档案</p>
 
-      <div class="welcome-actions mt-6 flex items-center justify-center gap-3">
-        <a href="#latest-articles" class="px-5 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-sm transition-all duration-200">浏览文章</a>
-        <a href="#latest-activity" class="px-5 py-2.5 rounded-full border border-black/10 dark:border-white/15 bg-white/70 dark:bg-white/[0.06] hover:bg-white dark:hover:bg-white/10 text-slate-800 dark:text-slate-200 font-semibold text-sm backdrop-blur-sm transition-all duration-200">近期活动</a>
+      <div class="welcome-actions mt-8 flex items-center justify-center gap-4">
+        <a href="#latest-articles" class="px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-md transition-all duration-300 hover:scale-105">浏览文章</a>
+        <a href="#latest-activity" class="px-6 py-3 rounded-full liquid-pill text-slate-800 dark:text-slate-100 font-semibold text-sm transition-all duration-300 hover:scale-105">近期活动</a>
       </div>
 
       <!-- 向上箭头，放在一个宽度 100% 的容器内以确保与 logo 精确居中对齐 -->

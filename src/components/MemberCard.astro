@@ -21,9 +21,9 @@ interface Props {
 }
 const { avatar, name, quote, bio, position, labelOverride } = Astro.props as Props
 ---
-<div class="rounded-lg border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 p-4 shadow-sm">
+<div class="rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-0.5">
   <div class="flex items-start gap-4">
-    <div class="h-16 w-16 overflow-hidden rounded-md bg-slate-100 dark:bg-[#2c2c2e] ring-1 ring-slate-200 dark:ring-[#2c2c2e] flex-none relative">
+    <div class="h-16 w-16 overflow-hidden rounded-xl bg-slate-100 dark:bg-[#2c2c2e] ring-1 ring-black/[0.06] dark:ring-white/10 flex-none relative shadow-xs">
       <img
         src={avatar ?? ''}
         alt={name}

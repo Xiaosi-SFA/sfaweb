@@ -5,7 +5,6 @@
   - base: 注入 Tailwind 预设的 CSS Reset 与基础样式
   - components: 组合类（可在此层编写复用组件样式）
   - utilities: 原子类（如 p-4, flex 等）
-  注意：这些 at-rule 由构建器解析，编辑器可能提示“Unknown at rule”，但不影响构建。
 */
 @tailwind base;
 @tailwind components;
@@ -14,14 +13,14 @@
 :root {
   /* —— 全局主题变量 —— */
   /* 卡片/控件圆角 */
-  --radius-card: 14px;
+  --radius-card: 18px;
   /* 亮色主题下的页面前景/背景与弱化文字颜色 */
   --surface-bg: #f5f5f7;
   --text-primary: #1d1d1f;
   --text-muted: #6e6e73;
   --link-color: #06c;
-  --light-green: rgb(52, 119, 89); /* 浅色主题推荐 */
-  --dark-green: rgb(48, 209, 88);  /* 深色主题推荐 */
+  --light-green: rgb(52, 119, 89);
+  --dark-green: rgb(48, 209, 88);
 
   /* 中性色阶（亮色） */
   --neutral-1: #8e8e93;
@@ -31,14 +30,12 @@
   --neutral-5: #e5e5ea;
   --neutral-6: #f2f2f7;
 
-  /* —— 导航高亮与间距（可调）—— */
-  /* 以导航链接的基础水平内边距为基准（配合 BaseLayout 中的 .nav-link） */
-  /* 与 Tailwind 的 px-* 对齐：px-3 = 0.75rem, px-2.5 = 0.625rem */
-  --nav-base-px: 0.75rem; /* 控制每个导航项的基础水平内边距（收窄/加宽） */
-  --nav-active-extra-x: 0.5rem; /* 在基础内边距上额外加宽的量（0 关闭额外加宽） */
-  --nav-active-radius: 6px; /* 0 = 顶格直角长方形；增大则更圆润 */
-  --nav-inline-gap: 0.75rem; /* 导航项之间的间距（替代原 gap-6） */
-  --nav-highlight-h: 80%; /* 导航滑动高亮的高度（相对整条导航的百分比或长度），如 80% / 2rem */
+  /* —— 导航高亮与间距 —— */
+  --nav-base-px: 0.75rem;
+  --nav-active-extra-x: 0.5rem;
+  --nav-active-radius: 9999px;
+  --nav-inline-gap: 0.5rem;
+  --nav-highlight-h: 80%;
 }
 
 /* 中性色阶（暗色） */
@@ -49,19 +46,20 @@
   --neutral-4: #3a3a3c;
   --neutral-5: #2c2c2e;
   --neutral-6: #1c1c1e;
+  --surface-bg: #161617;
 }
 
-/* 更接近 Apple 的系统字体栈与默认前景/背景色 */
+/* Apple 系统字体栈与默认前景/背景色 */
 html, body, button, input, select, textarea {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro SC", "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro SC", "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
   color: var(--text-primary);
   background-color: var(--surface-bg);
 }
 
-/* 全局：防止横向溢出导致移动端页面缩放/可横向拖动 */
+/* 全局：防止横向溢出 */
 body { overflow-x: hidden; }
 
-/* macOS 风格圆角工具类 */
+/* macOS / iOS 风格圆角工具类 */
 .rounded-card {
   border-radius: var(--radius-card);
 }
@@ -73,7 +71,7 @@ body { overflow-x: hidden; }
 
 /* 文章/富文本中的媒体与长内容自适应屏幕 */
 .article-prose, .prose {
-  overflow-wrap: anywhere; /* 允许任意处换行以避免长串引起溢出 */
+  overflow-wrap: anywhere;
   word-break: break-word;
 }
 .article-prose img,
@@ -91,3 +89,111 @@ body { overflow-x: hidden; }
 }
 .link-primary:hover { text-decoration: underline; }
 
+/* ========================================================
+   液态玻璃体系 (Liquid Glass / Fluid Morphism)
+   参考 Apple visionOS 与 iOS 18 玻璃拟态设计语言
+   ======================================================== */
+
+.liquid-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.76) 0%,
+    rgba(255, 255, 255, 0.50) 50%,
+    rgba(255, 255, 255, 0.68) 100%
+  );
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  box-shadow:
+    0 8px 32px 0 rgba(14, 165, 233, 0.06),
+    0 2px 8px 0 rgba(0, 0, 0, 0.03),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.03);
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .liquid-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.35),
+    0 2px 8px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 2px 0 rgba(255, 255, 255, 0.04);
+}
+
+.liquid-glass:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 16px 48px 0 rgba(14, 165, 233, 0.14),
+    0 4px 16px 0 rgba(0, 0, 0, 0.06),
+    inset 0 2px 2px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.dark .liquid-glass:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 16px 48px 0 rgba(0, 0, 0, 0.5),
+    0 4px 16px 0 rgba(14, 165, 233, 0.12),
+    inset 0 2px 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 2px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* 液态胶囊控件 Liquid Pill */
+.liquid-pill {
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .liquid-pill {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+.liquid-pill:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.16), inset 0 1px 1px rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+}
+
+.dark .liquid-pill:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+/* 玻璃高光光泽（细边倒角反射） */
+.glass-specular {
+  position: relative;
+  overflow: hidden;
+}
+.glass-specular::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  pointer-events: none;
+}
+.dark .glass-specular::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+}

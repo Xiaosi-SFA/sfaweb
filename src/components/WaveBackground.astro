@@ -1,11 +1,9 @@
 ---
 /**
  * WaveBackground
- * - 用途：心电图风格的动态背景，包含基础波形与扫描高亮遮罩。
- * - 参数：宽/高/基线写死于组件内部；如需自定义可后续抽取为 props。
- * - 样式：依赖 @styles/wave.css，包含路径颜色与扫描动画。
+ * - 用途：液态流动光晕与心电图结合的动态氛围背景。
+ * - 风格：Apple 液态环境光（Liquid Ambient Orbs）+ 经典 ECG 扫描线。
  */
-// ECG animated background with scanning highlight and baseline
 const width = 1200
 const height = 600
 const baseline = 400
@@ -24,6 +22,13 @@ let d = `M0 ${baseline}`
 for (let i = 0; i < repeats; i++) d += segment
 ---
 <div class="wave-bg" aria-hidden="true">
+  <!-- 液态流光光晕层 Liquid Ambient Orbs -->
+  <div class="liquid-ambient-container">
+    <div class="liquid-orb liquid-orb-1"></div>
+    <div class="liquid-orb liquid-orb-2"></div>
+    <div class="liquid-orb liquid-orb-3"></div>
+  </div>
+
   <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <!-- scanning mask with edge fade -->

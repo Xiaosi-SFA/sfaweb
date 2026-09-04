@@ -1,36 +1,69 @@
-/* Shared card styles for PostCard and ActivityCard */
+/* Shared liquid glass card styles for PostCard, ActivityCard, and Timeline */
 
 .card {
   border-radius: var(--radius-card);
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.9));
-  box-shadow: 0 1px 4px rgba(16,24,40,0.04);
-  transition: box-shadow 160ms ease, transform 160ms ease;
-  border: 1px solid var(--neutral-5);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0.52) 50%,
+    rgba(255, 255, 255, 0.70) 100%
+  );
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 8px 32px 0 rgba(14, 165, 233, 0.05),
+    0 2px 8px 0 rgba(0, 0, 0, 0.03),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 2px 0 rgba(0, 0, 0, 0.02);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark .card {
-  background: rgba(44,44,46,0.38);
-  border-color: var(--neutral-4);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.35),
+    0 2px 8px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.25),
+    inset 0 -1px 2px 0 rgba(255, 255, 255, 0.03);
 }
 
-.card:hover { box-shadow: 0 6px 18px rgba(16,24,40,0.08); transform: translateY(-2px); }
+.card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 16px 48px 0 rgba(14, 165, 233, 0.12),
+    0 4px 16px 0 rgba(0, 0, 0, 0.06),
+    inset 0 2px 2px 0 rgba(255, 255, 255, 1);
+}
+
+.dark .card:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 16px 48px 0 rgba(0, 0, 0, 0.5),
+    0 4px 16px 0 rgba(14, 165, 233, 0.12),
+    inset 0 2px 2px 0 rgba(255, 255, 255, 0.4);
+}
 
 .card-cover {
   width: 100%;
   display: block;
   overflow: hidden;
-  border-radius: var(--radius-card);
+  border-radius: calc(var(--radius-card) - 4px);
 }
 
 .card-thumb {
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
-/* Ensure card images always fill the cover area with object-fit: cover
-   - supports elements using the .card-cover class or the data attribute used in templates
-   - also covers .card-thumb images */
 .card-cover img,
 [data-card-cover] img,
 .card-thumb img {
@@ -38,31 +71,63 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Provide a default aspect ratio for card covers when not set inline */
+.card:hover .card-cover img,
+.card:hover [data-card-cover] img,
+.group:hover [data-card-cover] img {
+  transform: scale(1.04);
+}
+
+/* Provide a default aspect ratio for card covers */
 .card-cover,
 [data-card-cover] {
   aspect-ratio: 16 / 9;
 }
 
-.card-content { padding: 1rem; }
+.card-content { padding: 1.25rem; }
 
 .card-title a {
   color: var(--text-primary);
   text-decoration: none;
+  transition: color 0.2s ease;
 }
-.card-title a:hover { text-decoration: underline; }
+.card-title a:hover {
+  color: #0ea5e9;
+  text-decoration: none;
+}
 
 /* compact variant adjustments */
-.card--compact .card-content { padding: 0.75rem; }
+.card--compact .card-content { padding: 0.85rem; }
 .card--compact .card-title { font-size: 0.95rem; }
 
-/* Timeline integration: when a card appears inside a timeline wrapper,
-   the inner <article> should receive the same visual treatment. */
+/* Timeline integration */
 .timeline-card article {
   border-radius: var(--radius-card);
-  background: #ffffff;
-  box-shadow: 0 6px 18px rgba(2,6,23,0.06);
-  border: 1px solid rgba(15,23,42,0.06);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(255, 255, 255, 0.55) 100%
+  );
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    0 8px 32px 0 rgba(14, 165, 233, 0.08),
+    0 2px 8px 0 rgba(0, 0, 0, 0.04),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .timeline-card article {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 0, 0, 0.35),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.25);
 }
