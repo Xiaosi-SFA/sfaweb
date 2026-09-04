@@ -20,32 +20,28 @@ const latestActivity = (await (getCollection as any)('activity'))
   <!-- Hero 欢迎区（无背景、居中 Logo、欢迎语、向上箭头） -->
   <section class="hero-anim relative min-h-screen p-8 md:p-12 overflow-visible flex items-center justify-center">
     <div class="max-w-3xl mx-auto text-center flex flex-col items-center justify-center" style="min-height:60vh;">
-      <div class="logo-wrap hero-logo-wrap mx-auto mb-6 w-full">
-        <div class="hero-logo-frame relative p-6 rounded-3xl liquid-glass flex items-center justify-center shadow-xl">
-          <!-- 亮色主题 Logo -->
-          <img src="/xiaosi.png" alt="SFA logo" class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(14,165,233,0.25)] block dark:hidden" />
-          <!-- 暗色主题 Logo -->
-          <img src="/xiaosi.png" alt="SFA logo night" class="w-full h-full object-contain filter drop-shadow-[0_12px_24px_rgba(14,165,233,0.35)] hidden dark:block" />
-        </div>
+      <div class="logo-wrap hero-logo-wrap mx-auto mb-6 w-full flex items-center justify-center">
+        <!-- 亮色主题 Logo（无边框纯净显示） -->
+        <img src="/xiaosi.png" alt="SFA logo" class="w-auto h-40 sm:h-48 md:h-56 object-contain block dark:hidden" />
+        <!-- 暗色主题 Logo（无边框纯净显示） -->
+        <img src="/xiaosi.png" alt="SFA logo night" class="w-auto h-40 sm:h-48 md:h-56 object-contain hidden dark:block" />
       </div>
 
-      <h1 id="welcomeText" class="welcome-text text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-3 text-slate-900 dark:text-slate-100">欢迎来到小四的机密档案室</h1>
-      <p class="welcome-sub text-sm sm:text-base text-slate-500 dark:text-slate-400 mt-3 font-normal max-w-md mx-auto">四川大学科幻协会 · 官方文章与航程纪实档案</p>
+      <h1 id="welcomeText" class="welcome-text text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mt-4 text-slate-900 dark:text-slate-100">欢迎来到小四的机密档案室</h1>
 
       <div class="welcome-actions mt-8 flex items-center justify-center gap-4">
-        <a href="#latest-articles" class="px-6 py-3 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-md transition-all duration-300 hover:scale-105">浏览文章</a>
-        <a href="#latest-activity" class="px-6 py-3 rounded-full liquid-pill text-slate-800 dark:text-slate-100 font-semibold text-sm transition-all duration-300 hover:scale-105">近期活动</a>
+        <a href="#latest-articles" class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-md transition-all duration-300 hover:scale-105">文章</a>
+        <a href="#latest-activity" class="px-6 py-2.5 rounded-full liquid-pill text-slate-800 dark:text-slate-100 font-semibold text-sm transition-all duration-300 hover:scale-105">活动</a>
       </div>
 
-      <!-- 向上箭头，放在一个宽度 100% 的容器内以确保与 logo 精确居中对齐 -->
-      <div class="w-full flex flex-col items-center justify-center mt-24">
-        <button aria-label="上滑查看最新消息" class="arrow-wrap bg-transparent border-0 cursor-pointer w-14 h-14 p-0 m-0 flex items-center justify-center">
+      <!-- 向上箭头 -->
+      <div class="w-full flex flex-col items-center justify-center mt-20">
+        <button aria-label="查看内容" class="arrow-wrap bg-transparent border-0 cursor-pointer w-14 h-14 p-0 m-0 flex items-center justify-center">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-bounce-up w-10 h-10 block text-slate-900 dark:text-slate-100" aria-hidden="true">
             <!-- 向上三角形，居中显示 -->
             <path d="M12 6 L6 12 H18 L12 6 Z" fill="currentColor" />
           </svg>
         </button>
-        <div class="arrow-caption mt-2 text-xs text-slate-600 dark:text-slate-300">上滑查看更多</div>
       </div>
     </div>
     
@@ -191,17 +187,14 @@ const latestActivity = (await (getCollection as any)('activity'))
   <!-- 最新文章（上滑进入） -->
   <section id="latest-articles" class="py-16 md:py-20 border-t border-black/[0.04] dark:border-white/[0.06] bg-slate-50/50 dark:bg-[#161617]/50">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="flex items-end justify-between mb-8 pb-4 border-b border-black/[0.06] dark:border-white/[0.08]">
-        <div>
-          <span class="text-xs font-semibold uppercase tracking-wider text-sky-500">Articles</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 mt-1">最新文章</h2>
-        </div>
+      <div class="flex items-center justify-between mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">文章</h2>
         <a href="/articles/" class="inline-flex items-center gap-1 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 group">
-          全部文章
+          全部
           <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {latestArticles.map((a: any) => (
           <PostCard href={`/articles/${a.slug}/`} title={a.data.title} date={a.data.date} cover={a.data.cover} tags={a.data.tags} summary={a.data.summary} />
         ))}
@@ -209,20 +202,17 @@ const latestActivity = (await (getCollection as any)('activity'))
     </div>
   </section>
 
-  <!-- 最近活动（使用与时间轴相同的卡片） -->
+  <!-- 最近活动 -->
   <section id="latest-activity" class="py-16 md:py-20 border-t border-black/[0.04] dark:border-white/[0.06]">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="flex items-end justify-between mb-8 pb-4 border-b border-black/[0.06] dark:border-white/[0.08]">
-        <div>
-          <span class="text-xs font-semibold uppercase tracking-wider text-sky-500">Timeline</span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 mt-1">最近活动</h2>
-        </div>
+      <div class="flex items-center justify-between mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">活动</h2>
         <a href="/activity/" class="inline-flex items-center gap-1 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 group">
-          活动时间轴
+          全部
           <svg class="w-4 h-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
       </div>
-      <div class="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {latestActivity.map((e: any) => (
           <a href={`/activity/${e.slug}/`} class="block h-full">
             <ActivityCard title={e.data.title}

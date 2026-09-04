@@ -22,17 +22,16 @@ function initials(title: string) {
 }
 ---
 <BaseLayout title="兴趣小组 - SFA">
-  <section class="space-y-6">
-    <header class="text-center space-y-2">
-      <h1 class="text-3xl font-bold">兴趣小组</h1>
-      <p class="text-slate-600">加入一个小组，和同好一起探索更远的科幻宇宙。</p>
-    </header>
+  <section class="max-w-6xl mx-auto py-6 space-y-8">
+    <div class="mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">兴趣小组</h1>
+    </div>
 
-    <div class="flex flex-col items-center gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       {items.map((it, idx) => {
         const { entry: g, hasBody, Render } = it
         return (
-  <article data-idx={idx} class="group-card w-full max-w-2xl rounded-xl border border-slate-200 dark:border-[#2c2c2e] bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden">
+          <article data-idx={idx} class="group-card w-full rounded-2xl liquid-glass overflow-hidden transition-all duration-300 hover:-translate-y-1">
           <div class="p-5 sm:p-6 space-y-5">
             {/* 顶部：双栏布局（左：标题与简介；右：大头像 占 1/3） */}
             <div class="grid gap-5 md:grid-cols-3 items-start">

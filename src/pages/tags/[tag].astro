@@ -22,22 +22,20 @@ export async function getStaticPaths() {
 const { tag, list } = Astro.props
 ---
 <BaseLayout title={`#${tag} - SFA`}>
-  <div class="max-w-4xl mx-auto py-4">
-    <header class="mb-8 space-y-2">
-      <div class="inline-block px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 text-xs font-semibold uppercase tracking-wider">Tag</div>
+  <div class="max-w-4xl mx-auto py-6">
+    <div class="mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
       <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">#{tag}</h1>
-      <p class="text-sm text-slate-500 dark:text-slate-400">共找到 {list.length} 篇相关内容</p>
-    </header>
+    </div>
 
     {list.length === 0 ? (
-      <div class="text-center py-12 bg-white/70 dark:bg-[#2c2c2e]/60 rounded-2xl border border-slate-200/80 dark:border-white/10 backdrop-blur">
-        <p class="text-slate-600 dark:text-slate-400">暂无文章。</p>
+      <div class="text-center py-12 liquid-glass rounded-2xl">
+        <p class="text-slate-500 dark:text-slate-400 text-sm">暂无内容</p>
       </div>
     ) : (
       <div class="grid gap-4">
         {list.map((a: any) => (
           <a
-            class="group block p-6 bg-white/80 dark:bg-[#2c2c2e]/60 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:border-sky-500/30 dark:hover:border-sky-400/30"
+            class="group block p-5 rounded-2xl liquid-glass transition-all duration-300 hover:-translate-y-1"
             href={`/articles/${a.slug}/`}
           >
             <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">

@@ -1,37 +1,30 @@
 ---
 /**
  * SiteFooter
- * - 用途：站点页脚，包括版权年份与 GitHub 仓库链接。
- * - 设计：参考 Apple 极简与层次感页脚，微透明边框与精致微排版。
+ * - 用途：站点极简页脚
  */
 ---
 <footer
-  class="site-footer border-t border-slate-200/80 dark:border-white/10 py-10 text-center text-sm text-slate-500 dark:text-slate-400 bg-[#f5f5f7]/60 dark:bg-[#161617]/60 backdrop-blur-sm"
+  class="site-footer border-t border-black/[0.04] dark:border-white/[0.06] py-8 text-sm text-slate-500 dark:text-slate-400 bg-[#f5f5f7]/60 dark:bg-[#161617]/60 backdrop-blur-md"
 >
-  <div class="mx-auto max-w-6xl px-4 flex flex-col items-center gap-4">
-    <div class="flex items-center gap-6 text-xs text-slate-500 dark:text-slate-400">
-      <span>© {new Date().getFullYear()} 四川大学科幻协会 (SFA)</span>
-      <span>·</span>
-      <span>小四的机密档案室</span>
+  <div class="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="text-xs text-slate-500 dark:text-slate-400">
+      © {new Date().getFullYear()} 四川大学科幻协会
     </div>
 
-    <div class="flex items-center gap-4">
+    <div>
       <a
         href="https://github.com/Visio-Vanitas/sfaweb"
         target="_blank"
         rel="noopener noreferrer"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-[#2c2c2e]/60 border border-slate-200/80 dark:border-white/10 shadow-xs hover:border-sky-500/40 hover:text-sky-500 transition-all duration-200"
+        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium liquid-pill text-slate-600 dark:text-slate-300 hover:text-black dark:hover:text-white"
         aria-label="GitHub 仓库"
       >
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.486 2 12.021c0 4.424 2.865 8.175 6.839 9.504.5.09.682-.219.682-.485 0-.24-.009-.874-.014-1.716-2.782.605-3.369-1.343-3.369-1.343-.455-1.159-1.111-1.469-1.111-1.469-.908-.622.069-.609.069-.609 1.004.071 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.833.091-.648.35-1.088.636-1.338-2.221-.253-4.555-1.114-4.555-4.955 0-1.094.39-1.99 1.029-2.691-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.751 1.027A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.91-1.297 2.748-1.027 2.748-1.027.546 1.378.202 2.397.1 2.65.64.701 1.027 1.597 1.027 2.691 0 3.849-2.339 4.699-4.566 4.947.359.31.678.922.678 1.859 0 1.341-.012 2.422-.012 2.752 0 .269.18.58.688.481A10.026 10.026 0 0 0 22 12.021C22 6.486 17.523 2 12 2z"/>
         </svg>
         <span>GitHub</span>
       </a>
-    </div>
-
-    <div class="text-[11px] text-slate-400 dark:text-slate-500 tracking-wide">
-      网站设计与制作 · Visio Vanitas
     </div>
   </div>
 </footer>

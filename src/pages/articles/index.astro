@@ -9,28 +9,24 @@ const SECTION_META = [
   {
     slugPrefix: 'contributions',
     title: '投稿',
-    description: '来自成员与伙伴的真实之作，汇聚多元视角，传递思考与温度。',
     link: '/articles/contributions/',
     linkLabel: '更多',
   },
   {
     slugPrefix: 'essays',
     title: '杂谈',
-    description: '轻松的随笔与片刻的灵感，记录活动背后的心绪与社团的每一步成长。',
     link: '/articles/essays/',
     linkLabel: '更多',
   },
   {
     slugPrefix: 'reviews',
     title: '影评 / 书评',
-    description: '以从容的目光解读作品，洞见科幻想象力，并发现它启发我们的方式。',
     link: '/articles/reviews/',
     linkLabel: '更多',
   },
   {
     slugPrefix: 'classics',
     title: '诗歌 / 古文',
-    description: '诗词古文与现代诗，文字的韵律与格调在此相遇。',
     link: '/articles/classics/',
     linkLabel: '更多',
   },
@@ -58,11 +54,11 @@ articles.forEach((item) => {
 <BaseLayout title="文章 - SFA">
   <section class="space-y-12">
 
-    {SECTION_META.map(({ slugPrefix, title, description, link, linkLabel }) => {
+    {SECTION_META.map(({ slugPrefix, title, link, linkLabel }) => {
       const list = grouped.get(slugPrefix) ?? []
       return (
         <section class="space-y-4" data-section={slugPrefix}>
-          <SectionHeader title={title} description={description} link={link} linkLabel={linkLabel} />
+          <SectionHeader title={title} link={link} linkLabel={linkLabel} />
           {list.length ? (
             <div class="horizontal-scroll overflow-x-auto -mx-4 px-4">
               <div class="articles-row flex gap-4 pb-4 snap-x snap-mandatory">

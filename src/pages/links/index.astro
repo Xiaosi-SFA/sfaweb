@@ -8,20 +8,19 @@ const links = await getCollection('links')
   .then((xs) => xs.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh-Hans-CN')))
 ---
 <BaseLayout title="友链 - SFA">
-  <section class="space-y-6">
-    <header class="space-y-2">
-      <h1 class="text-3xl font-bold">友链</h1>
-      <p class="text-slate-600">欢迎与我们互换友链，如需添加请联系管理员或在仓库提 Issue。</p>
-    </header>
+  <section class="max-w-6xl mx-auto py-6 space-y-8">
+    <div class="mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
+      <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">友链</h1>
+    </div>
 
     {links.length ? (
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {links.map((l) => (
           <FriendCard title={l.data.title} url={l.data.url} description={l.data.description} logo={l.data.logo} />
         ))}
       </div>
     ) : (
-      <p class="text-slate-500">尚无友链，敬请期待。</p>
+      <p class="text-slate-500 text-sm">尚无友链。</p>
     )}
 
     <!-- 丝带墙：友链下方的单列重叠图带 -->
