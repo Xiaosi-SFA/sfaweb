@@ -38,6 +38,7 @@ feature / content update
 .
 ├── .github/workflows/
 │   └── deploy.yml              # GitHub Actions 自动化构建与部署流水线
+├── docs/                       # 站点文档与投稿指南（含 Frontmatter 模板与高级排版）
 ├── public/                     # 静态资源（图标、图片等无需编译的文件）
 ├── src/
 │   ├── components/             # 可复用 UI 组件（导航栏、卡片、页脚等）
@@ -118,6 +119,19 @@ pnpm format
 
 - `SITE_URL`：站点基础域名（如 `https://xiaosi-sfa.github.io` 或自定义域名 `https://sfa.example.com`）。
 - `BASE_PATH`：部署的子路径（默认为仓库名 `/sfaweb/`，若绑定根域名则设置为 `/`）。
+
+---
+
+## 投稿指南与内容撰写
+
+如果你想向网站投稿**科幻小说、评析、随笔**，或归档**社团活动纪实**、登记**兴趣小组**，请查阅专门的投稿与排版手册：
+
+👉 **[完整投稿指南与排版手册 (docs/README.md)](docs/README.md)**
+
+文档内包含：
+- **三大板块投稿目录与 Frontmatter 模板**（文章、活动、兴趣小组完整字段对照）；
+- **图片与媒体素材规范**（比例建议、引用路径、外链图床支持）；
+- **Markdown 高级排版技巧**（Obsidian 呼出框、LaTeX/KaTeX 数学公式、荧光笔高亮、双向链接与折叠手风琴等）。
 
 ---
 

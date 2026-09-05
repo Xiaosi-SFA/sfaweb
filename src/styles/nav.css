@@ -2,7 +2,14 @@
   padding-left: calc(var(--nav-base-px) + var(--nav-active-extra-x));
   padding-right: calc(var(--nav-base-px) + var(--nav-active-extra-x));
   border-radius: var(--nav-active-radius, 9999px);
-  transition: color 180ms ease;
+  transform: scale(1);
+  transform-origin: center center;
+  transition:
+    color 180ms ease,
+    transform 280ms cubic-bezier(.34, 1.56, .64, 1),
+    font-weight 180ms ease,
+    text-shadow 180ms ease;
+  will-change: transform;
 }
 
 .nav-link:hover,
@@ -12,6 +19,51 @@
 .dark .nav-link:hover,
 .dark .nav-link.is-active {
   color: #ffffff;
+}
+
+/* 透镜折射放大：被选中的文字基于透镜折射微放大一点点（~5.5%） */
+.has-navhl .nav-link.is-active {
+  color: #000000;
+  font-weight: 600;
+  transform: scale(1.055);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+.dark .has-navhl .nav-link.is-active {
+  color: #ffffff;
+  font-weight: 600;
+  transform: scale(1.055);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* 当鼠标滑向其他项时，原激活项离开透镜恢复原比例，当前滑块所在项受透镜放大 */
+.has-navhl:hover .nav-link.is-active:not(:hover),
+.has-navhl:focus-within .nav-link.is-active:not(:focus) {
+  transform: scale(1);
+  font-weight: 500;
+  color: var(--text-muted, #64748b);
+  text-shadow: none;
+}
+.dark .has-navhl:hover .nav-link.is-active:not(:hover),
+.dark .has-navhl:focus-within .nav-link.is-active:not(:focus) {
+  transform: scale(1);
+  font-weight: 500;
+  color: #94a3b8;
+  text-shadow: none;
+}
+
+.has-navhl .nav-link:hover,
+.has-navhl .nav-link:focus-visible {
+  color: #000000;
+  font-weight: 600;
+  transform: scale(1.055);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+.dark .has-navhl .nav-link:hover,
+.dark .has-navhl .nav-link:focus-visible {
+  color: #ffffff;
+  font-weight: 600;
+  transform: scale(1.055);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .nav-main { position: relative; }
