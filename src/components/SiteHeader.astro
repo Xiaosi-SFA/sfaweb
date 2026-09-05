@@ -11,7 +11,7 @@ import { withBase } from '@utils/path';
 
 const isSection = (prefix: string) => pathNoLocale === prefix || pathNoLocale.startsWith(prefix);
 const navBase = "relative inline-flex items-center py-2 px-3 text-[13px] sm:text-sm font-medium tracking-tight rounded-full transition-colors nav-link text-slate-700 dark:text-slate-200 hover:text-black dark:hover:text-white";
-const navActive = "bg-black/[0.05] dark:bg-white/[0.1] text-black dark:text-white";
+const navActive = "text-black dark:text-white";
 const navInactive = "";
 
 const homeHref = withBase(localePrefix || '/');
@@ -262,10 +262,14 @@ const targetLangHref = isEn
     }
 
     links.forEach(function(a) {
-      a.addEventListener('mouseenter', function() { moveTo(a); });
-      a.addEventListener('focus', function() { moveTo(a); });
+      a.addEventListener('mouseenter', function() { moveTo(a); hl.classList.add('is-active'); });
+      a.addEventListener('focus', function() { moveTo(a); hl.classList.add('is-active'); });
+      a.addEventListener('touchstart', function() { hl.classList.add('is-active'); }, { passive: true });
     });
-    nav.addEventListener('mouseleave', recalc);
+    nav.addEventListener('mouseleave', function() { recalc(); hl.classList.remove('is-active'); });
+    window.addEventListener('touchend', function() {
+      setTimeout(function() { hl.classList.remove('is-active'); }, 400);
+    }, { passive: true });
     nav.addEventListener('scroll', recalc, { passive: true });
     window.addEventListener('resize', function(){ recalc(); scrollActiveIntoView('auto'); });
     window.addEventListener('popstate', function(){ setActiveByURL(); updateLangToggle(); recalc(); scrollActiveIntoView('smooth'); });
