@@ -23,7 +23,7 @@ const allowedHosts = fs.existsSync(allowedHostsFile)
 
 export default defineConfig({
   output: 'static',
-  site: process.env.SITE_URL || 'https://visio-vanitas.github.io',
+  site: process.env.SITE_URL || 'https://xiaosi-sfa.github.io',
   base: process.env.BASE_PATH || '/',
   redirects: {
     '/activities': '/activity/',
