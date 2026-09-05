@@ -7,8 +7,9 @@
  *   - 慢速流动：沉静悠扬的极缓呼吸感。
  *   - 纤细色带：1.2px ~ 1.5px 极细高清光丝线条。
  *   - 随机性：在指定美学范围内为各角色颜色分配随机的振幅、基频、副波比、初始相位与呼吸微扰。
- *   - 浅色模式（Light）：MyGO!!!!! 5人代表色（灯·水天蓝 / 爱音·樱粉 / 乐奈·薄荷绿 / 爽世·琥珀金 / 立希·幽暮紫）。
- *   - 暗色模式（Dark）：Ave Mujica 5人代表色（祥子·苍夜冰蓝 / 初华·冷月白银 / 睦·幽森绿 / 海铃·暮霭群青 / 若麦·瑰丽金）。
+ *   - 官方代表色盘：
+ *     - 浅色模式（MyGO!!!!!）：高松灯 #77BBDD / 千早爱音 #FF8899 / 要乐奈 #77DD77 / 长崎爽世 #FFDD88 / 椎名立希 #7777AA。
+ *     - 暗色模式（Ave Mujica）：Oblivionis 祥子 #7799CC / Doloris 初华 #BB9955 / Mortis 睦 #779977 / Timoris 海铃 #4B78A0 / Amoris 若麦 #AA4477。
  */
 import '@styles/wave.css'
 ---
@@ -31,23 +32,23 @@ import '@styles/wave.css'
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    // 配色定义
-    // MyGO!!!!! 配色 (Light Mode: 细线高饱和通透)
+    // 官方角色代表色色盘定义
+    // MyGO!!!!! 官方代表色 (Light Mode)
     const MYGO_PALETTE = [
-      { name: 'Tomori', color: 'rgba(24, 160, 251, 0.95)', glow: 'rgba(24, 160, 251, 0.40)' }, // 高松灯 - 水天蓝
-      { name: 'Anon',   color: 'rgba(250, 93, 131, 0.90)', glow: 'rgba(250, 93, 131, 0.35)' }, // 千早爱音 - 樱粉
-      { name: 'Rana',   color: 'rgba(16, 185, 129, 0.90)', glow: 'rgba(16, 185, 129, 0.35)' }, // 要乐奈 - 薄荷绿
-      { name: 'Soyo',   color: 'rgba(245, 158, 11, 0.92)', glow: 'rgba(245, 158, 11, 0.38)' }, // 长崎爽世 - 琥珀金
-      { name: 'Taki',   color: 'rgba(139, 92, 246, 0.90)', glow: 'rgba(139, 92, 246, 0.35)' }, // 椎名立希 - 幽暮紫
+      { name: 'Tomori', color: 'rgba(119, 187, 221, 0.95)', glow: 'rgba(119, 187, 221, 0.45)', hex: '#77BBDD' }, // 高松灯 - 水天蓝
+      { name: 'Anon',   color: 'rgba(255, 136, 153, 0.90)', glow: 'rgba(255, 136, 153, 0.40)', hex: '#FF8899' }, // 千早爱音 - 樱桃粉
+      { name: 'Rana',   color: 'rgba(119, 221, 119, 0.90)', glow: 'rgba(119, 221, 119, 0.40)', hex: '#77DD77' }, // 要乐奈 - 薄荷绿
+      { name: 'Soyo',   color: 'rgba(255, 221, 136, 0.92)', glow: 'rgba(255, 221, 136, 0.42)', hex: '#FFDD88' }, // 长崎爽世 - 琥珀金
+      { name: 'Taki',   color: 'rgba(119, 119, 170, 0.90)', glow: 'rgba(119, 119, 170, 0.40)', hex: '#7777AA' }, // 椎名立希 - 幽暮紫
     ];
 
-    // Ave Mujica 配色 (Dark Mode: 星夜荧光)
+    // Ave Mujica 官方代表色 (Dark Mode)
     const MUJICA_PALETTE = [
-      { name: 'Oblivionis', color: 'rgba(96, 165, 250, 0.95)', glow: 'rgba(96, 165, 250, 0.50)' }, // 丰川祥子 - 苍夜冰蓝
-      { name: 'Doloris',    color: 'rgba(255, 255, 255, 0.98)', glow: 'rgba(255, 255, 255, 0.60)' }, // 三角初华 - 冷月白银
-      { name: 'Mortis',     color: 'rgba(52, 211, 153, 0.90)', glow: 'rgba(52, 211, 153, 0.45)' }, // 若叶睦 - 幽森翠绿
-      { name: 'Timoris',    color: 'rgba(129, 140, 248, 0.92)', glow: 'rgba(129, 140, 248, 0.45)' }, // 八幡海铃 - 暮霭群青
-      { name: 'Amoris',     color: 'rgba(251, 191, 36, 0.95)', glow: 'rgba(251, 191, 36, 0.50)' }, // 祐天寺若麦 - 瑰丽金
+      { name: 'Oblivionis', color: 'rgba(119, 153, 204, 0.95)', glow: 'rgba(119, 153, 204, 0.55)', hex: '#7799CC' }, // 丰川祥子 - 苍翠冰蓝
+      { name: 'Doloris',    color: 'rgba(187, 153, 85, 0.95)',  glow: 'rgba(187, 153, 85, 0.55)',  hex: '#BB9955' }, // 三角初华 - 冷金星辉
+      { name: 'Mortis',     color: 'rgba(119, 153, 119, 0.90)', glow: 'rgba(119, 153, 119, 0.45)', hex: '#779977' }, // 若叶睦 - 幽森墨绿
+      { name: 'Timoris',    color: 'rgba(75, 120, 160, 0.92)',  glow: 'rgba(75, 120, 160, 0.45)',  hex: '#4B78A0' }, // 八幡海铃 - 暮霭群青
+      { name: 'Amoris',     color: 'rgba(170, 68, 119, 0.95)',  glow: 'rgba(170, 68, 119, 0.55)',  hex: '#AA4477' }, // 祐天寺若麦 - 瑰丽莓紫
     ];
 
     // 在指定美学范围内为 5 种角色颜色分配随机的振幅、频率与流速
@@ -129,7 +130,7 @@ import '@styles/wave.css'
 
       // 1. 绘制水平中央基准延伸微光线（细致轻柔）
       ctx.beginPath();
-      ctx.strokeStyle = dark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(24, 160, 251, 0.16)';
+      ctx.strokeStyle = dark ? 'rgba(119, 153, 204, 0.15)' : 'rgba(119, 187, 221, 0.20)';
       ctx.lineWidth = 0.8;
       ctx.moveTo(0, centerY);
       ctx.lineTo(width, centerY);

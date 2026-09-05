@@ -2,7 +2,7 @@
 /**
  * DeptCard
  * - 用途：部门/栏目入口卡片，含图标、标题与简介，整卡可点击跳转。
- * - 交互：无脚本逻辑，hover 显示阴影。
+ * - 视觉：高质感轻量毛玻璃，支持 hover 微浮动与无边界裁切。
  * - 无障碍：外层 <a> 包裹，可键盘聚焦；图标 img 无语义，alt 为空字符串。
  */
 interface Props {
@@ -20,17 +20,20 @@ import { withBase } from '@utils/path'
 const resolvedHref = withBase(href)
 const resolvedIcon = icon ? withBase(icon) : undefined
 ---
-<a href={resolvedHref} class="group block w-full max-w-full overflow-hidden rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
+<a
+  href={resolvedHref}
+  class="group block w-full max-w-full rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 bg-white/60 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.1] shadow-2xs hover:shadow-md"
+>
   <div class="flex items-start gap-4">
     <div class="flex h-12 w-12 flex-none items-center justify-center overflow-hidden rounded-xl bg-sky-500/10 dark:bg-sky-400/10 text-sky-600 dark:text-sky-400 ring-1 ring-sky-500/20">
       {resolvedIcon ? (
         <img src={resolvedIcon} alt="" class="max-h-12 max-w-12 object-contain" loading="lazy" />
       ) : (
-        <svg viewBox="0 0 24 24" width="28" height="28" class="text-slate-400 dark:text-slate-500"><path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
+        <svg viewBox="0 0 24 24" width="28" height="28" class="text-slate-400 dark:text-slate-400"><path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
       )}
     </div>
-    <div class="min-w-0">
-      <h3 class="truncate text-base font-semibold text-slate-800 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-300">{title}</h3>
+    <div class="min-w-0 flex-1">
+      <h3 class="truncate text-base font-bold text-slate-800 dark:text-slate-100 group-hover:text-sky-600 dark:group-hover:text-sky-300 transition-colors">{title}</h3>
       <p class="mt-1 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-300 break-words">{summary}</p>
     </div>
   </div>
