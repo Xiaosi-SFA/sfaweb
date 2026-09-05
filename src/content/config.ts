@@ -69,11 +69,13 @@ const departments = defineCollection({
 const members = defineCollection({
   type: 'content',
   schema: z.object({
-    name: z.string(),
+    name: z.string().optional(),
     quote: z.string().optional(),
     bio: z.string().optional(),
     avatar: z.string().optional(),
     position: z.enum(['minister', 'vice-minister', 'member']).optional(),
+    label: z.string().optional(),
+    github: z.string().optional(),
   }),
 })
 

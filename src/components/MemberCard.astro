@@ -1,62 +1,108 @@
 ---
 /**
  * MemberCard
- * - 用途：成员名片，展示头像、姓名、身份标签、语录与简介。
- * - 素材缺失：当成员头像素材缺失或加载失败时，静默降级展示极简矢量人形剪影，移除占位符号与文本。
- * - 无障碍：img 提供 alt；文本类信息按语义标签渲染。
+ * - 用途：成员名片，展示头像、姓名、身份/职位标签、GitHub 个人主页链接、语录与简介。
+ * - GitHub 自动解析：
+ *   - 若提供了 github 链接或用户名（如 https://github.com/Visio-Vanitas），在头像未显式指定时自动从 GitHub 头像服务（.png）拉取。
+ *   - 姓名未指定时自动回退为 GitHub 用户名。
+ *   - 名字右侧/右上角提供精致的 GitHub 个人主页跳转图标。
+ * - 素材缺失：当头像缺失或加载失败时，静默降级展示极简矢量人形剪影。
  */
 interface Props {
   /** 头像 URL（可选） */
   avatar?: string
-  /** 姓名 */
-  name: string
+  /** 姓名（可选，有 github 时可自动解析） */
+  name?: string
   /** 语录/座右铭（可选） */
   quote?: string
   /** 简介（可选） */
   bio?: string
-  /** 职务标签（默认 member） */
+  /** 职务预设标签（默认 member） */
   position?: 'minister' | 'vice-minister' | 'member'
-  /** 自定义标签文本（可选，优先级高于 position） */
+  /** 自定义职位标签文本（可选，优先级最高） */
   labelOverride?: string
+  /** 附加职位标签（可选） */
+  label?: string
+  /** GitHub 主页 URL 或用户名（可选，如 https://github.com/Visio-Vanitas 或 Visio-Vanitas） */
+  github?: string
 }
-const { avatar, name, quote, bio, position, labelOverride } = Astro.props as Props
+
+const { avatar, name, quote, bio, position, labelOverride, label, github } = Astro.props as Props
+
+// 解析 GitHub 用户名与主页 URL
+let githubUsername = ''
+let githubUrl = ''
+if (github) {
+  const clean = github.trim()
+  githubUsername = clean.replace(/^https?:\/\/github\.com\//i, '').replace(/\/$/, '')
+  githubUrl = `https://github.com/${githubUsername}`
+}
+
+const displayName = name || githubUsername || 'SFA 成员'
+// 若无自定义头像但提供了 GitHub，则自动解析 GitHub 高清头像
+const resolvedAvatar = avatar || (githubUsername ? `https://github.com/${githubUsername}.png` : '')
+const finalLabel = labelOverride || label
 ---
-<div class="rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-0.5">
-  <div class="flex items-start gap-4">
-    <div class="h-16 w-16 overflow-hidden rounded-xl bg-slate-100 dark:bg-white/5 ring-1 ring-black/[0.06] dark:ring-white/10 flex-none relative shadow-xs">
-      <img
-        src={avatar ?? ''}
-        alt={name}
-        class="h-full w-full object-cover"
-        loading="lazy"
-        style={avatar ? '' : 'display:none'}
-        onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
-      />
-      <!-- 素材缺失：当头像不存在或加载失败时，降级显示极简轮廓，不显示占位文本符号 -->
-      <div
-        class="h-full w-full hidden grid place-items-center text-slate-300 dark:text-slate-600"
-        style={avatar ? '' : 'display:grid'}
-      >
-        <svg class="w-8 h-8 opacity-70" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.6-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
-        </svg>
+<div class="group rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-0.5 relative flex flex-col justify-between">
+  <div>
+    <div class="flex items-start gap-4">
+      <!-- 成员头像 -->
+      <div class="h-16 w-16 overflow-hidden rounded-xl bg-slate-100 dark:bg-white/5 ring-1 ring-black/[0.06] dark:ring-white/10 flex-none relative shadow-xs">
+        {resolvedAvatar ? (
+          <img
+            src={resolvedAvatar}
+            alt={displayName}
+            class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+          />
+        ) : null}
+        <!-- 素材缺失：当头像不存在或加载失败时，降级显示极简轮廓 -->
+        <div
+          class={`h-full w-full ${resolvedAvatar ? 'hidden' : 'grid'} place-items-center text-slate-300 dark:text-slate-600`}
+        >
+          <svg class="w-8 h-8 opacity-70" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.6-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+          </svg>
+        </div>
       </div>
-    </div>
-    <div class="min-w-0">
-      <div class="flex items-center gap-2">
-        {labelOverride ? (
-          <span class="inline-flex items-center rounded bg-indigo-100 dark:bg-indigo-200/20 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-200 dark:ring-indigo-300/30">{labelOverride}</span>
-        ) : position === 'minister' ? (
-          <span class="inline-flex items-center rounded bg-amber-100 dark:bg-amber-200/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:text-amber-300 ring-1 ring-amber-200 dark:ring-amber-300/30">部长</span>
-        ) : position === 'vice-minister' ? (
-          <span class="inline-flex items-center rounded bg-sky-100 dark:bg-sky-200/20 px-1.5 py-0.5 text-[10px] font-semibold text-sky-700 dark:text-sky-300 ring-1 ring-sky-200 dark:ring-sky-300/30">副部长</span>
-        ) : (
-          <span class="inline-flex items-center rounded bg-slate-100 dark:bg-slate-200/10 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-slate-200 ring-1 ring-slate-200 dark:ring-slate-200/20">干事</span>
-        )}
-        <h3 class="text-base font-semibold text-slate-800 dark:text-slate-200 truncate">{name}</h3>
+
+      <!-- 核心信息 -->
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0">
+            {finalLabel ? (
+              <span class="inline-flex items-center rounded-md bg-sky-100 dark:bg-sky-400/15 px-2 py-0.5 text-[11px] font-semibold text-sky-800 dark:text-sky-300 ring-1 ring-sky-300/40 dark:ring-sky-400/30 whitespace-nowrap">{finalLabel}</span>
+            ) : position === 'minister' ? (
+              <span class="inline-flex items-center rounded-md bg-amber-100 dark:bg-amber-400/15 px-2 py-0.5 text-[11px] font-semibold text-amber-800 dark:text-amber-300 ring-1 ring-amber-300/40 dark:ring-amber-400/30 whitespace-nowrap">部长</span>
+            ) : position === 'vice-minister' ? (
+              <span class="inline-flex items-center rounded-md bg-indigo-100 dark:bg-indigo-400/15 px-2 py-0.5 text-[11px] font-semibold text-indigo-800 dark:text-indigo-300 ring-1 ring-indigo-300/40 dark:ring-indigo-400/30 whitespace-nowrap">副部长</span>
+            ) : (
+              <span class="inline-flex items-center rounded-md bg-slate-100 dark:bg-white/10 px-2 py-0.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 ring-1 ring-slate-200 dark:ring-white/10 whitespace-nowrap">干事</span>
+            )}
+            <h3 class="text-base font-bold tracking-tight text-slate-800 dark:text-slate-100 truncate">{displayName}</h3>
+          </div>
+
+          <!-- GitHub 主页外链图标 -->
+          {githubUrl && (
+            <a
+              href={githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="p-1 text-slate-400 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors rounded-lg hover:bg-black/5 dark:hover:bg-white/10 shrink-0"
+              title={`访问 ${displayName} 的 GitHub 主页`}
+              aria-label={`访问 ${displayName} 的 GitHub 主页`}
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.486 2 12.021c0 4.424 2.865 8.175 6.839 9.504.5.09.682-.219.682-.485 0-.24-.009-.874-.014-1.716-2.782.605-3.369-1.343-3.369-1.343-.455-1.159-1.111-1.469-1.111-1.469-.908-.622.069-.609.069-.609 1.004.071 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.833.091-.648.35-1.088.636-1.338-2.221-.253-4.555-1.114-4.555-4.955 0-1.094.39-1.99 1.029-2.691-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.751 1.027A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.91-1.297 2.748-1.027 2.748-1.027.546 1.378.202 2.397.1 2.65.64.701 1.027 1.597 1.027 2.691 0 3.849-2.339 4.699-4.566 4.947.359.31.678.922.678 1.859 0 1.341-.012 2.422-.012 2.752 0 .269.18.58.688.481A10.026 10.026 0 0 0 22 12.021C22 6.486 17.523 2 12 2z"/>
+              </svg>
+            </a>
+          )}
+        </div>
+
+        {quote ? <p class="mt-1 text-xs text-sky-700 dark:text-sky-300 italic whitespace-pre-line break-words">“{quote}”</p> : null}
+        {bio ? <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300 line-clamp-3">{bio}</p> : null}
       </div>
-      {quote ? <p class="mt-1 text-xs text-sky-700 dark:text-sky-300 italic whitespace-pre-line break-words">“{quote}”</p> : null}
-      {bio ? <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300 line-clamp-3">{bio}</p> : null}
     </div>
   </div>
 </div>

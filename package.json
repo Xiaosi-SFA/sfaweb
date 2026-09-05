@@ -8,7 +8,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "format": "prettier -w ."
+    "format": "prettier -w .",
+    "member:sync": "node scripts/sync-github-member.mjs"
   },
   "engines": {
     "node": ">=18.14.1"
