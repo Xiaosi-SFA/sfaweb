@@ -17,7 +17,7 @@ const latestActivity = (await (getCollection as any)('activity'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   .slice(0, 3)
 ---
-<BaseLayout title="小四的机密档案库" hideHeaderFooter>
+<BaseLayout title="四川大学科幻协会">
   <!-- Hero 欢迎区（无背景、居中 Logo、欢迎语、向上箭头） -->
   <section class="hero-anim relative min-h-screen p-8 md:p-12 overflow-visible flex items-center justify-center">
     <div class="max-w-3xl mx-auto text-center flex flex-col items-center justify-center" style="min-height:60vh;">

@@ -2,7 +2,7 @@
 .wave-bg {
   position: fixed;
   inset: 0;
-  z-index: -1; /* 位于正文下方，不阻挡交互 */
+  z-index: 0; /* 放置在底层画布，不阻挡交互，正文通过 z-10 浮于其上 */
   pointer-events: none;
   overflow: hidden;
 }
@@ -14,7 +14,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 }
 
 /* 液态环境光流层 Liquid Ambient Layer */
@@ -23,14 +23,14 @@
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  z-index: -2;
+  z-index: -1;
 }
 
 .liquid-orb {
   position: absolute;
   border-radius: 9999px;
   filter: blur(95px);
-  opacity: 0.28;
+  opacity: 0.32;
   will-change: transform;
   pointer-events: none;
   transition: background 0.8s ease, opacity 0.8s ease;
@@ -38,14 +38,14 @@
 
 .dark .liquid-orb {
   filter: blur(110px);
-  opacity: 0.20;
+  opacity: 0.24;
 }
 
-/* 浅色模式：MyGO!!!!! 氛围球（天蓝、樱粉、薄荷） */
+/* 浅色模式：MyGO!!!!! 氛围光（天蓝、樱粉、薄荷） */
 .liquid-orb-1 {
   width: min(600px, 75vw);
   height: min(600px, 75vw);
-  background: radial-gradient(circle, rgba(70, 193, 222, 0.65) 0%, rgba(107, 211, 176, 0.22) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(24, 160, 251, 0.65) 0%, rgba(16, 185, 129, 0.22) 60%, transparent 80%);
   top: -10%;
   left: 15%;
   animation: floatLiquid1 22s ease-in-out infinite alternate;
@@ -54,7 +54,7 @@
 .liquid-orb-2 {
   width: min(500px, 65vw);
   height: min(500px, 65vw);
-  background: radial-gradient(circle, rgba(250, 132, 155, 0.55) 0%, rgba(158, 128, 209, 0.2) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(250, 93, 131, 0.55) 0%, rgba(139, 92, 246, 0.2) 60%, transparent 80%);
   bottom: 10%;
   right: 5%;
   animation: floatLiquid2 26s ease-in-out infinite alternate;
@@ -63,23 +63,23 @@
 .liquid-orb-3 {
   width: min(450px, 55vw);
   height: min(450px, 55vw);
-  background: radial-gradient(circle, rgba(252, 218, 92, 0.45) 0%, rgba(70, 193, 222, 0.15) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.45) 0%, rgba(24, 160, 251, 0.15) 60%, transparent 80%);
   top: 45%;
   left: -5%;
   animation: floatLiquid3 24s ease-in-out infinite alternate;
 }
 
-/* 暗色模式：Ave Mujica 氛围球（冰蓝、月白、幽森绿、暮霭青） */
+/* 暗色模式：Ave Mujica 氛围光（苍夜冰蓝、冷月白银、幽森绿、暮霭群青） */
 .dark .liquid-orb-1 {
-  background: radial-gradient(circle, rgba(107, 163, 232, 0.45) 0%, rgba(72, 199, 152, 0.15) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.50) 0%, rgba(52, 211, 153, 0.18) 60%, transparent 80%);
 }
 
 .dark .liquid-orb-2 {
-  background: radial-gradient(circle, rgba(80, 126, 184, 0.45) 0%, rgba(243, 185, 82, 0.12) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(129, 140, 248, 0.48) 0%, rgba(251, 191, 36, 0.15) 60%, transparent 80%);
 }
 
 .dark .liquid-orb-3 {
-  background: radial-gradient(circle, rgba(235, 240, 248, 0.25) 0%, rgba(107, 163, 232, 0.12) 60%, transparent 80%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.30) 0%, rgba(96, 165, 250, 0.15) 60%, transparent 80%);
 }
 
 @keyframes floatLiquid1 {

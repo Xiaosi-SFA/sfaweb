@@ -3,10 +3,10 @@
  * WaveBackground
  * - 用途：《迷星叫》PV 风格的正弦波流动背景（Sine Waveform Envelope）。
  * - 视觉设计：
- *   - 5 条交织流动的正弦波束，两侧平滑收敛为基准水平线，中间如心潮起伏般优雅波动。
- *   - 浅色模式（Light）：MyGO!!!!! 角色代表色（高松灯 / 千早爱音 / 要乐奈 / 长崎爽世 / 椎名立希）。
- *   - 暗色模式（Dark）：Ave Mujica 角色代表色（Oblivionis 祥子 / Doloris 初华 / Mortis 睦 / Timoris 海铃 / Amoris 若麦）。
- * - 性能：基于轻量 HTML5 Canvas 绘制，自适应 DPR，支持深浅模式动态平滑过渡与降帧节能。
+ *   - 5 条交织流动的正弦波束，两侧平滑收敛为一条优雅水平线，中间起伏交织流动。
+ *   - 浅色模式（Light）：MyGO!!!!! 5人代表色（灯·水天蓝 / 爱音·樱粉 / 乐奈·薄荷绿 / 爽世·琥珀金 / 立希·幽暮紫）。
+ *   - 暗色模式（Dark）：Ave Mujica 5人代表色（祥子·苍夜冰蓝 / 初华·冷月白银 / 睦·幽森绿 / 海铃·暮霭群青 / 若麦·瑰丽金）。
+ * - 性能：基于 HTML5 Canvas 绘制，自动监听系统/页面主题切换与屏幕 Resize，无卡顿 60FPS。
  */
 import '@styles/wave.css'
 ---
@@ -30,31 +30,31 @@ import '@styles/wave.css'
     if (!ctx) return;
 
     // 配色定义
-    // MyGO!!!!! 配色 (Light Mode)
+    // MyGO!!!!! 配色 (Light Mode: 鲜明通透，对比度充足)
     const MYGO_PALETTE = [
-      { name: 'Tomori', color: 'rgba(70, 193, 222, 0.88)', glow: 'rgba(70, 193, 222, 0.45)', width: 2.2 }, // 高松灯 - 水天蓝
-      { name: 'Anon',   color: 'rgba(250, 132, 155, 0.78)', glow: 'rgba(250, 132, 155, 0.35)', width: 1.8 }, // 千早爱音 - 樱粉
-      { name: 'Rana',   color: 'rgba(107, 211, 176, 0.76)', glow: 'rgba(107, 211, 176, 0.35)', width: 1.8 }, // 要乐奈 - 薄荷抹茶
-      { name: 'Soyo',   color: 'rgba(252, 218, 92, 0.82)', glow: 'rgba(252, 218, 92, 0.40)', width: 1.9 }, // 长崎爽世 - 琥珀金
-      { name: 'Taki',   color: 'rgba(158, 128, 209, 0.76)', glow: 'rgba(158, 128, 209, 0.35)', width: 1.8 }, // 椎名立希 - 幽暮紫
+      { name: 'Tomori', color: 'rgba(24, 160, 251, 0.95)', glow: 'rgba(24, 160, 251, 0.50)', width: 2.8 }, // 高松灯 - 水天蓝 (主波，最清晰)
+      { name: 'Anon',   color: 'rgba(250, 93, 131, 0.90)', glow: 'rgba(250, 93, 131, 0.40)', width: 2.2 }, // 千早爱音 - 樱粉
+      { name: 'Rana',   color: 'rgba(16, 185, 129, 0.88)', glow: 'rgba(16, 185, 129, 0.40)', width: 2.2 }, // 要乐奈 - 薄荷绿
+      { name: 'Soyo',   color: 'rgba(245, 158, 11, 0.92)', glow: 'rgba(245, 158, 11, 0.45)', width: 2.3 }, // 长崎爽世 - 琥珀暖金
+      { name: 'Taki',   color: 'rgba(139, 92, 246, 0.88)', glow: 'rgba(139, 92, 246, 0.40)', width: 2.2 }, // 椎名立希 - 幽暮紫
     ];
 
-    // Ave Mujica 配色 (Dark Mode)
+    // Ave Mujica 配色 (Dark Mode: 夜色星芒荧光)
     const MUJICA_PALETTE = [
-      { name: 'Oblivionis', color: 'rgba(107, 163, 232, 0.88)', glow: 'rgba(107, 163, 232, 0.50)', width: 2.2 }, // 丰川祥子 - 苍翠夜蓝
-      { name: 'Doloris',    color: 'rgba(235, 240, 248, 0.92)', glow: 'rgba(235, 240, 248, 0.55)', width: 2.0 }, // 三角初华 - 冷月白银
-      { name: 'Mortis',     color: 'rgba(72, 199, 152, 0.78)', glow: 'rgba(72, 199, 152, 0.40)', width: 1.8 }, // 若叶睦 - 幽森绿
-      { name: 'Timoris',    color: 'rgba(80, 126, 184, 0.80)', glow: 'rgba(80, 126, 184, 0.42)', width: 1.8 }, // 八幡海铃 - 暮霭群青
-      { name: 'Amoris',     color: 'rgba(243, 185, 82, 0.84)', glow: 'rgba(243, 185, 82, 0.45)', width: 1.9 }, // 祐天寺若麦 - 瑰丽金
+      { name: 'Oblivionis', color: 'rgba(96, 165, 250, 0.95)', glow: 'rgba(96, 165, 250, 0.60)', width: 2.8 }, // 丰川祥子 - 苍夜冰蓝
+      { name: 'Doloris',    color: 'rgba(255, 255, 255, 0.98)', glow: 'rgba(255, 255, 255, 0.70)', width: 2.4 }, // 三角初华 - 冷月白银
+      { name: 'Mortis',     color: 'rgba(52, 211, 153, 0.90)', glow: 'rgba(52, 211, 153, 0.50)', width: 2.2 }, // 若叶睦 - 幽森翠绿
+      { name: 'Timoris',    color: 'rgba(129, 140, 248, 0.92)', glow: 'rgba(129, 140, 248, 0.50)', width: 2.2 }, // 八幡海铃 - 暮霭群青
+      { name: 'Amoris',     color: 'rgba(251, 191, 36, 0.95)', glow: 'rgba(251, 191, 36, 0.55)', width: 2.3 }, // 祐天寺若麦 - 瑰丽金
     ];
 
-    // 波束动态物理参数
+    // 5 条波束的波动特征参数（频率、相位、流动速度、振幅比例）
     const WAVES = [
-      { ampRatio: 0.12, freq1: 0.0018, freq2: 0.0036, speed1: 0.0016, speed2: -0.0022, phase: 0 },
-      { ampRatio: 0.09, freq1: 0.0022, freq2: 0.0044, speed1: -0.0014, speed2: 0.0020, phase: 1.3 },
-      { ampRatio: 0.075, freq1: 0.0026, freq2: 0.0052, speed1: 0.0018, speed2: -0.0016, phase: 2.7 },
-      { ampRatio: 0.085, freq1: 0.0020, freq2: 0.0038, speed1: -0.0020, speed2: 0.0015, phase: 4.1 },
-      { ampRatio: 0.07, freq1: 0.0024, freq2: 0.0048, speed1: 0.0015, speed2: -0.0024, phase: 5.4 },
+      { ampRatio: 0.15, freq1: 0.0016, freq2: 0.0032, speed1: 0.0015, speed2: -0.0020, phase: 0 },
+      { ampRatio: 0.11, freq1: 0.0020, freq2: 0.0040, speed1: -0.0013, speed2: 0.0018, phase: 1.25 },
+      { ampRatio: 0.09, freq1: 0.0024, freq2: 0.0048, speed1: 0.0017, speed2: -0.0015, phase: 2.50 },
+      { ampRatio: 0.10, freq1: 0.0018, freq2: 0.0036, speed1: -0.0018, speed2: 0.0014, phase: 3.75 },
+      { ampRatio: 0.08, freq1: 0.0022, freq2: 0.0044, speed1: 0.0014, speed2: -0.0022, phase: 5.00 },
     ];
 
     let width = 0;
@@ -62,13 +62,10 @@ import '@styles/wave.css'
     let dpr = 1;
     let animId = 0;
     let time = 0;
-    let isDark = document.documentElement.classList.contains('dark');
 
-    // 观察深浅色模式切换
-    const observer = new MutationObserver(() => {
-      isDark = document.documentElement.classList.contains('dark');
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    function isDarkMode() {
+      return document.documentElement.classList.contains('dark');
+    }
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -84,33 +81,33 @@ import '@styles/wave.css'
     window.addEventListener('resize', resize, { passive: true });
     resize();
 
-    // 汉宁窗/高斯平滑包络函数：两端收敛为 0，中间隆起
+    // 汉宁窗包络函数：两端平滑收敛为 0，中央隆起
     function envelope(x, w) {
       if (w <= 0) return 0;
       const nx = x / w; // [0, 1]
-      // 汉宁平滑窗 (sin(pi * x))^2
       const s = Math.sin(Math.PI * nx);
-      return s * s * s; // 强化两端平滑度，突出中央起伏
+      return s * s * s; // 三次方强化中央波形起伏，两端保持水平延展
     }
 
     function render(timestamp) {
-      time = timestamp || 0;
+      time = timestamp || performance.now();
       ctx.clearRect(0, 0, width, height);
 
-      const palette = isDark ? MUJICA_PALETTE : MYGO_PALETTE;
-      const centerY = height * 0.52; // 略微偏下居中，贴合视觉黄金比例
-      const maxBaseAmp = Math.min(height * 0.45, 200);
+      const dark = isDarkMode();
+      const palette = dark ? MUJICA_PALETTE : MYGO_PALETTE;
+      const centerY = height * 0.50; // 居中水平基准线
+      const maxBaseAmp = Math.min(height * 0.48, 220);
 
-      // 1. 绘制水平中央基准微光线（淡淡的延伸线）
+      // 1. 绘制水平中央基准延伸微光线（两侧水平基线）
       ctx.beginPath();
-      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(70, 193, 222, 0.15)';
+      ctx.strokeStyle = dark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(24, 160, 251, 0.22)';
       ctx.lineWidth = 1;
       ctx.moveTo(0, centerY);
       ctx.lineTo(width, centerY);
       ctx.stroke();
 
       // 2. 绘制 5 条正弦波
-      const step = Math.max(3, Math.floor(width / 180)); // 自适应采样步长，极致流畅
+      const step = Math.max(3, Math.floor(width / 200));
 
       for (let i = 0; i < WAVES.length; i++) {
         const w = WAVES[i];
@@ -122,7 +119,7 @@ import '@styles/wave.css'
         ctx.lineWidth = p.width;
         ctx.strokeStyle = p.color;
         ctx.shadowColor = p.glow;
-        ctx.shadowBlur = isDark ? 8 : 4;
+        ctx.shadowBlur = dark ? 12 : 6;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
@@ -130,9 +127,9 @@ import '@styles/wave.css'
 
         for (let x = 0; x <= width; x += step) {
           const env = envelope(x, width);
-          // 双频正弦波叠加 + 随时间推移的相位演进
+          // 复合双正弦波 + 相位演进
           const wave1 = Math.sin(x * w.freq1 + time * w.speed1 + w.phase);
-          const wave2 = Math.sin(x * w.freq2 + time * w.speed2 + w.phase * 1.5) * 0.38;
+          const wave2 = Math.sin(x * w.freq2 + time * w.speed2 + w.phase * 1.5) * 0.35;
           const y = centerY + (wave1 + wave2) * amp * env;
 
           if (!started) {
@@ -143,7 +140,6 @@ import '@styles/wave.css'
           }
         }
 
-        // 确保连接到右边缘
         if (started) {
           ctx.lineTo(width, centerY);
         }
@@ -152,13 +148,12 @@ import '@styles/wave.css'
         ctx.restore();
       }
 
-      // 是否在页面可见时持续循环
       if (!document.hidden) {
         animId = requestAnimationFrame(render);
       }
     }
 
-    // 页面可见性优化：切换到后台标签页时暂停动画，节省资源
+    // 页面切入后台时节能暂停
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
         cancelAnimationFrame(animId);
