@@ -24,9 +24,9 @@ const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.ind
 ---
 <BaseLayout title={`${entry.data.title} - SFA`}>
   <div class="grid grid-cols-1 gap-8 md:grid-cols-3 items-start">
-    <!-- 侧栏：目录（TOC）与相关推荐；与正文顶部完全对齐 -->
+    <!-- 侧栏：目录（TOC）与相关推荐；自然流式滚动（已移除 sticky 随动跟随） -->
     <div class="order-2 md:order-1 md:col-span-1">
-      <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
+      <div class="space-y-4">
         {headings && headings.length > 0 && (
           <div class="hidden md:block">
             <TOC headings={headings} />
@@ -35,7 +35,7 @@ const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.ind
         <RelatedPosts currentSlug={entry.slug} tags={entry.data.tags} />
       </div>
     </div>
-    <!-- 正文主体：与侧边栏格式完全对齐的卡片容器（沉静半透明，顶部严格水平对齐） -->
+    <!-- 正文主体：与侧边栏格式与滚动完全对齐的卡片容器 -->
     <article class="order-1 md:order-2 md:col-span-2 max-w-none p-6 sm:p-8 md:p-10 rounded-2xl bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border border-black/[0.06] dark:border-[#2c2c2e] shadow-xs">
       {entry.data.cover ? (
         <!-- 封面图：按 16:9 比例展示，避免布局跳动 -->
