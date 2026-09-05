@@ -1,14 +1,4 @@
 ---
-/**
- * SiteHeader
- * - 用途：站点顶部导航，含多语言切换、主题切换、当前项高亮与移动端滚动隐藏/显示。
- * - Props：
- *   - localePrefix：语言前缀（如 /zh-cn 或 /en）
- *   - currentLocale：当前语言代码（如 zh-cn 或 en）
- *   - isHomeNormalized：是否为“首页”路径（已去除 locale 前缀并标准化）
- *   - pathNoLocale：去除 locale 前缀的路径（用于激活态判断）
- *   - t：i18n 翻译函数
- */
 interface Props {
   localePrefix?: string;
   currentLocale?: string;
@@ -32,13 +22,13 @@ const groupsHref = withBase(`${localePrefix}/groups/`);
 const linksHref = withBase(`${localePrefix}/links/`);
 
 const isEn = currentLocale.toLowerCase() === 'en';
-// 计算切换目标语言 URL：如果当前为英文，则切回默认中文路径；如果当前为中文，则切至 /en 路径
 const targetLangHref = isEn
   ? withBase(pathNoLocale)
   : withBase(`/en${pathNoLocale}`);
 ---
 <header
   class="site-header border-b border-black/[0.06] dark:border-white/[0.08] bg-white/75 dark:bg-[#161617]/75 backdrop-blur-xl sticky top-0 z-30 transition-all duration-300"
+  transition:persist="site-header"
 >
   <nav class="nav-main mx-auto max-w-6xl px-4 py-2.5 flex items-center gap-[var(--nav-inline-gap)]">
     <span class="nav-highlight" aria-hidden="true"></span>
@@ -53,14 +43,13 @@ const targetLangHref = isEn
     <a href={linksHref} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>
 
     <div class="ml-auto flex items-center gap-2.5">
-      <!-- Apple 风格语言切换胶囊按钮 -->
       <a
+        id="lang-toggle"
         href={targetLangHref}
         class="group h-9 px-3 inline-flex items-center gap-1.5 rounded-full border border-black/[0.08] dark:border-white/[0.14] bg-white/70 dark:bg-white/[0.08] hover:bg-black/[0.04] dark:hover:bg-white/[0.14] transition-all duration-300 shadow-2xs hover:shadow-sm text-xs font-semibold text-slate-700 dark:text-slate-200"
         title={isEn ? "切换为中文 (Switch to Chinese)" : "Switch to English"}
         aria-label={isEn ? "切换为中文" : "Switch to English"}
       >
-        <!-- Apple SF Globe 风格地球矢量图标 -->
         <svg
           width="16"
           height="16"
@@ -77,10 +66,9 @@ const targetLangHref = isEn
           <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
           <path d="M2 12h20" />
         </svg>
-        <span>{isEn ? "中" : "EN"}</span>
+        <span data-lang-label>{isEn ? "中" : "EN"}</span>
       </a>
 
-      <!-- Apple 风格主题切换按钮 -->
       <button
         id="theme-toggle"
         class="group w-9 h-9 inline-flex items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.14] bg-white/70 dark:bg-white/[0.08] hover:bg-black/[0.04] dark:hover:bg-white/[0.14] transition-all duration-300 shadow-2xs hover:shadow-sm"
@@ -88,7 +76,6 @@ const targetLangHref = isEn
         title={t('actions.toggleTheme','切换主题')}
       >
         <span class="sr-only">切换主题</span>
-        <!-- 太阳图标（浅色模式：暖金太阳与光芒，带旋转动效） -->
         <svg
           width="18"
           height="18"
@@ -111,7 +98,6 @@ const targetLangHref = isEn
           <path d="m6.34 17.66-1.41 1.41" />
           <path d="m19.07 4.93-1.41 1.41" />
         </svg>
-        <!-- 月亮星芒图标（暗色模式：星夜冷月，带微旋动效） -->
         <svg
           width="18"
           height="18"
@@ -134,29 +120,16 @@ const targetLangHref = isEn
 </header>
 
 <script is:inline define:vars={{ baseUrl: import.meta.env.BASE_URL || '/' }}>
-  // 主题切换按钮逻辑：在 html 上切换 .dark，并持久化到 localStorage
   (function() {
-    var btn = document.getElementById('theme-toggle');
-    if (!btn) return;
-    var setPressed = function() {
-      var isDark = document.documentElement.classList.contains('dark');
-      btn.setAttribute('aria-pressed', String(isDark));
-    };
-    setPressed();
-    btn.addEventListener('click', function() {
-      var d = document.documentElement;
-      var isDark = d.classList.toggle('dark');
-      try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
-      setPressed();
-    });
-  })();
+    if (window.__sfa_header_init__) return;
+    window.__sfa_header_init__ = true;
 
-  // 导航滑动高亮初始化与交互
-  (function() {
+    var header = document.querySelector('.site-header');
     var nav = document.querySelector('.site-header .nav-main');
-    if (!nav) return;
+    var btn = document.getElementById('theme-toggle');
+    if (!header || !nav) return;
+
     var links = Array.from(nav.querySelectorAll('.nav-link'));
-    if (!links.length) return;
     var hl = nav.querySelector('.nav-highlight');
     if (!hl) {
       hl = document.createElement('span');
@@ -165,6 +138,25 @@ const targetLangHref = isEn
       nav.prepend(hl);
     }
     nav.classList.add('has-navhl');
+
+    var lastY = window.scrollY || 0;
+    var ticking = false;
+
+    function isMobile() {
+      return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+    }
+
+    function normalizePath(p) {
+      try { var u = new URL(p, window.location.origin); p = u.pathname; } catch(e){}
+      p = p || '/';
+      var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+      if (cleanBase !== '/' && p.indexOf(cleanBase) === 0) {
+        p = '/' + p.slice(cleanBase.length);
+      }
+      p = p.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
+      if (!p.endsWith('/')) p += '/';
+      return p;
+    }
 
     function rect(el) {
       var left = 0, width = 0;
@@ -177,6 +169,7 @@ const targetLangHref = isEn
       }
       return { left: left, width: width };
     }
+
     function moveTo(el) {
       if (!el) return;
       var nrect = nav.getBoundingClientRect();
@@ -189,24 +182,31 @@ const targetLangHref = isEn
       hl.style.setProperty('--hl-width', m.width + 'px');
       hl.style.opacity = '1';
     }
+
     function current() {
       return nav.querySelector('.nav-link.is-active') || links[0];
     }
-    function isMobile() {
-      return window.matchMedia && window.matchMedia('(max-width: 640px)').matches;
+
+    function recalc() {
+      moveTo(current());
     }
-    function normalizePath(p){
-      try { var u = new URL(p, window.location.origin); p = u.pathname; } catch(e){}
-      p = p || '/';
-      var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
-      if (cleanBase !== '/' && p.indexOf(cleanBase) === 0) {
-        p = '/' + p.slice(cleanBase.length);
-      }
-      p = p.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
-      if (!p.endsWith('/')) p += '/';
-      return p;
+
+    function scrollActiveIntoView(behavior) {
+      if (!isMobile()) return;
+      var a = current(); if (!a) return;
+      var nrect = nav.getBoundingClientRect();
+      if (!nrect || nrect.width === 0 || nrect.height === 0) return;
+      var arect = a.getBoundingClientRect();
+      var leftWithinNav = arect.left - nrect.left;
+      var currentLeft = nav.scrollLeft + leftWithinNav;
+      var target = currentLeft - (nrect.width - arect.width) / 2;
+      var maxScroll = nav.scrollWidth - nav.clientWidth; if (maxScroll < 0) maxScroll = 0;
+      var next = Math.max(0, Math.min(target, maxScroll));
+      try { nav.scrollTo({ left: next, behavior: behavior || 'auto' }); }
+      catch (e) { nav.scrollLeft = next; }
     }
-    function setActiveByURL(){
+
+    function setActiveByURL() {
       var cur = normalizePath(window.location.pathname);
       var best = { a: null, len: -1 };
       links.forEach(function(a){
@@ -222,32 +222,54 @@ const targetLangHref = isEn
       links.forEach(function(a){ a.classList.remove('is-active'); a.removeAttribute('aria-current'); });
       if (best.a) { best.a.classList.add('is-active'); best.a.setAttribute('aria-current', 'page'); }
     }
-    function scrollActiveIntoView(behavior) {
-      if (!isMobile()) return;
-      var a = current(); if (!a) return;
-      var nrect = nav.getBoundingClientRect();
-      if (!nrect || nrect.width === 0 || nrect.height === 0) return;
-      var arect = a.getBoundingClientRect();
-      var leftWithinNav = arect.left - nrect.left;
-      var currentLeft = nav.scrollLeft + leftWithinNav;
-      var target = currentLeft - (nrect.width - arect.width) / 2;
-      var maxScroll = nav.scrollWidth - nav.clientWidth; if (maxScroll < 0) maxScroll = 0;
-      var next = Math.max(0, Math.min(target, maxScroll));
-      try { nav.scrollTo({ left: next, behavior: behavior || 'auto' }); }
-      catch (e) { nav.scrollLeft = next; }
+
+    function updateLangToggle() {
+      var lang = document.getElementById('lang-toggle');
+      if (!lang) return;
+      var curPath = window.location.pathname;
+      var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+      var pathNoBase = (cleanBase !== '/' && curPath.indexOf(cleanBase) === 0)
+        ? '/' + curPath.slice(cleanBase.length)
+        : curPath;
+      var isEn = /^\/en(?:\/|$)/i.test(pathNoBase);
+      var pathNoLocale = pathNoBase.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
+      if (!pathNoLocale.startsWith('/')) pathNoLocale = '/' + pathNoLocale;
+
+      var targetPath = isEn ? pathNoLocale : ('/en' + (pathNoLocale === '/' ? '/' : pathNoLocale));
+      var targetHref = (cleanBase !== '/' ? cleanBase.replace(/\/$/, '') : '') + targetPath;
+
+      lang.setAttribute('href', targetHref);
+      lang.setAttribute('title', isEn ? '切换为中文 (Switch to Chinese)' : 'Switch to English');
+      lang.setAttribute('aria-label', isEn ? '切换为中文' : 'Switch to English');
+      var labelEl = lang.querySelector('[data-lang-label]');
+      if (labelEl) labelEl.textContent = isEn ? '中' : 'EN';
     }
-    function recalc() { moveTo(current()); }
-    setActiveByURL();
-    scrollActiveIntoView('auto');
-    recalc();
-    window.addEventListener('resize', function(){ recalc(); scrollActiveIntoView('auto'); });
-    nav.addEventListener('scroll', recalc, { passive: true });
-    window.addEventListener('popstate', function(){ setActiveByURL(); recalc(); scrollActiveIntoView('smooth'); });
+
+    function setPressed() {
+      var tBtn = document.getElementById('theme-toggle');
+      if (!tBtn) return;
+      var isDark = document.documentElement.classList.contains('dark');
+      tBtn.setAttribute('aria-pressed', String(isDark));
+    }
+
+    if (btn) {
+      btn.addEventListener('click', function() {
+        var d = document.documentElement;
+        var isDark = d.classList.toggle('dark');
+        try { localStorage.setItem('theme', isDark ? 'dark' : 'light'); } catch (e) {}
+        setPressed();
+      });
+    }
+
     links.forEach(function(a) {
       a.addEventListener('mouseenter', function() { moveTo(a); });
       a.addEventListener('focus', function() { moveTo(a); });
     });
     nav.addEventListener('mouseleave', recalc);
+    nav.addEventListener('scroll', recalc, { passive: true });
+    window.addEventListener('resize', function(){ recalc(); scrollActiveIntoView('auto'); });
+    window.addEventListener('popstate', function(){ setActiveByURL(); updateLangToggle(); recalc(); scrollActiveIntoView('smooth'); });
+
     try {
       var body = document.body;
       var mo = new MutationObserver(function(muts){
@@ -260,19 +282,13 @@ const targetLangHref = isEn
       });
       mo.observe(body, { attributes: true, attributeFilter: ['class'] });
     } catch (e) {}
+
     try {
       if (document.fonts && document.fonts.ready) { document.fonts.ready.then(function(){ recalc(); }); }
       if (window.ResizeObserver) { var ro = new ResizeObserver(function(){ recalc(); }); ro.observe(nav); }
     } catch(e) {}
-  })();
 
-  // 页面滚动时：下滑隐藏 Header，上滑显示；在顶部时始终显示
-  (function(){
-    var header = document.querySelector('.site-header');
-    if (!header) return;
-    var lastY = window.scrollY || 0;
-    var ticking = false;
-    function handle() {
+    function handleScroll() {
       var y = window.scrollY || 0;
       var dy = y - lastY;
       var atTop = y <= 8;
@@ -286,7 +302,23 @@ const targetLangHref = isEn
       lastY = y;
     }
     window.addEventListener('scroll', function(){
-      if (!ticking) { ticking = true; requestAnimationFrame(function(){ handle(); ticking = false; }); }
+      if (!ticking) { ticking = true; requestAnimationFrame(function(){ handleScroll(); ticking = false; }); }
     }, { passive: true });
+
+    document.addEventListener('astro:page-load', function() {
+      header.classList.remove('is-hidden');
+      lastY = window.scrollY || 0;
+      setActiveByURL();
+      updateLangToggle();
+      setPressed();
+      recalc();
+      scrollActiveIntoView('auto');
+    });
+
+    setActiveByURL();
+    updateLangToggle();
+    setPressed();
+    recalc();
+    scrollActiveIntoView('auto');
   })();
 </script>

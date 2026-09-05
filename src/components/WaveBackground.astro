@@ -1,57 +1,38 @@
 ---
-/**
- * WaveBackground
- * - 用途：《迷星叫》PV 风格的正弦波流动背景（Sine Waveform Envelope）。
- * - 视觉设计：
- *   - 极淡多重暖色调柔光层（琥珀金、蜜桃橙、杏黄、玫瑰粉），超低不透明度超大虚化，温润雅致。
- *   - 完整保留 5 条正弦波自身的高质感角色发光（Glow & ShadowBlur）。
- *   - 振幅占据屏幕纵向约 20% 空间，慢速优雅流动。
- *   - 浅色模式（Light）：MyGO!!!!! 官方代表色。
- *   - 暗色模式（Dark）：Ave Mujica 官方代表色。
- */
 import '@styles/wave.css'
 ---
-<div class="wave-bg" aria-hidden="true">
-  <!-- 很淡很淡的多重暖色调柔光层 Subtle Warm Ambient Glows -->
-  <div class="warm-ambient-container">
-    <div class="warm-orb warm-orb-1"></div>
-    <div class="warm-orb warm-orb-2"></div>
-    <div class="warm-orb warm-orb-3"></div>
-    <div class="warm-orb warm-orb-4"></div>
-    <div class="warm-orb warm-orb-5"></div>
-  </div>
-
-  <!-- 迷星叫正弦波 Canvas 渲染层 -->
+<div class="wave-bg" transition:persist="wave-bg" aria-hidden="true">
   <canvas id="mygoSineCanvas" class="sine-canvas"></canvas>
 </div>
 
 <script is:inline>
   (function () {
+    if (window.__sfa_wave_init__) return;
+    window.__sfa_wave_init__ = true;
+
     const canvas = document.getElementById('mygoSineCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
-    // 官方角色代表色色盘定义（保留线条自身的发光 glow）
-    // MyGO!!!!! 官方代表色 (Light Mode)
+    // Light mode palette
     const MYGO_PALETTE = [
-      { name: 'Tomori', color: 'rgba(119, 187, 221, 0.95)', glow: 'rgba(119, 187, 221, 0.45)', hex: '#77BBDD' }, // 高松灯 - 水天蓝
-      { name: 'Anon',   color: 'rgba(255, 136, 153, 0.90)', glow: 'rgba(255, 136, 153, 0.40)', hex: '#FF8899' }, // 千早爱音 - 樱桃粉
-      { name: 'Rana',   color: 'rgba(119, 221, 119, 0.90)', glow: 'rgba(119, 221, 119, 0.40)', hex: '#77DD77' }, // 要乐奈 - 薄荷绿
-      { name: 'Soyo',   color: 'rgba(255, 221, 136, 0.92)', glow: 'rgba(255, 221, 136, 0.42)', hex: '#FFDD88' }, // 长崎爽世 - 琥珀金
-      { name: 'Taki',   color: 'rgba(119, 119, 170, 0.90)', glow: 'rgba(119, 119, 170, 0.40)', hex: '#7777AA' }, // 椎名立希 - 幽暮紫
+      { name: 'Tomori', color: 'rgba(119, 187, 221, 0.95)', glow: 'rgba(119, 187, 221, 0.45)', hex: '#77BBDD' },
+      { name: 'Anon',   color: 'rgba(255, 136, 153, 0.90)', glow: 'rgba(255, 136, 153, 0.40)', hex: '#FF8899' },
+      { name: 'Rana',   color: 'rgba(119, 221, 119, 0.90)', glow: 'rgba(119, 221, 119, 0.40)', hex: '#77DD77' },
+      { name: 'Soyo',   color: 'rgba(255, 221, 136, 0.92)', glow: 'rgba(255, 221, 136, 0.42)', hex: '#FFDD88' },
+      { name: 'Taki',   color: 'rgba(119, 119, 170, 0.90)', glow: 'rgba(119, 119, 170, 0.40)', hex: '#7777AA' },
     ];
 
-    // Ave Mujica 官方代表色 (Dark Mode)
+    // Dark mode palette
     const MUJICA_PALETTE = [
-      { name: 'Oblivionis', color: 'rgba(119, 153, 204, 0.95)', glow: 'rgba(119, 153, 204, 0.55)', hex: '#7799CC' }, // 丰川祥子 - 苍翠冰蓝
-      { name: 'Doloris',    color: 'rgba(187, 153, 85, 0.95)',  glow: 'rgba(187, 153, 85, 0.55)',  hex: '#BB9955' }, // 三角初华 - 冷金星辉
-      { name: 'Mortis',     color: 'rgba(119, 153, 119, 0.90)', glow: 'rgba(119, 153, 119, 0.45)', hex: '#779977' }, // 若叶睦 - 幽森墨绿
-      { name: 'Timoris',    color: 'rgba(75, 120, 160, 0.92)',  glow: 'rgba(75, 120, 160, 0.45)',  hex: '#4B78A0' }, // 八幡海铃 - 暮霭群青
-      { name: 'Amoris',     color: 'rgba(170, 68, 119, 0.95)',  glow: 'rgba(170, 68, 119, 0.55)',  hex: '#AA4477' }, // 祐天寺若麦 - 瑰丽莓紫
+      { name: 'Oblivionis', color: 'rgba(119, 153, 204, 0.95)', glow: 'rgba(119, 153, 204, 0.55)', hex: '#7799CC' },
+      { name: 'Doloris',    color: 'rgba(187, 153, 85, 0.95)',  glow: 'rgba(187, 153, 85, 0.55)',  hex: '#BB9955' },
+      { name: 'Mortis',     color: 'rgba(119, 153, 119, 0.90)', glow: 'rgba(119, 153, 119, 0.45)', hex: '#779977' },
+      { name: 'Timoris',    color: 'rgba(75, 120, 160, 0.92)',  glow: 'rgba(75, 120, 160, 0.45)',  hex: '#4B78A0' },
+      { name: 'Amoris',     color: 'rgba(170, 68, 119, 0.95)',  glow: 'rgba(170, 68, 119, 0.55)',  hex: '#AA4477' },
     ];
 
-    // 在指定美学范围内为 5 种角色颜色分配随机的振幅、频率与流速
     function generateRandomWaveParams() {
       const count = 5;
       const params = [];
@@ -107,10 +88,10 @@ import '@styles/wave.css'
     window.addEventListener('resize', resize, { passive: true });
     resize();
 
-    // 汉宁平滑包络函数：两端平滑归零，中央占据 20% 空间隆起
+    // 汉宁窗包络函数
     function envelope(x, w) {
       if (w <= 0) return 0;
-      const nx = x / w; // [0, 1]
+      const nx = x / w;
       const s = Math.sin(Math.PI * nx);
       return Math.pow(s, 2.2);
     }
@@ -121,9 +102,8 @@ import '@styles/wave.css'
 
       const dark = isDarkMode();
       const palette = dark ? MUJICA_PALETTE : MYGO_PALETTE;
-      const centerY = height * 0.50; // 居中水平基准线
+      const centerY = height * 0.50;
 
-      // 1. 绘制水平中央基准延伸微光线（细致轻柔）
       ctx.beginPath();
       ctx.strokeStyle = dark ? 'rgba(119, 153, 204, 0.15)' : 'rgba(119, 187, 221, 0.20)';
       ctx.lineWidth = 0.8;
@@ -131,7 +111,6 @@ import '@styles/wave.css'
       ctx.lineTo(width, centerY);
       ctx.stroke();
 
-      // 2. 绘制 5 条正弦波（保留波束自身的精致发光 shadowColor 与 shadowBlur）
       const step = Math.max(3, Math.floor(width / 220));
 
       for (let i = 0; i < WAVES.length; i++) {
@@ -145,7 +124,6 @@ import '@styles/wave.css'
         ctx.beginPath();
         ctx.lineWidth = w.lineWidth;
         ctx.strokeStyle = p.color;
-        // 保留波的泛光发光效果
         ctx.shadowColor = p.glow;
         ctx.shadowBlur = dark ? 8 : 5;
         ctx.lineCap = 'round';
@@ -180,7 +158,6 @@ import '@styles/wave.css'
       }
     }
 
-    // 页面切入后台时节能暂停
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden) {
         cancelAnimationFrame(animId);

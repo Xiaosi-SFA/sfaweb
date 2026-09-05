@@ -5,6 +5,7 @@ interface Props {
   hideHeaderFooter?: boolean;
   disableWaveBg?: boolean;
 }
+import { ViewTransitions } from "astro:transitions";
 import WaveBackground from "@components/WaveBackground.astro";
 import SiteHeader from "@components/SiteHeader.astro";
 import SiteFooter from "@components/SiteFooter.astro";
@@ -54,7 +55,6 @@ function t(key: string, fallback?: string) {
   return M_CUR[key] ?? M_EN[key] ?? fallback ?? key;
 }
 
-// 当前路径与导航高亮
 const pathNoLocale = pathNoBase.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
 const isHomeNormalized = pathNoLocale === '/';
 ---
@@ -66,22 +66,31 @@ const isHomeNormalized = pathNoLocale === '/';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <title>{title}</title>
+    <ViewTransitions />
     <script is:inline>
-      // 主题初始化：尽可能早地设置，避免亮/暗主题的闪烁
       (function() {
-        try {
-          var stored = localStorage.getItem('theme');
-          var d = document.documentElement;
-          var preferDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (stored === 'dark' || (!stored && preferDark)) {
-            d.classList.add('dark');
-          } else {
-            d.classList.remove('dark');
-          }
-        } catch (e) {}
+        function applyTheme(targetDoc) {
+          try {
+            var doc = targetDoc || document.documentElement;
+            var stored = localStorage.getItem('theme');
+            var preferDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (stored === 'dark' || (!stored && preferDark)) {
+              doc.classList.add('dark');
+            } else {
+              doc.classList.remove('dark');
+            }
+          } catch (e) {}
+        }
+        applyTheme(document.documentElement);
+        document.addEventListener('astro:before-swap', function(e) {
+          applyTheme(e.newDocument.documentElement);
+        });
+        document.addEventListener('astro:after-swap', function() {
+          applyTheme(document.documentElement);
+        });
       })();
     </script>
-  <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
   <link rel="mask-icon" href={withBase('/favicon.svg')} color="#0ea5e9" />
   </head>
   <body

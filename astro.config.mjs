@@ -25,6 +25,10 @@ export default defineConfig({
   output: 'static',
   site: process.env.SITE_URL || 'https://xiaosi-sfa.github.io',
   base: process.env.BASE_PATH || '/',
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   redirects: {
     '/activities': '/activity/',
   },

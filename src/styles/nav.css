@@ -1,4 +1,3 @@
-/* 导航项：统一内边距与圆角，避免 hover/active 抖动 */
 .nav-link {
   padding-left: calc(var(--nav-base-px) + var(--nav-active-extra-x));
   padding-right: calc(var(--nav-base-px) + var(--nav-active-extra-x));
@@ -15,10 +14,8 @@
   color: #ffffff;
 }
 
-/* 导航容器：允许放置滑动高亮 */
 .nav-main { position: relative; }
 
-/* 移动端：导航支持横向滚动并保持高度对齐 */
 @media (max-width: 640px) {
   .nav-main {
     overflow-x: auto;
@@ -42,21 +39,28 @@
   .site-header .nav-main .nav-link > svg { display: block; }
 }
 
-/* 导航滑动高亮：液态玻璃胶囊 */
 .nav-highlight {
   position: absolute;
-  height: var(--nav-highlight-h, 78%);
-  top: calc((100% - var(--nav-highlight-h, 78%)) / 2);
+  height: var(--nav-highlight-h, 80%);
+  top: calc((100% - var(--nav-highlight-h, 80%)) / 2);
   left: var(--hl-left, 0);
   width: var(--hl-width, 0);
-  background: rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.88) 0%,
+    rgba(255, 255, 255, 0.62) 100%
+  );
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 9999px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), inset 0 1px 0.5px rgba(255, 255, 255, 0.8);
-  transition: left 240ms cubic-bezier(.16, 1, .3, 1),
-              width 240ms cubic-bezier(.16, 1, .3, 1),
-              background-color 180ms ease,
+  box-shadow:
+    0 2px 10px 0 rgba(0, 0, 0, 0.04),
+    0 1px 2px 0 rgba(0, 0, 0, 0.02),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -0.5px 1px 0 rgba(0, 0, 0, 0.03);
+  transition: left 260ms cubic-bezier(.16, 1, .3, 1),
+              width 260ms cubic-bezier(.16, 1, .3, 1),
               opacity 160ms ease;
   opacity: 0;
   pointer-events: none;
@@ -64,14 +68,21 @@
 }
 
 .dark .nav-highlight {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0.5px rgba(255, 255, 255, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 4px 16px 0 rgba(0, 0, 0, 0.35),
+    0 1px 3px 0 rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -0.5px 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .nav-main .nav-link { position: relative; z-index: 1; }
 
-/* 启用滑动高亮时，关闭链接自身背景，只改文字色 */
 .has-navhl .nav-link:hover,
 .has-navhl .nav-link.is-active {
   background-color: transparent;
@@ -83,11 +94,9 @@
   color: #ffffff;
 }
 
-/* 头部在下滑时隐藏，上滑时显示 */
 .site-header { will-change: transform; transition: transform 220ms ease; }
 .site-header.is-hidden { transform: translateY(-100%); }
 
-/* 页面初始化时可隐藏头/尾部 */
 body.hide-header-footer .site-header,
 body.hide-header-footer .site-footer {
   display: none !important;

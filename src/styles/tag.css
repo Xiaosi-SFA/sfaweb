@@ -1,38 +1,32 @@
-/* 统一标签样式（卡片与文章通用），圆角矩形风格 */
-
 :root {
   --tag-bg: var(--neutral-6);
-  --tag-fg: #334155;          /* slate-700 */
+  --tag-fg: #334155;
   --tag-border: var(--neutral-4);
-  --tag-radius: 8px;          /* 圆角矩形 */
-  --tag-px: 0.7rem;           /* 基础水平内边距 */
-  --tag-py: 0.32rem;          /* 基础垂直内边距 */
-  --tag-fz: 0.8rem;           /* 基础字号（居中在 sm 与 md 之间） */
-  --tag-weight: 600;          /* 稍重字体增强识别 */
-  --tag-gap: 0.5rem;          /* 标签间距 */
+  --tag-radius: 8px;
+  --tag-px: 0.7rem;
+  --tag-py: 0.32rem;
+  --tag-fz: 0.8rem;
+  --tag-weight: 600;
+  --tag-gap: 0.5rem;
 }
 
 .dark :root, .dark {
   --tag-bg: var(--neutral-5);
-  --tag-fg: #e5e7eb;          /* slate-200 */
+  --tag-fg: #e5e7eb;
   --tag-border: var(--neutral-4);
 }
 
-/* 容器：自动换行 */
 .tag-list {
   display: flex;
   flex-wrap: wrap;
   gap: var(--tag-gap);
 }
 
-/* 对齐修饰符：将标签组右对齐（在卡片中使用） */
 .tag-list--right {
   justify-content: flex-end;
-  /* 当换行时，行内也靠右 */
   align-items: center;
 }
 
-/* 基础标签（可用于 <span> 或 <a>） */
 .tag {
   display: inline-flex;
   align-items: center;
@@ -50,7 +44,6 @@
   transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
-/* 链接态交互 */
 a.tag:hover,
 a.tag:focus-visible {
   text-decoration: none;
@@ -59,9 +52,7 @@ a.tag:focus-visible {
   box-shadow: 0 1px 0 rgba(0,0,0,0.04) inset;
 }
 
-/* 尺寸：卡片较紧凑，文章略大，仅尺寸不同 */
 .tag--card { --tag-fz: 0.72rem; --tag-py: 0.26rem; --tag-px: 0.6rem; }
 .tag--article { --tag-fz: 0.82rem; --tag-py: 0.34rem; --tag-px: 0.7rem; }
 
-/* 可选修饰：显示 # 的标签微调字距 */
 .tag.hash { letter-spacing: 0.01em; }

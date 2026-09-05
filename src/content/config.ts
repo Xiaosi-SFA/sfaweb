@@ -9,11 +9,8 @@ const articles = defineCollection({
     tags: z.array(z.string()).default([]),
     summary: z.string().max(280).optional(),
     cover: z.string().optional(),
-    // 段首缩进（单位：em），文章详情默认 2
     indent: z.number().int().nonnegative().default(2),
-    // 兼容字段：int（如提供则可覆盖 indent），单位同上
     int: z.number().int().nonnegative().optional(),
-    // 页面默认正文对齐：left | center | right
     align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
@@ -30,28 +27,22 @@ const activity = defineCollection({
     location: z.string().optional(),
     hostType: z.enum(['group', 'department']).optional(),
     hostSlug: z.string().optional(),
-    // 段首缩进（单位：em），活动详情默认 0
     indent: z.number().int().nonnegative().default(0),
-    // 兼容字段：int（如提供则可覆盖 indent），单位同上
     int: z.number().int().nonnegative().optional(),
-    // 页面默认正文对齐：left | center | right
     align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 
-// Friend links collection
 const links = defineCollection({
   type: 'content',
   schema: z.object({
-    title: z.string(), // 站点/名称
+    title: z.string(),
     url: z.string().url(),
     description: z.string().max(400),
-    // 支持远程 URL 或本地 public 下的路径（以 / 开头），统一使用字符串
     logo: z.string().optional(),
   }),
 })
 
-// ——— Departments and Members ———
 const departments = defineCollection({
   type: 'content',
   schema: z.object({
@@ -61,7 +52,6 @@ const departments = defineCollection({
     duties: z.array(z.string()).optional(),
     order: z.number().optional(),
     linkedActivities: z.array(z.string()).optional(),
-    // 部门简介正文对齐
     align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
@@ -79,7 +69,6 @@ const members = defineCollection({
   }),
 })
 
-// Department gallery entries, organized by folder: src/content/deptGallery/{dept}/...
 const deptGallery = defineCollection({
   type: 'content',
   schema: z.object({
@@ -90,7 +79,6 @@ const deptGallery = defineCollection({
   }),
 })
 
-// Interest groups collection
 const groups = defineCollection({
   type: 'content',
   schema: z.object({
@@ -108,24 +96,20 @@ const groups = defineCollection({
       })
       .optional(),
     order: z.number().optional(),
-    // 小组页面正文对齐
     align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 
-// About page (singleton) collection
 const about = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
     intro: z.string().max(600).optional(),
     updated: z.date().optional(),
-    // 关于页正文对齐
     align: z.enum(['left', 'center', 'right']).optional(),
   }),
 })
 
-// 【特性弃用 - 素材遗失】丝带墙数据集合定义（保留完整数据结构与模型）
 const ribbon = defineCollection({
   type: 'data',
   schema: z.array(
@@ -140,5 +124,4 @@ const ribbon = defineCollection({
   ),
 })
 
-// Re-export valid collections
 export const collections = { articles, activity, links, departments, members, deptGallery, groups, about, ribbon }

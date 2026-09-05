@@ -1,35 +1,17 @@
 ---
-/**
- * MemberCard
- * - 用途：成员名片，展示头像、姓名、身份/职位标签、GitHub 个人主页链接、语录与简介。
- * - GitHub 自动解析：
- *   - 若提供了 github 链接或用户名（如 https://github.com/Visio-Vanitas），在头像未显式指定时自动从 GitHub 头像服务（.png）拉取。
- *   - 姓名未指定时自动回退为 GitHub 用户名。
- *   - 名字右侧/右上角提供精致的 GitHub 个人主页跳转图标。
- * - 素材缺失：当头像缺失或加载失败时，静默降级展示极简矢量人形剪影。
- */
 interface Props {
-  /** 头像 URL（可选） */
   avatar?: string
-  /** 姓名（可选，有 github 时可自动解析） */
   name?: string
-  /** 语录/座右铭（可选） */
   quote?: string
-  /** 简介（可选） */
   bio?: string
-  /** 职务预设标签（默认 member） */
   position?: 'minister' | 'vice-minister' | 'member'
-  /** 自定义职位标签文本（可选，优先级最高） */
   labelOverride?: string
-  /** 附加职位标签（可选） */
   label?: string
-  /** GitHub 主页 URL 或用户名（可选，如 https://github.com/Visio-Vanitas 或 Visio-Vanitas） */
   github?: string
 }
 
 const { avatar, name, quote, bio, position, labelOverride, label, github } = Astro.props as Props
 
-// 解析 GitHub 用户名与主页 URL
 let githubUsername = ''
 let githubUrl = ''
 if (github) {
@@ -39,14 +21,12 @@ if (github) {
 }
 
 const displayName = name || githubUsername || 'SFA 成员'
-// 若无自定义头像但提供了 GitHub，则自动解析 GitHub 高清头像
 const resolvedAvatar = avatar || (githubUsername ? `https://github.com/${githubUsername}.png` : '')
 const finalLabel = labelOverride || label
 ---
 <div class="group rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-0.5 relative flex flex-col justify-between">
   <div>
     <div class="flex items-start gap-4">
-      <!-- 成员头像 -->
       <div class="h-16 w-16 overflow-hidden rounded-xl bg-slate-100 dark:bg-white/5 ring-1 ring-black/[0.06] dark:ring-white/10 flex-none relative shadow-xs">
         {resolvedAvatar ? (
           <img
@@ -57,7 +37,6 @@ const finalLabel = labelOverride || label
             onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
           />
         ) : null}
-        <!-- 素材缺失：当头像不存在或加载失败时，降级显示极简轮廓 -->
         <div
           class={`h-full w-full ${resolvedAvatar ? 'hidden' : 'grid'} place-items-center text-slate-300 dark:text-slate-600`}
         >
@@ -67,7 +46,6 @@ const finalLabel = labelOverride || label
         </div>
       </div>
 
-      <!-- 核心信息 -->
       <div class="min-w-0 flex-1">
         <div class="flex items-center justify-between gap-2">
           <div class="flex items-center gap-2 min-w-0">
@@ -83,7 +61,6 @@ const finalLabel = labelOverride || label
             <h3 class="text-base font-bold tracking-tight text-slate-800 dark:text-slate-100 truncate">{displayName}</h3>
           </div>
 
-          <!-- GitHub 主页外链图标 -->
           {githubUrl && (
             <a
               href={githubUrl}

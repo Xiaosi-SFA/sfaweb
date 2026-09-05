@@ -1,13 +1,11 @@
-/* 《迷星叫》正弦波背景与极淡暖色调环境柔光样式 */
 .wave-bg {
   position: fixed;
   inset: 0;
-  z-index: 0; /* 放置在底层画布，正文通过 z-10 浮于其上 */
+  z-index: 0;
   pointer-events: none;
   overflow: hidden;
 }
 
-/* Canvas 铺满整个视口，承载正弦波线条及其自身发光 */
 .sine-canvas {
   position: absolute;
   inset: 0;
@@ -17,7 +15,6 @@
   z-index: 0;
 }
 
-/* 暖色调环境流光层 (Subtle Warm Ambient Glows) */
 .warm-ambient-container {
   position: absolute;
   inset: 0;
@@ -35,7 +32,6 @@
   transition: opacity 1s ease;
 }
 
-/* 浅色模式：极淡的琥珀、蜜桃、杏黄、玫瑰暖光 (透明度仅 0.07 ~ 0.12) */
 .warm-orb-1 {
   width: min(650px, 80vw);
   height: min(650px, 80vw);
@@ -81,7 +77,6 @@
   animation: floatWarm5 40s ease-in-out infinite alternate;
 }
 
-/* 暗色模式：夜空下沉静微暖的星云柔光 (0.04 ~ 0.07 极低不透明度，舒适不刺眼) */
 .dark .warm-orb {
   filter: blur(140px);
 }

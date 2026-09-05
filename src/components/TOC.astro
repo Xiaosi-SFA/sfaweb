@@ -1,10 +1,4 @@
 ---
-/**
- * TOC（侧边目录）
- * - 用途：在桌面端显示文章目录，支持点击平滑滚动到对应标题。
- * - 输入：headings 数组，包含 depth/text/slug。
- * - 样式：与文章正文完全对齐的沉静半透明卡片。
- */
 interface Heading { depth: number; text: string; slug: string }
 interface Props { headings?: Heading[] }
 const { headings = [] } = Astro.props as Props
@@ -26,15 +20,15 @@ const { headings = [] } = Astro.props as Props
 ) : null}
 
 <script>
-  const onClick = (e: Event) => {
-    const a = (e.target as HTMLElement).closest('a');
+  document.addEventListener('click', (e: MouseEvent) => {
+    const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('.toc-item a[data-slug]');
     if (!a) return;
-    const slug = a.getAttribute('data-slug') || '';
+    const slug = a.getAttribute('data-slug');
     if (!slug) return;
     const el = document.getElementById(slug);
     if (!el) return;
     e.preventDefault();
     el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-  document.currentScript?.parentElement?.addEventListener('click', onClick);
+    history.pushState(null, '', `#${slug}`);
+  });
 </script>

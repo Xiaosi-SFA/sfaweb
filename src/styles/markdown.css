@@ -1,9 +1,5 @@
-/* KaTeX Math Formula Rendering Styles */
 @import 'katex/dist/katex.min.css';
 
-/* MarkdownContent 专用正文样式（与页面布局/组件样式解耦） */
-
-/* 容器与通用排版 */
 .article-prose, .prose {
   overflow-wrap: anywhere;
   word-break: break-word;
@@ -17,7 +13,6 @@
   scroll-margin-top: 84px;
 }
 
-/* 标题层级与间距 */
 .article-prose h1,
 .article-prose h2,
 .article-prose h3,
@@ -46,7 +41,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* 段落 */
 .article-prose p {
   font-size: 1rem;
   line-height: 1.9;
@@ -59,7 +53,6 @@
   text-indent: 0 !important;
 }
 
-/* 局部 HTML 排版与对齐辅助类 */
 .article-prose [align="center"],
 .article-prose .align-center,
 .article-prose .text-center {
@@ -89,7 +82,6 @@
   text-indent: 0;
 }
 
-/* 引用 */
 .article-prose blockquote:not(.callout) {
   border-left: 3px solid rgba(29, 29, 31, 0.16);
   padding-left: 0.9rem;
@@ -98,7 +90,6 @@
 }
 .article-prose blockquote p { text-indent: 0; }
 
-/* 链接：继承站点链接色并带下划线 */
 .article-prose a {
   color: var(--link-color);
   text-decoration: underline;
@@ -113,7 +104,6 @@
   color: #38bdf8;
 }
 
-/* 列表（支持多级缩进） */
 .article-prose ul,
 .article-prose ol {
   margin: 0.75rem 0;
@@ -128,7 +118,6 @@
 .article-prose ol ol ol { list-style: lower-roman outside; }
 .article-prose li::marker { color: var(--text-muted); }
 
-/* 任务列表（GFM） */
 .article-prose .task-list-item {
   list-style: none;
   display: flex;
@@ -147,7 +136,6 @@
   accent-color: #38bdf8;
 }
 
-/* 代码块与行内代码 */
 .article-prose code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.875em;
@@ -173,9 +161,8 @@
   border-radius: 0;
 }
 
-/* Obsidian 高亮标记 ==highlight== 与 <mark> */
 .article-prose mark {
-  background-color: #fef08a; /* 柔和浅黄色 */
+  background-color: #fef08a;
   color: #1e293b;
   padding: 0.1em 0.35em;
   border-radius: 4px;
@@ -185,7 +172,6 @@
   color: #fef08a;
 }
 
-/* HTML 排版标签扩展 */
 .article-prose kbd {
   display: inline-block;
   padding: 0.1em 0.4em;
@@ -221,7 +207,6 @@
   outline: none;
 }
 
-/* 图片/媒体 */
 .article-prose img,
 .article-prose video,
 .article-prose iframe {
@@ -230,7 +215,6 @@
   border-radius: 8px;
 }
 
-/* 表格（GFM） */
 .article-prose table {
   width: 100%;
   border-collapse: separate;
@@ -262,9 +246,6 @@
 }
 .article-prose tbody tr:nth-child(odd) { background: var(--neutral-6); }
 
-/* ==========================================================================
-   Obsidian Callouts & GitHub Alerts 系统
-   ========================================================================== */
 .article-prose .callout {
   margin: 1.25rem 0;
   padding: 0.85rem 1.15rem;
@@ -302,8 +283,6 @@
   margin-bottom: 0.45rem;
 }
 
-/* Callout 颜色主题定义 */
-/* 蓝色（Note / Info / Todo） */
 .article-prose .callout-color-blue,
 .article-prose .callout-color-sky,
 .article-prose .callout-color-cyan {
@@ -327,7 +306,6 @@
   color: #7dd3fc;
 }
 
-/* 绿色（Tip / Success / Check / Done / Abstract / Summary） */
 .article-prose .callout-color-teal,
 .article-prose .callout-color-emerald {
   border-left-color: #059669;
@@ -347,7 +325,6 @@
   color: #6ee7b7;
 }
 
-/* 紫色（Important） */
 .article-prose .callout-color-violet,
 .article-prose .callout-color-indigo {
   border-left-color: #7c3aed;
@@ -367,7 +344,6 @@
   color: #c4b5fd;
 }
 
-/* 橙色/黄色（Warning / Question / Help / FAQ） */
 .article-prose .callout-color-amber,
 .article-prose .callout-color-orange {
   border-left-color: #d97706;
@@ -387,7 +363,6 @@
   color: #fcd34d;
 }
 
-/* 红色（Caution / Danger / Error / Bug / Failure） */
 .article-prose .callout-color-red,
 .article-prose .callout-color-rose {
   border-left-color: #e11d48;
@@ -407,7 +382,6 @@
   color: #fda4af;
 }
 
-/* 灰色（Quote / Cite） */
 .article-prose .callout-color-slate {
   border-left-color: #64748b;
   background: rgba(100, 116, 139, 0.06);
@@ -423,7 +397,6 @@
   color: #cbd5e1;
 }
 
-/* 深色模式通用覆盖 */
 .dark .article-prose { color: #e5e7eb; }
 .dark .article-prose h1,
 .dark .article-prose h2,

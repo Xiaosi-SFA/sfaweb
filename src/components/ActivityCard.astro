@@ -1,24 +1,11 @@
 ---
-/**
- * ActivityCard
- * - 用途：展示单个活动卡片，支持紧凑与标准两种布局。
- * - 风格：Apple 极简圆角卡片设计，支持半透明毛玻璃与微动效。
- * - 封面策略：仅在提供封面时展示封面区域；无封面时优雅降级为纯文本排版卡片。
- */
 interface Props {
-	/** 详情页链接（可选） */
 	href?: string
-	/** 卡片标题 */
 	title: string
-	/** 活动/新闻日期 */
 	date: Date
-	/** 封面图片 URL（可选） */
 	cover?: string
-	/** 是否使用紧凑模式（默认 false） */
 	compact?: boolean
-	/** 标签列表（可选） */
 	tags?: string[]
-	/** 摘要（可选） */
 	summary?: string
 }
 

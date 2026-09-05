@@ -1,23 +1,7 @@
 ---
-/**
- * @deprecated 【特性弃用 - 素材遗失】
- * RibbonWall（丝带墙组件）
- * - 状态：因历史横幅素材遗失，已在主分支（友链页）弃用展示，保留完整组件及样式代码供后续素材补全时恢复。
- * - 用途：以“丝带墙”形式展示多张图片，支持按前一项高度的重叠布局与 hover 让位。
- * - 数据：来自 content collection `ribbon`，每项：{ src, href?, ratio?, alt?, credit? }
- * - 比例：
- *   - item.ratio 为 number 时：表示相对上一项高度的比例；
- *   - item.ratio 为 string 时：作为 CSS 长度写入 --item-overlap；
- *   - 未设置时：回退到全局 CSS 变量 --ribbon-overlap-ratio。
- * - 交互：窗口/图片尺寸变化时重算；悬浮时下方项让位以露出当前项。
- */
 import "@styles/ribbon.css";
 import { getCollection } from "astro:content";
 import { withBase } from "@utils/path";
-// 配置来源：src/content/ribbon/*.json（data collection，每个文件为数组）
-// 每项：{ src: string; href?: string; ratio?: number | string, alt?: string }
-// - ratio: 数字=相对上一张高度的比例；字符串=CSS 长度/百分比（仅 CSS 兜底）
-// - 未设置 ratio：使用全局 --ribbon-overlap-ratio 或 --ribbon-overlap
 
 const entries = await getCollection("ribbon");
 const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
@@ -81,11 +65,7 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
     </div>
 
     <script>
-        // 基于上一张图片高度的重叠：ratio * prevHeight
-        // 支持：
-        // - 全局 CSS 变量 --ribbon-overlap-ratio（默认 0.1）
-        // - 每项 item.ratio 为 number 时优先生效
-        (function () {
+        document.addEventListener('astro:page-load', () => {
             const root = document.getElementById("ribbonList");
             if (!root) return;
             const items = Array.from(
@@ -93,7 +73,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
             ) as HTMLElement[];
             if (!items.length) return;
 
-            // 读取全局默认比例
             const getDefaultRatio = () => {
                 const v = getComputedStyle(document.documentElement)
                     .getPropertyValue("--ribbon-overlap-ratio")
@@ -113,7 +92,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
                 const defRatio = getDefaultRatio();
                 for (let i = 0; i < items.length; i++) {
                     const item = items[i];
-                    // CSS 兜底：如果已有 --item-overlap（字符串长度），则不覆盖
                     const hasFixed =
                         item.style.getPropertyValue("--item-overlap");
                     if (i === 0) {
@@ -123,12 +101,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
                     if (hasFixed) continue;
 
                     const prev = items[i - 1];
-                    const prevImg = prev.querySelector(
-                        ".ribbon-img",
-                    ) as HTMLImageElement | null;
-                    const ratioAttr = prevImg?.getAttribute("data-ratio");
-                    // 读取“配置 ratio 为 number”的通道：在 SSR 阶段无法直接，从 DOM 属性传递较复杂，这里采用 data 方案可扩展；
-                    // 当前实现：优先读 data-overlap-ratio（若存在），否则使用全局。
                     let ratio = defRatio;
                     const domRatio = item.getAttribute("data-overlap-ratio");
                     if (domRatio) {
@@ -142,7 +114,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
                 }
             };
 
-            // 初次计算：等待图片加载
             const imgs = Array.from(
                 root.querySelectorAll(".ribbon-img"),
             ) as HTMLImageElement[];
@@ -158,7 +129,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
             });
             if (pending === 0) compute();
 
-            // 窗口尺寸变化时重算
             let raf = 0;
             const onResize = () => {
                 if (raf) cancelAnimationFrame(raf);
@@ -168,7 +138,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
             const ro = new ResizeObserver(() => onResize());
             ro.observe(root);
 
-            // 悬浮交互：不置顶，而是“上移上方、下移下方”以完整露出当前项
             function resetTransforms() {
                 for (const el of items) el.style.transform = "";
             }
@@ -178,7 +147,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
                 const defRatio = getDefaultRatio();
                 const captionGap = getCaptionGap();
 
-                // 仅计算并处理“下方让位”
                 let downDelta = 0;
                 if (index < items.length - 1) {
                     const curr = items[index];
@@ -197,10 +165,9 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
                     );
                 }
 
-                // 仅下方下移（上方不动）
                 for (let i = 0; i < items.length; i++) {
                     if (i > index) {
-                        const shift = downDelta + captionGap; // 让位 + 额外空白行
+                        const shift = downDelta + captionGap;
                         if (shift)
                             items[i].style.transform = `translateY(${shift}px)`;
                     }
@@ -211,6 +178,6 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
                 el.addEventListener("mouseenter", () => hoverAdjust(idx));
                 el.addEventListener("mouseleave", () => resetTransforms());
             });
-        })();
+        });
     </script>
 </section>

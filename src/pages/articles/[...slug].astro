@@ -19,12 +19,10 @@ export async function getStaticPaths() {
 const { entry } = Astro.props
 const { Content, headings } = await entry.render()
 
-// 文章可能设置 indent/int；具体是否生效由组件内部开关判定
 const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.indent ?? 0) || 0
 ---
 <BaseLayout title={`${entry.data.title} - SFA`}>
   <div class="grid grid-cols-1 gap-8 md:grid-cols-3 items-start md:items-stretch">
-    <!-- 侧栏：相对视口随窗口吸附固定（md:sticky md:top-20），初始与正文卡片像素级绝对平齐，滚动时随窗口固定 -->
     <div class="order-2 md:order-1 md:col-span-1 md:self-stretch">
       <div class="space-y-4 md:sticky md:top-20 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto">
         {headings && headings.length > 0 ? (
@@ -35,10 +33,8 @@ const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.ind
         <RelatedPosts currentSlug={entry.slug} tags={entry.data.tags} />
       </div>
     </div>
-    <!-- 正文主体：与侧边栏格式与初始位置完全对齐的卡片容器 -->
     <article class="order-1 md:order-2 md:col-span-2 max-w-none p-6 sm:p-8 md:p-10 rounded-2xl bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border border-black/[0.06] dark:border-[#2c2c2e] shadow-xs">
       {entry.data.cover ? (
-        <!-- 封面图：按 16:9 比例展示，避免布局跳动 -->
         <img src={withBase(entry.data.cover)} alt={entry.data.title} class="mb-6 w-full rounded-2xl object-cover shadow-sm border border-slate-200/60 dark:border-white/10" style="aspect-ratio: 16 / 9;" />
       ) : null}
       <h1 class="text-3xl font-extrabold tracking-tight leading-tight md:text-4xl text-slate-900 dark:text-slate-100">{entry.data.title}</h1>

@@ -41,19 +41,16 @@ const CALLOUT_TYPES = {
 
 export default function remarkObsidian() {
   return (tree) => {
-    // 1. Process Obsidian Comments & Wikilinks in text nodes
     visit(tree, 'text', (node, index, parent) => {
       if (!node.value || !parent || typeof index !== 'number') return
 
       let val = node.value
 
-      // 1.1 Remove inline/multiline Obsidian comments %% ... %%
       if (val.includes('%%')) {
         val = val.replace(/%%[\s\S]*?%%/g, '')
         node.value = val
       }
 
-      // 1.2 Check for WikiLinks: ![[embed]] or [[link]]
       const wikiRegex = /(!)?\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]/g
       if (!wikiRegex.test(val)) return
 
@@ -67,7 +64,6 @@ export default function remarkObsidian() {
         const matchStart = match.index
         const matchEnd = wikiRegex.lastIndex
 
-        // Text before match
         if (matchStart > lastIndex) {
           newChildren.push({
             type: 'text',
@@ -80,7 +76,6 @@ export default function remarkObsidian() {
         const displayText = alias ? alias.trim() : section ? `${cleanTarget} > ${section.trim()}` : cleanTarget
 
         if (isEmbed) {
-          // Embed image or media
           const isRemote = cleanTarget.startsWith('http://') || cleanTarget.startsWith('https://') || cleanTarget.startsWith('/')
           const imgSrc = isRemote ? cleanTarget : `/images/${cleanTarget}`
           const sizeAttr = alias ? alias.trim() : undefined
@@ -95,10 +90,8 @@ export default function remarkObsidian() {
             },
           })
         } else {
-          // WikiLink to internal article / page
           let href = cleanTarget
           if (!href.startsWith('http') && !href.startsWith('/')) {
-            // Slugify link
             href = `/articles/${encodeURIComponent(cleanTarget.toLowerCase())}/${cleanSection}`
           } else {
             href = `${href}${cleanSection}`
@@ -121,14 +114,12 @@ export default function remarkObsidian() {
         })
       }
 
-      // Replace the text node with new children
       if (newChildren.length > 0) {
         parent.children.splice(index, 1, ...newChildren)
         return index + newChildren.length
       }
     })
 
-    // 2. Process Obsidian Callouts & GitHub Alerts in blockquotes
     visit(tree, 'blockquote', (node) => {
       if (!node.children || node.children.length === 0) return
 
@@ -138,31 +129,27 @@ export default function remarkObsidian() {
       const firstTextNode = firstChild.children[0]
       if (firstTextNode.type !== 'text' || !firstTextNode.value) return
 
-      // Match: [!TYPE] or [!TYPE]+ or [!TYPE]- Optional Title
+      // [!TYPE] or [!TYPE]+ / [!TYPE]-
       const calloutMatch = firstTextNode.value.match(/^\[!([a-zA-Z_-]+)\]([+-])?(?:[ \t]+(.*))?/)
       if (!calloutMatch) return
 
       const rawType = calloutMatch[1].toLowerCase()
-      const foldMode = calloutMatch[2] // '+' = open, '-' = collapsed, undefined = normal
+      const foldMode = calloutMatch[2]
       const customTitle = calloutMatch[3]?.trim()
 
       const typeMeta = CALLOUT_TYPES[rawType] || { title: rawType.toUpperCase(), color: 'slate' }
       const displayTitle = customTitle || typeMeta.title
 
-      // Strip the [!TYPE] line from paragraph
       firstTextNode.value = firstTextNode.value.replace(/^\[!([a-zA-Z_-]+)\]([+-])?(?:[ \t]+(.*))?(?:\r?\n|$)/, '')
 
-      // If first text node is empty, remove it
       if (!firstTextNode.value.trim()) {
         firstChild.children.shift()
       }
 
-      // If first paragraph is now completely empty, remove it
       if (firstChild.children.length === 0) {
         node.children.shift()
       }
 
-      // Build callout title AST element
       const titleElement = {
         type: 'paragraph',
         data: {
@@ -183,7 +170,6 @@ export default function remarkObsidian() {
         ],
       }
 
-      // Convert blockquote to callout div or details
       const isFoldable = Boolean(foldMode)
       node.data = node.data || {}
       node.data.hName = isFoldable ? 'details' : 'div'
@@ -193,7 +179,6 @@ export default function remarkObsidian() {
         ...(foldMode === '+' ? { open: true } : {}),
       }
 
-      // Prepend title element
       node.children.unshift(titleElement)
     })
   }

@@ -1,28 +1,19 @@
-/* 文章列表动效样式（可在此调整节奏）
-   - 使用交错（stagger）延迟，让卡片依次从右侧飞入并淡入
-   - 通过下方 CSS 变量与 nth-child 规则控制延迟，无需改动页面脚本
-*/
-
-/* 全局节奏参数（可按需修改） */
 .articles-row {
-  --stagger-step: 80ms;     /* 每张卡片之间的延迟步长 */
-  --stagger-cap: 320ms;     /* 延迟上限，避免过长 */
+  --stagger-step: 80ms;
+  --stagger-cap: 320ms;
 }
 
-/* 初始状态：右移 + 透明 */
 .post-card-anim {
   opacity: 0;
   transform: translateX(24px);
   transition: opacity .6s cubic-bezier(.22,.61,.36,1), transform .6s cubic-bezier(.22,.61,.36,1);
   will-change: opacity, transform;
 }
-/* 可见时：归位 + 不透明 */
 .post-card-anim.is-visible {
   opacity: 1;
   transform: translateX(0);
 }
 
-/* 交错延迟（按序设置），如需更多卡片，请继续添加 nth-child 选择器 */
 .articles-row .post-card-anim:nth-child(1)  { transition-delay: 0ms; }
 .articles-row .post-card-anim:nth-child(2)  { transition-delay: var(--stagger-step); }
 .articles-row .post-card-anim:nth-child(3)  { transition-delay: calc(var(--stagger-step) * 2); }
@@ -36,12 +27,10 @@
 .articles-row .post-card-anim:nth-child(11) { transition-delay: calc(var(--stagger-step) * 10); }
 .articles-row .post-card-anim:nth-child(12) { transition-delay: calc(var(--stagger-step) * 11); }
 
-/* 可选：减少动态效果时禁用动效 */
 @media (prefers-reduced-motion: reduce) {
   .post-card-anim { transition: none; transform: none; opacity: 1; }
 }
 
-/* 文章栏目分隔线（从 global.css 迁移） */
 .topic-divider {
   --topic-label-width: min(22ch, 90vw);
   --topic-line-length: clamp(3rem, 12vw, 8rem);
@@ -89,14 +78,12 @@
   }
 }
 
-/* 文章页横向滚动条样式（移自页面内联 <style>） */
 .horizontal-scroll::-webkit-scrollbar { height: 6px; }
 .horizontal-scroll::-webkit-scrollbar-thumb {
   background: rgba(148, 163, 184, 0.6);
   border-radius: 9999px;
 }
 
-/* 卡片摘要两行截断（移自 PostCard 内联 <style>） */
 .line-clamp-2 {
   display: -webkit-box;
   line-clamp: 2;

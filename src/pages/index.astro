@@ -6,25 +6,20 @@ import ActivityCard from '@components/ActivityCard.astro'
 import { withBase } from '@utils/path'
 import '@styles/homepage.css'
 
-// 最新文章（按日期降序，取前 6 条）
 const latestArticles = (await (getCollection as any)('articles'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   .slice(0, 6)
 
-// 最近活动（仅使用嵌套 slug，避免与旧单段路由重复；取前 3 条）
 const latestActivity = (await (getCollection as any)('activity'))
   .filter((e: any) => e.slug.includes('/'))
   .sort((a: any, b: any) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
   .slice(0, 3)
 ---
 <BaseLayout title="四川大学科幻协会">
-  <!-- Hero 欢迎区（无背景、居中 Logo、欢迎语、向上箭头） -->
   <section class="hero-anim relative min-h-screen p-8 md:p-12 overflow-visible flex items-center justify-center">
     <div class="max-w-3xl mx-auto text-center flex flex-col items-center justify-center" style="min-height:60vh;">
       <div class="logo-wrap hero-logo-wrap mx-auto mb-6 w-full flex items-center justify-center">
-        <!-- 亮色主题 Logo（无边框纯净显示） -->
         <img src={withBase('/xiaosi.png')} alt="SFA logo" class="w-auto h-40 sm:h-48 md:h-56 object-contain block dark:hidden" />
-        <!-- 暗色主题 Logo（无边框纯净显示） -->
         <img src={withBase('/xiaosi.png')} alt="SFA logo night" class="w-auto h-40 sm:h-48 md:h-56 object-contain hidden dark:block" />
       </div>
 
@@ -35,83 +30,72 @@ const latestActivity = (await (getCollection as any)('activity'))
         <a href="#latest-activity" class="px-6 py-2.5 rounded-full liquid-pill text-slate-800 dark:text-slate-100 font-semibold text-sm transition-all duration-300 hover:scale-105">活动</a>
       </div>
 
-      <!-- 向上箭头 -->
       <div class="w-full flex flex-col items-center justify-center mt-20">
         <button aria-label="查看内容" class="arrow-wrap bg-transparent border-0 cursor-pointer w-14 h-14 p-0 m-0 flex items-center justify-center">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-bounce-up w-10 h-10 block text-slate-900 dark:text-slate-100" aria-hidden="true">
-            <!-- 向上三角形，居中显示 -->
             <path d="M12 6 L6 12 H18 L12 6 Z" fill="currentColor" />
           </svg>
         </button>
       </div>
     </div>
-    
+
 
     <style>
       .logo-wrap img { transition: transform 800ms cubic-bezier(.2,.8,.2,1); transform: translateY(0); }
       .welcome-text { opacity: 0; transform: translateY(8px); transition: opacity 480ms ease 380ms, transform 480ms ease 380ms; }
-      /* 上移距离调整为 -48px，并确保容器不裁切图片 */
       .hero-anim.loaded .logo-wrap img { transform: translateY(-48px); }
       .hero-anim.loaded .welcome-text { opacity: 1; transform: translateY(0); }
 
-  /* 向上箭头默认隐藏，动画完成后显示并可交互 */
-  .arrow-wrap { opacity: 0; transform: translateY(8px); transition: opacity 360ms ease, transform 360ms ease; pointer-events: none; display:inline-flex; }
-  .arrow-caption { opacity: 0; transform: translateY(8px); transition: opacity 360ms ease, transform 360ms ease; }
-  /* 显示时下移 16px，使箭头位置更低 */
-  .hero-anim.loaded .arrow-wrap { opacity: 1; transform: translateY(16px); pointer-events: auto; }
-  .hero-anim.loaded .arrow-caption { opacity: 1; transform: translateY(16px); }
+      .arrow-wrap { opacity: 0; transform: translateY(8px); transition: opacity 360ms ease, transform 360ms ease; pointer-events: none; display:inline-flex; }
+      .arrow-caption { opacity: 0; transform: translateY(8px); transition: opacity 360ms ease, transform 360ms ease; }
+      .hero-anim.loaded .arrow-wrap { opacity: 1; transform: translateY(16px); pointer-events: auto; }
+      .hero-anim.loaded .arrow-caption { opacity: 1; transform: translateY(16px); }
 
-      /* 向上箭头浮动动画（当可见时） */
       @keyframes bounceUp { 0%{transform:translateY(0)}50%{transform:translateY(-8px)}100%{transform:translateY(0)} }
       .animate-bounce-up { animation: bounceUp 1.6s infinite ease-in-out; }
     </style>
 
-    <script type="module">
-      // 加载动画与上滑检测：支持鼠标滚轮和触摸滑动（上划手势）
-      document.addEventListener('DOMContentLoaded', () => {
+    <script>
+      let cleanupHomepage: (() => void) | null = null;
+
+      document.addEventListener('astro:page-load', () => {
         const hero = document.querySelector('.hero-anim');
         const arrow = document.querySelector('.arrow-wrap');
-  const firstSection = document.getElementById('latest-articles');
+        const firstSection = document.getElementById('latest-articles');
+        if (!hero) return;
 
-        setTimeout(() => hero.classList.add('loaded'), 600);
+        const loadTimer = setTimeout(() => hero.classList.add('loaded'), 600);
 
         function ensureHeaderVisible() {
-          // 解除首页初始隐藏的 Header/Footer
           if (document.body.classList.contains('hide-header-footer')) {
             document.body.classList.remove('hide-header-footer');
           }
         }
 
         function scrollToFirst() {
-          // reveal header/footer (they are initially hidden via body.hide-header-footer)
           ensureHeaderVisible();
           if (firstSection) firstSection.scrollIntoView({ behavior: 'smooth' });
         }
 
         arrow?.addEventListener('click', scrollToFirst);
 
-        // 仅在页面位于顶部时启用“加速下滑”
         const isAtTop = () => (window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0) < 4;
 
-        // 鼠标滚轮：仅在顶部且向下滚一定阈值时触发
-        const wheelHandler = (e) => {
-          // 向下滚（页面上滑）：从顶部进入内容区
+        const wheelHandler = (e: WheelEvent) => {
           if (e.deltaY > 20 && isAtTop()) {
             removeAccelerators();
             scrollToFirst();
             return;
           }
-          // 向上滚（页面下滑）：仅用于解除首页 header 隐藏
           if (e.deltaY < -20) {
             ensureHeaderVisible();
           }
         };
         window.addEventListener('wheel', wheelHandler, { passive: true });
 
-        // 触摸：记录起始触点，检测上滑（手指向上移动，dy > 30）
-        let startY = null;
-        const onTouchStart = (e) => { startY = e.touches[0].clientY; };
-        const onTouchMove = (e) => {
+        let startY: number | null = null;
+        const onTouchStart = (e: TouchEvent) => { startY = e.touches[0].clientY; };
+        const onTouchMove = (e: TouchEvent) => {
           if (startY == null) return;
           const current = e.touches[0].clientY;
           const dy = startY - current;
@@ -121,7 +105,6 @@ const latestActivity = (await (getCollection as any)('activity'))
             startY = null;
             return;
           }
-          // 手指向下（页面下滑）：解除首页 header 隐藏
           if (dy < -40) {
             ensureHeaderVisible();
           }
@@ -135,39 +118,32 @@ const latestActivity = (await (getCollection as any)('activity'))
           try { window.removeEventListener('touchmove', onTouchMove); } catch(_) {}
         }
 
-        // 首页导航高亮逻辑：根据可视区中间的内容区块切换“文章/活动”高亮
         const sections = [
           { id: 'latest-articles', path: '/articles/' },
           { id: 'latest-activity', path: '/activity/' }
         ];
-        // 允许 URL 前缀路由（/zh-cn/...），因此用以路径结尾匹配的方式查找链接
         const pairs = sections.map(s => ({
           el: document.getElementById(s.id),
           link: Array.from(document.querySelectorAll('.site-header .nav-link')).find(a => a.getAttribute('href')?.endsWith(s.path))
-        })).filter(p => p.el && p.link);
+        })).filter((p): p is { el: HTMLElement; link: Element } => !!p.el && !!p.link);
 
-        // 首页“首页”导航链接（用于在没有任何内容区块突出的情况下高亮）
-        // 首页链接：优先匹配以 '/' 结尾或以 '/<locale>/' 形式开头
         let homeLink = Array.from(document.querySelectorAll('.site-header .nav-link')).find(a => {
           const href = a.getAttribute('href') || '';
           return href === '/' || /^\/[a-z]{2}(?:-[a-z]{2})?\/$/i.test(href);
         });
 
-        const ratios = new Map();
+        const ratios = new Map<Element, number>();
         function updateActive() {
-          let best = { r: 0, link: null };
+          let best = { r: 0, link: null as Element | null };
           for (const p of pairs) {
             const r = ratios.get(p.el) || 0;
             if (r > best.r) best = { r, link: p.link };
           }
-          // 清除
           pairs.forEach(p => p.link.classList.remove('is-active'));
           homeLink?.classList.remove('is-active');
-          // 阈值：当某区块的可见比例 > 0.15 时认为它是当前板块
           if (best.link && best.r > 0.15) {
             best.link.classList.add('is-active');
           } else {
-            // 否则高亮首页（例如停留在 Hero 顶部或两块都几乎不可见）
             homeLink?.classList.add('is-active');
           }
         }
@@ -181,11 +157,23 @@ const latestActivity = (await (getCollection as any)('activity'))
 
         pairs.forEach(p => io.observe(p.el));
         updateActive();
+
+        cleanupHomepage = () => {
+          clearTimeout(loadTimer);
+          removeAccelerators();
+          io.disconnect();
+        };
+      });
+
+      document.addEventListener('astro:before-swap', () => {
+        if (cleanupHomepage) {
+          cleanupHomepage();
+          cleanupHomepage = null;
+        }
       });
     </script>
   </section>
 
-  <!-- 最新文章（上滑进入） -->
   <section id="latest-articles" class="py-16 md:py-20 border-t border-black/[0.04] dark:border-white/[0.06]">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex items-center justify-between mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
@@ -203,7 +191,6 @@ const latestActivity = (await (getCollection as any)('activity'))
     </div>
   </section>
 
-  <!-- 最近活动 -->
   <section id="latest-activity" class="py-16 md:py-20 border-t border-black/[0.04] dark:border-white/[0.06]">
     <div class="max-w-6xl mx-auto px-4">
       <div class="flex items-center justify-between mb-8 pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">

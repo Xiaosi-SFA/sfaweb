@@ -1,33 +1,14 @@
----
-/**
- * BackToTopOrb
- * - 用途：移动端“返回顶部 / 目录”悬浮球 + 底部抽屉式目录。
- * - 结构：
- *   - 悬浮按钮 [data-back-to-top]
- *   - 遮罩层 [data-orb-overlay]
- *   - 抽屉面板 [data-orb-sheet]，内容列表 [data-orb-list]
- * - 行为：
- *   - 滚动超过一定距离后显示悬浮球。
- *   - 点击悬浮球打开目录，目录包含“回到顶端”及正文 h2/h3 标题。
- *   - 点击列表项滚动到对应锚点并关闭抽屉。
- * - 无障碍：aria-expanded、aria-label；按钮使用可聚焦元素。
- * - 注意：本组件含内联 <style>/<script>，保持注释简短，避免影响产物体积。
- */
----
 <button type="button" class="back-to-top-orb" data-back-to-top aria-label="目录 / 返回顶部" data-state="hidden" aria-expanded="false">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true">
     <path d="M4 7h16v2H4V7Zm0 4h16v2H4v-2Zm0 4h10v2H4v-2Z" />
   </svg>
 </button>
 
-<!-- 移动端底部目录面板 -->
 <div class="orb-overlay" data-orb-overlay hidden></div>
 <div class="orb-sheet" data-orb-sheet hidden aria-hidden="true">
   <div class="orb-sheet__handle" aria-hidden="true"></div>
   <div class="orb-sheet__content">
-    <ul class="orb-list" data-orb-list>
-      <!-- JS 注入：第一个固定为 回到顶端，其余为文内标题 -->
-    </ul>
+    <ul class="orb-list" data-orb-list></ul>
   </div>
   <button type="button" class="orb-sheet__close" data-orb-close aria-label="关闭">✕</button>
   <style is:inline>
@@ -108,13 +89,15 @@
   }
 </style>
 
-<script is:inline>
-  (function(){
-    const orb = document.querySelector('[data-back-to-top]');
-    const overlay = document.querySelector('[data-orb-overlay]');
-    const sheet = document.querySelector('[data-orb-sheet]');
-    const list = document.querySelector('[data-orb-list]');
-    const closeBtn = document.querySelector('[data-orb-close]');
+<script>
+  let orbScrollHandler: (() => void) | null = null;
+
+  document.addEventListener('astro:page-load', () => {
+    const orb = document.querySelector<HTMLButtonElement>('[data-back-to-top]');
+    const overlay = document.querySelector<HTMLDivElement>('[data-orb-overlay]');
+    const sheet = document.querySelector<HTMLDivElement>('[data-orb-sheet]');
+    const list = document.querySelector<HTMLUListElement>('[data-orb-list]');
+    const closeBtn = document.querySelector<HTMLButtonElement>('[data-orb-close]');
     if (!orb || !overlay || !sheet || !list || !closeBtn) return;
 
     const showAfter = parseInt(orb.getAttribute('data-offset') || '', 10) || 240;
@@ -127,15 +110,17 @@
     };
 
     function buildTOC() {
+      if (!list) return;
       list.innerHTML = '';
-      // 顶部：回到顶端
       const liTop = document.createElement('li');
       liTop.className = 'orb-item orb-item--top';
       liTop.innerHTML = '<span class="orb-item__dot" style="opacity:0;"></span><span class="orb-item__text">回到顶端</span>';
-      liTop.addEventListener('click', ()=> { window.scrollTo({ top: 0, behavior: 'smooth' }); toggleSheet(false); });
+      liTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        toggleSheet(false);
+      });
       list.appendChild(liTop);
 
-      // 收集正文标题（article-prose 内 h2/h3，并带 id）
       const container = document.querySelector('.article-prose') || document.querySelector('article');
       const hs = container ? Array.from(container.querySelectorAll('h2[id], h3[id]')) : [];
       hs.forEach(h => {
@@ -144,7 +129,7 @@
         const depth = h.tagName.toLowerCase() === 'h3' ? 3 : 2;
         const text = h.textContent?.trim() || '';
         const id = h.getAttribute('id') || '';
-        li.innerHTML = `<span class="orb-item__dot" style="margin-left:${depth===3? '8px':'0'}"></span><span class="orb-item__text">${text}</span>`;
+        li.innerHTML = `<span class="orb-item__dot" style="margin-left:${depth === 3 ? '8px' : '0'}"></span><span class="orb-item__text">${text}</span>`;
         li.addEventListener('click', () => {
           if (id) {
             const target = document.getElementById(id);
@@ -156,27 +141,38 @@
       });
     }
 
-    function toggleSheet(open) {
-      const willOpen = open ?? sheet.getAttribute('data-open') !== 'true';
-      sheet.toggleAttribute('hidden', !willOpen);
-      overlay.toggleAttribute('hidden', !willOpen);
-      sheet.setAttribute('data-open', String(willOpen));
-      overlay.setAttribute('data-open', String(willOpen));
-      orb.setAttribute('aria-expanded', String(willOpen));
+    function toggleSheet(open?: boolean) {
+      const willOpen = open ?? sheet?.getAttribute('data-open') !== 'true';
+      sheet?.toggleAttribute('hidden', !willOpen);
+      overlay?.toggleAttribute('hidden', !willOpen);
+      sheet?.setAttribute('data-open', String(willOpen));
+      overlay?.setAttribute('data-open', String(willOpen));
+      orb?.setAttribute('aria-expanded', String(willOpen));
       if (willOpen) buildTOC();
     }
 
     let ticking = false;
-    window.addEventListener('scroll', () => {
+    orbScrollHandler = () => {
       if (ticking) return;
-      window.requestAnimationFrame(() => { updateFabState(); ticking = false; });
+      window.requestAnimationFrame(() => {
+        updateFabState();
+        ticking = false;
+      });
       ticking = true;
-    }, { passive: true });
+    };
+    window.addEventListener('scroll', orbScrollHandler, { passive: true });
 
     orb.addEventListener('click', () => { toggleSheet(true); });
     overlay.addEventListener('click', () => toggleSheet(false));
     closeBtn.addEventListener('click', () => toggleSheet(false));
 
     updateFabState();
-  })();
+  });
+
+  document.addEventListener('astro:before-swap', () => {
+    if (orbScrollHandler) {
+      window.removeEventListener('scroll', orbScrollHandler);
+      orbScrollHandler = null;
+    }
+  });
 </script>
