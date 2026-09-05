@@ -1,4 +1,40 @@
 import { visit } from 'unist-util-visit'
+import fs from 'node:fs'
+import path from 'node:path'
+
+let slugIndexCache = null
+
+function getSlugIndex() {
+  if (slugIndexCache) return slugIndexCache
+  const map = new Map()
+  const contentRoot = path.resolve(process.cwd(), 'src/content')
+
+  function scan(dir, prefix) {
+    if (!fs.existsSync(dir)) return
+    const entries = fs.readdirSync(dir, { withFileTypes: true })
+    for (const ent of entries) {
+      const full = path.join(dir, ent.name)
+      if (ent.isDirectory()) {
+        scan(full, `${prefix}${ent.name}/`)
+      } else if (ent.isFile() && ent.name.endsWith('.md')) {
+        const slug = `${prefix}${ent.name.slice(0, -3)}`
+        const baseName = ent.name.slice(0, -3)
+        map.set(baseName.toLowerCase(), `/${slug}/`)
+        map.set(slug.toLowerCase(), `/${slug}/`)
+        if (slug.startsWith('articles/')) {
+          map.set(slug.slice('articles/'.length).toLowerCase(), `/${slug}/`)
+        } else if (slug.startsWith('activity/')) {
+          map.set(slug.slice('activity/'.length).toLowerCase(), `/${slug}/`)
+        }
+      }
+    }
+  }
+
+  scan(path.join(contentRoot, 'articles'), 'articles/')
+  scan(path.join(contentRoot, 'activity'), 'activity/')
+  slugIndexCache = map
+  return map
+}
 
 /**
  * remarkObsidian
@@ -91,8 +127,14 @@ export default function remarkObsidian() {
           })
         } else {
           let href = cleanTarget
-          if (!href.startsWith('http') && !href.startsWith('/')) {
-            href = `/articles/${encodeURIComponent(cleanTarget.toLowerCase())}/${cleanSection}`
+          if (!href.startsWith('http://') && !href.startsWith('https://') && !href.startsWith('//') && !href.startsWith('/')) {
+            const index = getSlugIndex()
+            const found = index.get(cleanTarget.toLowerCase())
+            if (found) {
+              href = `${found}${cleanSection}`
+            } else {
+              href = `/articles/${encodeURIComponent(cleanTarget.toLowerCase())}/${cleanSection}`
+            }
           } else {
             href = `${href}${cleanSection}`
           }

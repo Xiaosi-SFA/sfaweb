@@ -127,8 +127,8 @@ pnpm format
 如果你想向网站投稿**科幻小说、评析、随笔**，或归档**社团活动纪实**、登记**兴趣小组**，欢迎查阅以下详细指引：
 
 - **网站【杂谈】专栏在线版**：
-  - 📖 [SFA 官方网站投稿与内容共建全指南](/articles/essays/contribution-guide/)：投稿流程、三大板块规范与 Frontmatter 模板详解。
-  - 🎨 [SFA Web 高级排版与 Markdown 渲染艺术手册](/articles/essays/typesetting-guide/)：Obsidian Callouts、KaTeX 公式、荧光高亮与多媒体排版。
+  - 📖 [SFA 官方网站投稿与内容共建全指南](https://xiaosi-sfa.github.io/sfaweb/articles/essays/contribution-guide/)：投稿流程、三大板块规范与 Frontmatter 模板详解。
+  - 🎨 [SFA Web 高级排版与 Markdown 渲染艺术手册](https://xiaosi-sfa.github.io/sfaweb/articles/essays/typesetting-guide/)：Obsidian Callouts、KaTeX 公式、荧光高亮与多媒体排版。
 - **仓库代码文档版**：[docs/README.md](docs/README.md)（含完整贡献清单与本地工程化调试）
 
 ---

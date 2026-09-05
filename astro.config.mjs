@@ -6,6 +6,7 @@ import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import rehypeKatex from 'rehype-katex'
 import rehypeCenter from './src/rehype/rehype-center.mjs'
+import rehypeBase from './src/rehype/rehype-base.mjs'
 import { defaultSchema } from 'hast-util-sanitize'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -138,6 +139,7 @@ export default defineConfig({
           },
         },
       ],
+      rehypeBase,
     ],
   },
   server: {

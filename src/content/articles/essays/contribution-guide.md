@@ -2,7 +2,7 @@
 title: SFA 官方网站投稿与内容共建全指南
 date: 2026-09-05
 author: "@Visio-Vanitas,Gemini"
-tags: [投稿指南, 社团共建, 开源协作, 站点文档]
+tags: [投稿指南]
 summary: 介绍向四川大学科幻协会官方网站提交文章、活动纪实与兴趣小组内容的流程，规范目录结构、Frontmatter 元数据定义及素材管理。
 indent: 0
 align: left

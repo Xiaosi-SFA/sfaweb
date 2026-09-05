@@ -2,7 +2,7 @@
 title: SFA Web 高级排版与 Markdown 渲染技术手册
 date: 2026-09-05
 author: "@Visio-Vanitas,Gemini"
-tags: [排版规范, Markdown, Obsidian, LaTeX, 前端指南]
+tags: [投稿指南, Markdown, LaTeX]
 summary: 阐述 SFA Web 渲染管线支持的高级排版语法，包括 Obsidian Callouts、KaTeX 数学公式、行内标记、内部链接、段落对齐及 HTML 扩展组件规范。
 indent: 0
 align: left
