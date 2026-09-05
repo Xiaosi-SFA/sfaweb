@@ -61,7 +61,7 @@ articles.forEach((item) => {
           <SectionHeader title={title} link={link} linkLabel={linkLabel} />
           {list.length ? (
             <div class="horizontal-scroll overflow-x-auto -mx-4 px-4">
-              <div class="articles-row flex gap-4 pb-4 snap-x snap-mandatory">
+              <div class="articles-row flex gap-4 pt-3 pb-4 snap-x snap-mandatory">
                 {list.slice(0, 6).map((a, i) => (
                   <div class="min-w-[18rem] max-w-xs flex-shrink-0 snap-start post-card-anim" data-idx={i}>
                     <PostCard href={`/articles/${a.slug}/`} title={a.data.title} date={a.data.date} cover={a.data.cover} tags={a.data.tags} summary={a.data.summary} />
