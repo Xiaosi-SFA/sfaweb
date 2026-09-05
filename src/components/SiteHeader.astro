@@ -49,15 +49,48 @@ const linksHref = withBase(`${localePrefix}/links/`);
     <a href={groupsHref} class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>{t('nav.groups','兴趣小组')}</a>
     <a href={linksHref} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>
     <div class="ml-auto flex items-center gap-3">
-      <button id="theme-toggle" class="w-9 h-9 inline-flex items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.12] bg-white/60 dark:bg-white/[0.06] hover:bg-black/[0.04] dark:hover:bg-white/[0.12] transition-colors text-slate-700 dark:text-slate-200 shadow-2xs" aria-pressed="false" title={t('actions.toggleTheme','切换主题')}>
+      <button
+        id="theme-toggle"
+        class="group w-9 h-9 inline-flex items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.14] bg-white/70 dark:bg-white/[0.08] hover:bg-black/[0.04] dark:hover:bg-white/[0.14] transition-all duration-300 shadow-2xs hover:shadow-sm"
+        aria-pressed="false"
+        title={t('actions.toggleTheme','切换主题')}
+      >
         <span class="sr-only">切换主题</span>
-        <!-- 太阳图标（亮） -->
-        <svg class="w-4.5 h-4.5 dark:hidden" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M12 4.5a1 1 0 0 1 1 1V7a1 1 0 1 1-2 0V5.5a1 1 0 0 1 1-1Zm0 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm7.5-4a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM12 17a1 1 0 0 1 1 1v1.5a1 1 0 1 1-2 0V18a1 1 0 0 1 1-1ZM4.5 11.5a1 1 0 0 1 1 1v.01a1 1 0 1 1-2 0V12.5a1 1 0 0 1 1-1ZM6.34 6.34a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 1 1-1.41 1.41L6.34 7.75a1 1 0 0 1 0-1.41Zm9.85 9.85a1 1 0 0 1 1.41 0l1.06 1.06a1 1 0 0 1-1.41 1.41l-1.06-1.06a1 1 0 0 1 0-1.41ZM17.66 6.34a1 1 0 0 1 0 1.41l-1.06 1.06a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0ZM7.75 16.19a1 1 0 0 1 0 1.41L6.69 18.66a1 1 0 1 1-1.41-1.41l1.06-1.06a1 1 0 0 1 1.41 0Z"/>
+        <!-- 太阳图标（浅色模式：暖金太阳与光芒，带旋转动效） -->
+        <svg
+          class="w-4.5 h-4.5 text-amber-500 transition-transform duration-500 group-hover:rotate-45 block dark:hidden"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4" fill="currentColor" fill-opacity="0.15" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
         </svg>
-        <!-- 月亮图标（暗） -->
-        <svg class="w-4.5 h-4.5 hidden dark:block" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>
+        <!-- 月亮星芒图标（暗色模式：星夜冷月，带微旋动效） -->
+        <svg
+          class="w-4.5 h-4.5 text-sky-300 transition-transform duration-500 group-hover:-rotate-12 hidden dark:block"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="currentColor" fill-opacity="0.25" />
+          <path d="M19 3v4" />
+          <path d="M21 5h-4" />
         </svg>
       </button>
     </div>
