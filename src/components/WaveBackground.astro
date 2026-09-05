@@ -3,8 +3,8 @@
  * WaveBackground
  * - 用途：《迷星叫》PV 风格的正弦波流动背景（Sine Waveform Envelope）。
  * - 视觉设计：
- *   - 纯净背景（已移除背景大面积打光层）。
- *   - 完整保留 5 条正弦波自身的角色发光与微泛光（Glow & ShadowBlur）。
+ *   - 极淡多重暖色调柔光层（琥珀金、蜜桃橙、杏黄、玫瑰粉），超低不透明度超大虚化，温润雅致。
+ *   - 完整保留 5 条正弦波自身的高质感角色发光（Glow & ShadowBlur）。
  *   - 振幅占据屏幕纵向约 20% 空间，慢速优雅流动。
  *   - 浅色模式（Light）：MyGO!!!!! 官方代表色。
  *   - 暗色模式（Dark）：Ave Mujica 官方代表色。
@@ -12,7 +12,16 @@
 import '@styles/wave.css'
 ---
 <div class="wave-bg" aria-hidden="true">
-  <!-- 迷星叫正弦波 Canvas 渲染层（保留波束自身发光） -->
+  <!-- 很淡很淡的多重暖色调柔光层 Subtle Warm Ambient Glows -->
+  <div class="warm-ambient-container">
+    <div class="warm-orb warm-orb-1"></div>
+    <div class="warm-orb warm-orb-2"></div>
+    <div class="warm-orb warm-orb-3"></div>
+    <div class="warm-orb warm-orb-4"></div>
+    <div class="warm-orb warm-orb-5"></div>
+  </div>
+
+  <!-- 迷星叫正弦波 Canvas 渲染层 -->
   <canvas id="mygoSineCanvas" class="sine-canvas"></canvas>
 </div>
 

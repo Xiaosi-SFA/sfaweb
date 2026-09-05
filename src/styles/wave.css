@@ -1,4 +1,4 @@
-/* 《迷星叫》正弦波背景样式 */
+/* 《迷星叫》正弦波背景与极淡暖色调环境柔光样式 */
 .wave-bg {
   position: fixed;
   inset: 0;
@@ -15,4 +15,118 @@
   height: 100%;
   pointer-events: none;
   z-index: 0;
+}
+
+/* 暖色调环境流光层 (Subtle Warm Ambient Glows) */
+.warm-ambient-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.warm-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(130px);
+  will-change: transform;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+
+/* 浅色模式：极淡的琥珀、蜜桃、杏黄、玫瑰暖光 (透明度仅 0.07 ~ 0.12) */
+.warm-orb-1 {
+  width: min(650px, 80vw);
+  height: min(650px, 80vw);
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.12) 0%, rgba(254, 215, 170, 0.04) 55%, transparent 75%);
+  top: -12%;
+  left: 10%;
+  animation: floatWarm1 32s ease-in-out infinite alternate;
+}
+
+.warm-orb-2 {
+  width: min(580px, 70vw);
+  height: min(580px, 70vw);
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.10) 0%, rgba(251, 191, 36, 0.04) 55%, transparent 75%);
+  bottom: 5%;
+  right: 5%;
+  animation: floatWarm2 38s ease-in-out infinite alternate;
+}
+
+.warm-orb-3 {
+  width: min(500px, 60vw);
+  height: min(500px, 60vw);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.09) 0%, rgba(253, 230, 138, 0.03) 60%, transparent 80%);
+  top: 40%;
+  left: -8%;
+  animation: floatWarm3 34s ease-in-out infinite alternate;
+}
+
+.warm-orb-4 {
+  width: min(480px, 58vw);
+  height: min(480px, 58vw);
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.08) 0%, rgba(254, 215, 170, 0.03) 55%, transparent 75%);
+  top: 15%;
+  right: 15%;
+  animation: floatWarm4 36s ease-in-out infinite alternate;
+}
+
+.warm-orb-5 {
+  width: min(420px, 50vw);
+  height: min(420px, 50vw);
+  background: radial-gradient(circle, rgba(252, 211, 77, 0.08) 0%, transparent 70%);
+  bottom: 15%;
+  left: 25%;
+  animation: floatWarm5 40s ease-in-out infinite alternate;
+}
+
+/* 暗色模式：夜空下沉静微暖的星云柔光 (0.04 ~ 0.07 极低不透明度，舒适不刺眼) */
+.dark .warm-orb {
+  filter: blur(140px);
+}
+.dark .warm-orb-1 {
+  background: radial-gradient(circle, rgba(251, 146, 60, 0.07) 0%, rgba(245, 158, 11, 0.02) 60%, transparent 80%);
+}
+.dark .warm-orb-2 {
+  background: radial-gradient(circle, rgba(244, 114, 182, 0.06) 0%, rgba(251, 113, 133, 0.02) 60%, transparent 80%);
+}
+.dark .warm-orb-3 {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 75%);
+}
+.dark .warm-orb-4 {
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.05) 0%, transparent 75%);
+}
+.dark .warm-orb-5 {
+  background: radial-gradient(circle, rgba(252, 211, 77, 0.05) 0%, transparent 75%);
+}
+
+@keyframes floatWarm1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(8vw, 10vh) scale(1.08); }
+  100% { transform: translate(-5vw, 15vh) scale(0.95); }
+}
+
+@keyframes floatWarm2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-10vw, -10vh) scale(1.10); }
+  100% { transform: translate(4vw, -6vh) scale(0.93); }
+}
+
+@keyframes floatWarm3 {
+  0% { transform: translate(0, 0) scale(0.96); }
+  50% { transform: translate(10vw, -8vh) scale(1.12); }
+  100% { transform: translate(6vw, 12vh) scale(1); }
+}
+
+@keyframes floatWarm4 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-8vw, 12vh) scale(1.06); }
+  100% { transform: translate(5vw, -10vh) scale(0.96); }
+}
+
+@keyframes floatWarm5 {
+  0% { transform: translate(0, 0) scale(0.95); }
+  50% { transform: translate(12vw, -10vh) scale(1.10); }
+  100% { transform: translate(-6vw, 8vh) scale(1.02); }
 }
