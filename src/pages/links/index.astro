@@ -2,7 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
 import FriendCard from '../../components/FriendCard.astro'
-import RibbonWall from '../../components/RibbonWall.astro'
+// 【特性弃用 - 素材遗失】保留组件引入供素材补齐后恢复
+// import RibbonWall from '../../components/RibbonWall.astro'
 
 const links = await getCollection('links')
   .then((xs) => xs.sort((a, b) => a.data.title.localeCompare(b.data.title, 'zh-Hans-CN')))
@@ -23,9 +24,13 @@ const links = await getCollection('links')
       <p class="text-slate-500 text-sm">尚无友链。</p>
     )}
 
-    <!-- 丝带墙 -->
-    <div class="mt-12">
-      <RibbonWall />
-    </div>
+    {/*
+      【特性弃用标注 - 素材遗失】
+      丝带墙（RibbonWall）因历史横幅素材遗失，已从页面展示中停用。
+      组件与数据模型代码完整保留在 src/components/RibbonWall.astro，后续补充素材后取消注释即可恢复。
+      <div class="mt-12">
+        <RibbonWall />
+      </div>
+    */}
   </section>
 </BaseLayout>

@@ -123,7 +123,7 @@ const about = defineCollection({
   }),
 })
 
-// Ribbon data collection (JSON arrays under src/content/ribbon/*.json)
+// 【特性弃用 - 素材遗失】丝带墙数据集合定义（保留完整数据结构与模型）
 const ribbon = defineCollection({
   type: 'data',
   schema: z.array(

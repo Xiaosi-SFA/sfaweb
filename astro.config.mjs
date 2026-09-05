@@ -4,15 +4,13 @@ import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
+import rehypeKatex from 'rehype-katex'
 import rehypeCenter from './src/rehype/rehype-center.mjs'
 import { defaultSchema } from 'hast-util-sanitize'
 import remarkGfm from 'remark-gfm'
-import remarkNoIndent from './src/remark/noindent.mjs'
-
-const siteConfigFile = fileURLToPath(new URL('./sfa.config.json', import.meta.url))
-const siteConfig = fs.existsSync(siteConfigFile)
-  ? JSON.parse(fs.readFileSync(siteConfigFile, 'utf-8'))
-  : {}
+import remarkMath from 'remark-math'
+import remarkFlexibleMarkers from 'remark-flexible-markers'
+import remarkObsidian from './src/remark/remark-obsidian.mjs'
 
 const allowedHostsFile = fileURLToPath(new URL('./allowed-hosts.txt', import.meta.url))
 const allowedHosts = fs.existsSync(allowedHostsFile)
@@ -23,9 +21,6 @@ const allowedHosts = fs.existsSync(allowedHostsFile)
       .filter(Boolean)
   : []
 
-// ----- Feature flags (config file) -----
-const ENABLE_DIALECT = Boolean(siteConfig?.markdown?.enableDialect)
-
 export default defineConfig({
   output: 'static',
   site: process.env.SITE_URL || 'https://visio-vanitas.github.io',
@@ -35,36 +30,107 @@ export default defineConfig({
   },
   integrations: [tailwind({ applyBaseStyles: true })],
   markdown: {
-    // Build remarkPlugins based on feature flags
+    // Full GFM + Obsidian Markdown pipeline
     remarkPlugins: [
       remarkGfm,
-      ...(ENABLE_DIALECT ? [remarkNoIndent] : []),
+      remarkMath,
+      remarkFlexibleMarkers,
+      remarkObsidian,
     ],
-    // allow inline/raw HTML in markdown content but sanitize it to avoid XSS
+    // Support inline HTML for local typesetting & math rendering
     rehypePlugins: [
       rehypeRaw,
       rehypeCenter,
+      rehypeKatex,
       [
         rehypeSanitize,
         {
           ...defaultSchema,
+          tagNames: [
+            ...(defaultSchema.tagNames || []),
+            'center',
+            'details',
+            'summary',
+            'mark',
+            'kbd',
+            'sub',
+            'sup',
+            'del',
+            'ins',
+            'ruby',
+            'rt',
+            'rp',
+            'abbr',
+            'figure',
+            'figcaption',
+            'svg',
+            'path',
+            'circle',
+            'rect',
+            'line',
+            'polygon',
+            'polyline',
+            'g',
+            'iframe',
+            'video',
+            'audio',
+            'source',
+            'math',
+            'semantics',
+            'mrow',
+            'mo',
+            'mn',
+            'mi',
+            'annotation',
+          ],
           attributes: {
             ...defaultSchema.attributes,
             '*': [
               ...(defaultSchema.attributes?.['*'] || []),
               'class',
+              'className',
               'style',
               'aria-hidden',
+              'aria-label',
               'role',
               'tabindex',
               'title',
+              'align',
+              'id',
+              'data-*',
             ],
+            img: [
+              ...(defaultSchema.attributes?.img || []),
+              'src',
+              'alt',
+              'width',
+              'height',
+              'loading',
+              'style',
+              'class',
+            ],
+            a: [
+              ...(defaultSchema.attributes?.a || []),
+              'href',
+              'target',
+              'rel',
+              'title',
+              'class',
+            ],
+            details: ['open', 'class', 'style', 'data-callout'],
+            summary: ['class', 'style'],
+            div: ['class', 'style', 'align', 'data-callout'],
+            p: ['class', 'style', 'align'],
+            span: ['class', 'style', 'aria-hidden'],
             input: [
               ...(defaultSchema.attributes?.input || []),
               'type',
               'checked',
               'disabled',
             ],
+            iframe: ['src', 'width', 'height', 'frameborder', 'allow', 'allowfullscreen', 'class', 'style'],
+            video: ['src', 'controls', 'autoplay', 'loop', 'muted', 'poster', 'width', 'height', 'class', 'style'],
+            audio: ['src', 'controls', 'autoplay', 'loop', 'muted', 'class', 'style'],
           },
         },
       ],

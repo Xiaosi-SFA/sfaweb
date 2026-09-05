@@ -8,7 +8,7 @@ cover: /images/ymz-baituan.png
 indent: 2
 ---
 
-【顶格】诚如标题所言，这篇文章写的是云梦泽的碎碎念。
+<p class="no-indent">诚如标题所言，这篇文章写的是云梦泽的碎碎念。</p>
 
 ## 以恋结缘
 
@@ -65,9 +65,10 @@ indent: 2
 
 语毕。
 
-[right]ymz
-
-[right]2025.10.28
+<div style="text-align: right;" class="no-indent">
+  <p>ymz</p>
+  <p>2025.10.28</p>
+</div>
 
 ![云梦泽在百团](/images/ymz-baituan.png)
 >2025年10月18日，云梦泽在川大幻协招新摊位上

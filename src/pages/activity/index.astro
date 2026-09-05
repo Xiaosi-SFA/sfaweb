@@ -18,17 +18,21 @@ const activities = (await (getCollection as any)('activity'))
       <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">活动</h1>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {activities.map((e: any) => (
-        <ActivityCard
-          href={`/activity/${e.slug}/`}
-          title={e.data.title}
-          date={e.data.date}
-          cover={e.data.cover}
-          summary={e.data.summary}
-          tags={e.data.tags}
-        />
-      ))}
-    </div>
+    {activities.length ? (
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {activities.map((e: any) => (
+          <ActivityCard
+            href={`/activity/${e.slug}/`}
+            title={e.data.title}
+            date={e.data.date}
+            cover={e.data.cover}
+            summary={e.data.summary}
+            tags={e.data.tags}
+          />
+        ))}
+      </div>
+    ) : (
+      <p class="text-slate-500 text-sm">尚无活动记录。</p>
+    )}
   </div>
 </BaseLayout>

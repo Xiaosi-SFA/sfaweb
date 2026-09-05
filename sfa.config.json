@@ -1,7 +1,4 @@
 {
-  "markdown": {
-    "enableDialect": false
-  },
   "ui": {
     "enableIndent": true
   }

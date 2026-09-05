@@ -1,3 +1,6 @@
+/* KaTeX Math Formula Rendering Styles */
+@import 'katex/dist/katex.min.css';
+
 /* MarkdownContent 专用正文样式（与页面布局/组件样式解耦） */
 
 /* 容器与通用排版 */
@@ -14,7 +17,7 @@
   scroll-margin-top: 84px;
 }
 
-/* 标题层级与间距（可按需精简/扩展） */
+/* 标题层级与间距 */
 .article-prose h1,
 .article-prose h2,
 .article-prose h3,
@@ -48,59 +51,67 @@
   font-size: 1rem;
   line-height: 1.9;
   text-indent: var(--para-indent, 0);
+  margin-bottom: 0.85rem;
 }
-.article-prose p.no-indent { text-indent: 0; }
-/* 对齐辅助类（供内容中内联 class 使用） */
-.article-prose p.align-right { text-align: right; text-indent: 0; }
-.article-prose p.align-center { text-align: center; text-indent: 0; }
-.article-prose .text-center { text-align: center; }
-.article-prose.doc-align-center { text-align: center; }
-.article-prose.doc-align-center p { text-align: center; text-indent: 0; }
-.article-prose.doc-align-right { text-align: right; }
-.article-prose.doc-align-right p { text-align: right; text-indent: 0; }
+.article-prose p.no-indent,
+.article-prose .no-indent,
+.article-prose .no-indent p {
+  text-indent: 0 !important;
+}
+
+/* 局部 HTML 排版与对齐辅助类 */
+.article-prose [align="center"],
+.article-prose .align-center,
+.article-prose .text-center {
+  text-align: center !important;
+  text-indent: 0 !important;
+}
+.article-prose [align="right"],
+.article-prose .align-right,
+.article-prose .text-right {
+  text-align: right !important;
+  text-indent: 0 !important;
+}
+.article-prose [align="left"],
+.article-prose .align-left,
+.article-prose .text-left {
+  text-align: left !important;
+}
+
+.article-prose.doc-align-center,
+.article-prose.doc-align-center p {
+  text-align: center;
+  text-indent: 0;
+}
+.article-prose.doc-align-right,
+.article-prose.doc-align-right p {
+  text-align: right;
+  text-indent: 0;
+}
 
 /* 引用 */
-.article-prose blockquote {
-  border-left: 3px solid rgba(29, 29, 31, 0.12);
+.article-prose blockquote:not(.callout) {
+  border-left: 3px solid rgba(29, 29, 31, 0.16);
   padding-left: 0.9rem;
+  margin: 1rem 0;
   color: var(--text-muted);
 }
 .article-prose blockquote p { text-indent: 0; }
-
-/* center-preview：遮罩预览（用于手动隐藏/揭示内容） */
-.center-preview { position: relative; display: block; }
-.center-preview > *:not(.mask):not(.mask__hint) { position: relative; z-index: 0; }
-.center-preview .mask {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  background: #000; /* 日间默认黑块 */
-  opacity: 1;
-  transition: opacity 180ms ease;
-  pointer-events: auto;
-}
-.center-preview:hover .mask { opacity: 0; pointer-events: none; }
-.dark .center-preview .mask { background: #fff; }
-@media (prefers-color-scheme: dark) { .center-preview .mask { background: #fff; } }
-.center-preview .mask__hint {
-  position: absolute;
-  z-index: 11;
-  inset: auto 0 0 0;
-  display: none;
-  text-align: center;
-  color: rgba(255,255,255,0.9);
-  font-weight: 600;
-  padding: 0.35rem 0;
-}
-.center-preview:hover .mask__hint { display: block; }
 
 /* 链接：继承站点链接色并带下划线 */
 .article-prose a {
   color: var(--link-color);
   text-decoration: underline;
   text-underline-offset: 2px;
+  transition: color 180ms ease;
 }
-.article-prose a:hover { text-decoration-thickness: 2px; }
+.article-prose a:hover {
+  text-decoration-thickness: 2px;
+  color: #0284c7;
+}
+.dark .article-prose a:hover {
+  color: #38bdf8;
+}
 
 /* 列表（支持多级缩进） */
 .article-prose ul,
@@ -111,53 +122,127 @@
 .article-prose ul { list-style: disc outside; }
 .article-prose ol { list-style: decimal outside; }
 .article-prose li { margin: 0.25rem 0; }
-/* 次级列表减小缩进并切换标记样式 */
 .article-prose ul ul { list-style: circle outside; padding-left: 1.1rem; }
 .article-prose ul ul ul { list-style: square outside; }
 .article-prose ol ol { list-style: lower-alpha outside; padding-left: 1.1rem; }
 .article-prose ol ol ol { list-style: lower-roman outside; }
-/* 列表项标记颜色轻微弱化（保持可读性） */
 .article-prose li::marker { color: var(--text-muted); }
 
 /* 任务列表（GFM） */
-.article-prose .task-list-item { list-style: none; }
+.article-prose .task-list-item {
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
 .article-prose .task-list-item + .task-list-item { margin-top: 0.25rem; }
 .article-prose .task-list-item input[type="checkbox"] {
-  accent-color: rgb(52, 119, 89); /* 浅色 */
+  accent-color: #0284c7;
   width: 1.05em;
   height: 1.05em;
   transform: translateY(1px);
-  margin-right: 0.5rem;
+  cursor: pointer;
 }
 .dark .article-prose .task-list-item input[type="checkbox"] {
-  accent-color: rgb(48, 209, 88); /* 深色 */
+  accent-color: #38bdf8;
 }
 
-/* 代码块 */
+/* 代码块与行内代码 */
+.article-prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+}
+.dark .article-prose code {
+  background: rgba(255, 255, 255, 0.08);
+}
 .article-prose pre {
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   max-width: 100%;
   overflow-x: auto;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: #18181b;
+  color: #f4f4f5;
+}
+.article-prose pre code {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Obsidian 高亮标记 ==highlight== 与 <mark> */
+.article-prose mark {
+  background-color: #fef08a; /* 柔和浅黄色 */
+  color: #1e293b;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+.dark .article-prose mark {
+  background-color: #854d0e;
+  color: #fef08a;
+}
+
+/* HTML 排版标签扩展 */
+.article-prose kbd {
+  display: inline-block;
+  padding: 0.1em 0.4em;
+  font-size: 0.8em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: #1f2937;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+.dark .article-prose kbd {
+  color: #e5e7eb;
+  background-color: #27272a;
+  border-color: #3f3f46;
+}
+
+.article-prose details {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+.dark .article-prose details {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.article-prose summary {
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
 }
 
 /* 图片/媒体 */
 .article-prose img,
 .article-prose video,
-.article-prose iframe { max-width: 100%; height: auto; }
+.article-prose iframe {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
 
-/* 表格（与全站变量配色保持一致） */
+/* 表格（GFM） */
 .article-prose table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 1rem 0;
+  margin: 1.25rem 0;
   font-size: 0.95rem;
   line-height: 1.7;
 }
 .article-prose thead th {
   font-weight: 600;
   text-align: left;
-  background: var(--neutral-5); /* 与斑马纹 neutral-6 区分 */
+  background: var(--neutral-5);
   color: var(--text-primary);
   border-bottom: 2px solid var(--neutral-4);
 }
@@ -175,10 +260,170 @@
   color: #64748b;
   margin-top: 0.5rem;
 }
-/* 斑马纹 */
 .article-prose tbody tr:nth-child(odd) { background: var(--neutral-6); }
 
-/* 深色模式调整 */
+/* ==========================================================================
+   Obsidian Callouts & GitHub Alerts 系统
+   ========================================================================== */
+.article-prose .callout {
+  margin: 1.25rem 0;
+  padding: 0.85rem 1.15rem;
+  border-radius: 12px;
+  border-left: 4px solid #0284c7;
+  background: rgba(2, 132, 199, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  color: #1e293b;
+}
+.dark .article-prose .callout {
+  color: #f1f5f9;
+}
+.article-prose .callout p {
+  text-indent: 0;
+  margin-bottom: 0.5rem;
+}
+.article-prose .callout p:last-child {
+  margin-bottom: 0;
+}
+
+.article-prose .callout-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.01em;
+}
+.article-prose details.callout summary.callout-title {
+  cursor: pointer;
+  margin-bottom: 0;
+}
+.article-prose details.callout[open] summary.callout-title {
+  margin-bottom: 0.45rem;
+}
+
+/* Callout 颜色主题定义 */
+/* 蓝色（Note / Info / Todo） */
+.article-prose .callout-color-blue,
+.article-prose .callout-color-sky,
+.article-prose .callout-color-cyan {
+  border-left-color: #0284c7;
+  background: rgba(2, 132, 199, 0.06);
+}
+.article-prose .callout-color-blue .callout-title,
+.article-prose .callout-color-sky .callout-title,
+.article-prose .callout-color-cyan .callout-title {
+  color: #0369a1;
+}
+.dark .article-prose .callout-color-blue,
+.dark .article-prose .callout-color-sky,
+.dark .article-prose .callout-color-cyan {
+  border-left-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.08);
+}
+.dark .article-prose .callout-color-blue .callout-title,
+.dark .article-prose .callout-color-sky .callout-title,
+.dark .article-prose .callout-color-cyan .callout-title {
+  color: #7dd3fc;
+}
+
+/* 绿色（Tip / Success / Check / Done / Abstract / Summary） */
+.article-prose .callout-color-teal,
+.article-prose .callout-color-emerald {
+  border-left-color: #059669;
+  background: rgba(5, 150, 105, 0.06);
+}
+.article-prose .callout-color-teal .callout-title,
+.article-prose .callout-color-emerald .callout-title {
+  color: #047857;
+}
+.dark .article-prose .callout-color-teal,
+.dark .article-prose .callout-color-emerald {
+  border-left-color: #34d399;
+  background: rgba(52, 211, 153, 0.08);
+}
+.dark .article-prose .callout-color-teal .callout-title,
+.dark .article-prose .callout-color-emerald .callout-title {
+  color: #6ee7b7;
+}
+
+/* 紫色（Important） */
+.article-prose .callout-color-violet,
+.article-prose .callout-color-indigo {
+  border-left-color: #7c3aed;
+  background: rgba(124, 58, 237, 0.06);
+}
+.article-prose .callout-color-violet .callout-title,
+.article-prose .callout-color-indigo .callout-title {
+  color: #6d28d9;
+}
+.dark .article-prose .callout-color-violet,
+.dark .article-prose .callout-color-indigo {
+  border-left-color: #a78bfa;
+  background: rgba(167, 139, 250, 0.08);
+}
+.dark .article-prose .callout-color-violet .callout-title,
+.dark .article-prose .callout-color-indigo .callout-title {
+  color: #c4b5fd;
+}
+
+/* 橙色/黄色（Warning / Question / Help / FAQ） */
+.article-prose .callout-color-amber,
+.article-prose .callout-color-orange {
+  border-left-color: #d97706;
+  background: rgba(217, 119, 6, 0.06);
+}
+.article-prose .callout-color-amber .callout-title,
+.article-prose .callout-color-orange .callout-title {
+  color: #b45309;
+}
+.dark .article-prose .callout-color-amber,
+.dark .article-prose .callout-color-orange {
+  border-left-color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+}
+.dark .article-prose .callout-color-amber .callout-title,
+.dark .article-prose .callout-color-orange .callout-title {
+  color: #fcd34d;
+}
+
+/* 红色（Caution / Danger / Error / Bug / Failure） */
+.article-prose .callout-color-red,
+.article-prose .callout-color-rose {
+  border-left-color: #e11d48;
+  background: rgba(225, 29, 72, 0.06);
+}
+.article-prose .callout-color-red .callout-title,
+.article-prose .callout-color-rose .callout-title {
+  color: #be123c;
+}
+.dark .article-prose .callout-color-red,
+.dark .article-prose .callout-color-rose {
+  border-left-color: #fb7185;
+  background: rgba(251, 113, 133, 0.08);
+}
+.dark .article-prose .callout-color-red .callout-title,
+.dark .article-prose .callout-color-rose .callout-title {
+  color: #fda4af;
+}
+
+/* 灰色（Quote / Cite） */
+.article-prose .callout-color-slate {
+  border-left-color: #64748b;
+  background: rgba(100, 116, 139, 0.06);
+}
+.article-prose .callout-color-slate .callout-title {
+  color: #334155;
+}
+.dark .article-prose .callout-color-slate {
+  border-left-color: #94a3b8;
+  background: rgba(148, 163, 184, 0.08);
+}
+.dark .article-prose .callout-color-slate .callout-title {
+  color: #cbd5e1;
+}
+
+/* 深色模式通用覆盖 */
 .dark .article-prose { color: #e5e7eb; }
 .dark .article-prose h1,
 .dark .article-prose h2,
@@ -188,7 +433,7 @@
 .dark .article-prose h6 { color: #f3f4f6; }
 .dark .article-prose p,
 .dark .article-prose li { color: #e5e7eb; }
-.dark .article-prose blockquote { border-left-color: rgba(242, 242, 247, 0.28); color: #cbd5e1; }
+.dark .article-prose blockquote:not(.callout) { border-left-color: rgba(242, 242, 247, 0.28); color: #cbd5e1; }
 .dark .article-prose tbody tr:nth-child(odd) { background: var(--neutral-5); }
 .dark .article-prose thead th { background: var(--neutral-4); color: #e5e7eb; }
 .dark .article-prose table caption { color: #94a3b8; }
