@@ -2,25 +2,19 @@
 /**
  * RelatedPosts
  * - 用途：基于标签重叠度 + 时间新近度推荐相关文章。
- * - 细节：
- *   - 先按标签重叠数降序，再按日期降序。
- *   - 截取 limit 条，避免侧栏过长。
+ * - 样式：与侧边栏与正文完全对齐的沉静半透明卡片。
  */
 import { getCollection } from 'astro:content'
 import { withBase } from '@utils/path'
 
 interface Props {
-  /** 当前文章 slug（用于排重） */
   currentSlug: string
-  /** 标签集合（可选） */
   tags?: string[]
-  /** 最大返回条数（默认 3） */
   limit?: number
 }
 const { currentSlug, tags = [], limit = 3 } = Astro.props as Props
 
 const all = await getCollection('articles')
-// score by tag overlap
 const scored = all
   .filter((e) => e.slug !== currentSlug)
   .map((e) => {
@@ -36,14 +30,14 @@ const scored = all
   .slice(0, limit)
 ---
 {scored.length ? (
-  <aside class="bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border dark:border-[#2c2c2e] rounded-lg p-3">
-    <div class="text-sm font-semibold mb-2 text-slate-800 dark:text-slate-100">推荐阅读</div>
-    <ul class="space-y-2">
+  <aside class="bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border border-black/[0.06] dark:border-[#2c2c2e] rounded-2xl p-5 shadow-xs">
+    <div class="text-sm font-bold mb-3 text-slate-900 dark:text-slate-100 tracking-tight">推荐阅读</div>
+    <ul class="space-y-3">
       {scored.map(({ e }) => (
         <li>
-          <a href={withBase(`/articles/${e.slug}/`)} class="block">
-            <div class="text-xs text-slate-500 dark:text-slate-400">{e.data.date?.toISOString().slice(0,10)}</div>
-            <div class="text-slate-800 dark:text-slate-200 hover:text-brand dark:hover:text-sky-300 text-sm">{e.data.title}</div>
+          <a href={withBase(`/articles/${e.slug}/`)} class="group block space-y-0.5">
+            <div class="text-xs font-medium text-slate-400 dark:text-slate-500">{e.data.date?.toISOString().slice(0,10)}</div>
+            <div class="text-sm font-semibold text-slate-700 dark:text-slate-200 group-hover:text-sky-600 dark:group-hover:text-sky-300 transition-colors line-clamp-1">{e.data.title}</div>
           </a>
         </li>
       ))}

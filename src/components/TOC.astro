@@ -1,26 +1,24 @@
 ---
 /**
  * TOC（侧边目录）
- * - 用途：在桌面端显示文章目录，支持点击滚动到对应标题。
+ * - 用途：在桌面端显示文章目录，支持点击平滑滚动到对应标题。
  * - 输入：headings 数组，包含 depth/text/slug。
- * - 交互：监听点击代理，平滑滚动到对应 id。
+ * - 样式：与文章正文完全对齐的沉静半透明卡片。
  */
-/** 单个标题项 */
 interface Heading { depth: number; text: string; slug: string }
-/** 输入的标题数组（可选） */
 interface Props { headings?: Heading[] }
 const { headings = [] } = Astro.props as Props
 ---
 {headings.length ? (
-  <aside class="bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border dark:border-[#2c2c2e] rounded-lg p-3">
-    <div class="text-sm font-semibold mb-2 text-slate-800 dark:text-slate-100">目录</div>
-    <ul class="space-y-1">
+  <aside class="bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border border-black/[0.06] dark:border-[#2c2c2e] rounded-2xl p-5 shadow-xs">
+    <div class="text-sm font-bold mb-3 text-slate-900 dark:text-slate-100 tracking-tight">目录</div>
+    <ul class="space-y-1.5">
       {headings.map((h) => (
         <li
           class="toc-item"
-          style={`padding-left: ${Math.max(0, h.depth - 1) * 1.25}rem;`}
+          style={`padding-left: ${Math.max(0, h.depth - 1) * 1.0}rem;`}
         >
-          <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-700 dark:text-slate-200 hover:text-brand dark:hover:text-sky-300">{h.text}</a>
+          <a href={`#${h.slug}`} data-slug={h.slug} class="block text-sm text-slate-600 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-300 transition-colors line-clamp-1">{h.text}</a>
         </li>
       ))}
     </ul>

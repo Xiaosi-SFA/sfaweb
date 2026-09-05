@@ -21,14 +21,18 @@ const { Content, headings } = await entry.render()
 const paraIndent = Number(entry?.data?.int ?? entry?.data?.indent ?? 0) || 0
 ---
 <BaseLayout title={`${entry.data.title} - 活动 - SFA`}>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
     <div class="order-2 md:order-1 md:col-span-1">
       <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto md:pr-1">
-        <TOC headings={headings} />
+        {headings && headings.length > 0 && (
+          <div class="hidden md:block">
+            <TOC headings={headings} />
+          </div>
+        )}
         <RelatedActivity currentSlug={entry.slug} tags={entry.data.tags} />
       </div>
     </div>
-    <!-- 活动正文主体：与侧边栏对齐的卡片格式 -->
+    <!-- 活动正文主体：与侧边栏对齐的卡片格式（顶部水平严格对齐） -->
     <article class="order-1 md:order-2 md:col-span-2 max-w-none p-6 sm:p-8 md:p-10 rounded-2xl bg-white/80 dark:bg-[#2c2c2e]/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 supports-[backdrop-filter]:dark:bg-[#2c2c2e]/60 border border-black/[0.06] dark:border-[#2c2c2e] shadow-xs">
       {entry.data.cover ? (
         <img src={withBase(entry.data.cover)} alt={entry.data.title} class="w-full aspect-[16/9] object-cover rounded-2xl mb-6 shadow-sm border border-slate-200/60 dark:border-white/10" />
