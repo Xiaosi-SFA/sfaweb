@@ -8,6 +8,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "deploy": "node scripts/deploy.mjs",
+    "ship": "node scripts/deploy.mjs",
     "format": "prettier -w .",
     "member:sync": "node scripts/sync-github-member.mjs"
   },
