@@ -124,14 +124,12 @@ pnpm format
 
 ## 投稿指南与内容撰写
 
-如果你想向网站投稿**科幻小说、评析、随笔**，或归档**社团活动纪实**、登记**兴趣小组**，请查阅专门的投稿与排版手册：
+如果你想向网站投稿**科幻小说、评析、随笔**，或归档**社团活动纪实**、登记**兴趣小组**，欢迎查阅以下详细指引：
 
-👉 **[完整投稿指南与排版手册 (docs/README.md)](docs/README.md)**
-
-文档内包含：
-- **三大板块投稿目录与 Frontmatter 模板**（文章、活动、兴趣小组完整字段对照）；
-- **图片与媒体素材规范**（比例建议、引用路径、外链图床支持）；
-- **Markdown 高级排版技巧**（Obsidian 呼出框、LaTeX/KaTeX 数学公式、荧光笔高亮、双向链接与折叠手风琴等）。
+- **网站【杂谈】专栏在线版**：
+  - 📖 [SFA 官方网站投稿与内容共建全指南](/articles/essays/contribution-guide/)：投稿流程、三大板块规范与 Frontmatter 模板详解。
+  - 🎨 [SFA Web 高级排版与 Markdown 渲染艺术手册](/articles/essays/typesetting-guide/)：Obsidian Callouts、KaTeX 公式、荧光高亮与多媒体排版。
+- **仓库代码文档版**：[docs/README.md](docs/README.md)（含完整贡献清单与本地工程化调试）
 
 ---
 
