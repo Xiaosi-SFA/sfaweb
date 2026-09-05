@@ -24,9 +24,9 @@ const paraIndent = Number((entry as any)?.data?.int ?? (entry as any)?.data?.ind
 ---
 <BaseLayout title={`${entry.data.title} - SFA`}>
   <div class="grid grid-cols-1 gap-8 md:grid-cols-3 items-start md:items-stretch">
-    <!-- 侧栏：网格行全高度拉伸 (md:self-stretch)，内部吸顶固定 (md:sticky md:top-24)，滚动时相对视口位置不变且初始与正文卡片严格对齐 -->
+    <!-- 侧栏：相对视口随窗口吸附固定（md:sticky md:top-20），初始与正文卡片像素级绝对平齐，滚动时随窗口固定 -->
     <div class="order-2 md:order-1 md:col-span-1 md:self-stretch">
-      <div class="space-y-4 md:sticky md:top-24 md:max-h-[calc(100vh-6.5rem)] md:overflow-y-auto">
+      <div class="space-y-4 md:sticky md:top-20 md:max-h-[calc(100vh-6rem)] md:overflow-y-auto">
         {headings && headings.length > 0 ? (
           <div class="hidden md:block">
             <TOC headings={headings} />
