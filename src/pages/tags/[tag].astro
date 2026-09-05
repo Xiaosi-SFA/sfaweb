@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
+import { withBase } from '@utils/path'
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles')
@@ -36,7 +37,7 @@ const { tag, list } = Astro.props
         {list.map((a: any) => (
           <a
             class="group block p-5 rounded-2xl liquid-glass transition-all duration-300 hover:-translate-y-1"
-            href={`/articles/${a.slug}/`}
+            href={withBase(`/articles/${a.slug}/`)}
           >
             <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-2">
               <time datetime={a.data.date?.toISOString()}>

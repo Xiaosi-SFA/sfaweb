@@ -7,6 +7,7 @@
  *   - 截取 limit 条，避免侧栏过长。
  */
 import { getCollection } from 'astro:content'
+import { withBase } from '@utils/path'
 
 interface Props {
   /** 当前文章 slug（用于排重） */
@@ -40,7 +41,7 @@ const scored = all
     <ul class="space-y-2">
       {scored.map(({ e }) => (
         <li>
-          <a href={`/articles/${e.slug}/`} class="block">
+          <a href={withBase(`/articles/${e.slug}/`)} class="block">
             <div class="text-xs text-slate-500 dark:text-slate-400">{e.data.date?.toISOString().slice(0,10)}</div>
             <div class="text-slate-800 dark:text-slate-200 hover:text-brand dark:hover:text-sky-300 text-sm">{e.data.title}</div>
           </a>

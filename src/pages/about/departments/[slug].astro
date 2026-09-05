@@ -4,6 +4,7 @@ import MemberCard from '@components/MemberCard.astro'
 import MarkdownContent from '@components/MarkdownContent.astro'
 import { getCollection } from 'astro:content'
 import ActivityCard from '@components/ActivityCard.astro'
+import { withBase } from '@utils/path'
 
 export async function getStaticPaths() {
   const departments = await getCollection('departments')
@@ -68,7 +69,7 @@ const linkedActivities: any[] = ((dept?.data.linkedActivities || []) as string[]
       {deptMembers.length ? (
         <div class="grid gap-4 md:grid-cols-2">
           {deptMembers.map((m) => (
-            <MemberCard avatar={m.data.avatar} name={m.data.name} quote={m.data.quote} bio={m.data.bio} position={m.data.position} />
+            <MemberCard avatar={m.data.avatar ? withBase(m.data.avatar) : undefined} name={m.data.name} quote={m.data.quote} bio={m.data.bio} position={m.data.position} />
           ))}
         </div>
       ) : (
@@ -81,7 +82,7 @@ const linkedActivities: any[] = ((dept?.data.linkedActivities || []) as string[]
       {linkedActivities.length ? (
         <div class="grid gap-4 sm:grid-cols-2">
           {linkedActivities.slice(0, 4).map((e) => (
-            <ActivityCard title={e.data.title} date={e.data.date} cover={e.data.cover} compact={true} summary={e.data.summary} />
+            <ActivityCard href={`/activity/${e.slug}/`} title={e.data.title} date={e.data.date} cover={e.data.cover} compact={true} summary={e.data.summary} />
           ))}
         </div>
       ) : (
@@ -96,7 +97,7 @@ const linkedActivities: any[] = ((dept?.data.linkedActivities || []) as string[]
           {gallery.map((item) => (
             <article class="mb-4 break-inside-avoid rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/90 dark:bg-[#2c2c2e]/60 shadow-sm overflow-hidden backdrop-blur">
               <div class="relative">
-                <img src={item.data.image} alt={item.data.intro} class="w-full h-auto block" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
+                <img src={withBase(item.data.image)} alt={item.data.intro} class="w-full h-auto block" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
                 <!-- 素材缺失特性：画廊图片缺失时静默降级处理，显示极简相框图形，移除“图片缺失”等占位文本符号 -->
                 <div class="hidden place-items-center w-full aspect-[4/3] bg-slate-100 dark:bg-[#2c2c2e] text-slate-300 dark:text-slate-600">
                   <svg class="w-8 h-8 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

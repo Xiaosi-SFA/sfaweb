@@ -3,7 +3,7 @@
  * ActivityCard
  * - 用途：展示单个活动卡片，支持紧凑与标准两种布局。
  * - 风格：Apple 极简圆角卡片设计，支持半透明毛玻璃与微动效。
- * - 素材缺失特性：当未提供封面或图片资源缺失/加载失败时，静默降级为极简矢量相框底纹，不展示破图或文本占位符号。
+ * - 封面策略：仅在提供封面时展示封面区域；无封面时优雅降级为纯文本排版卡片。
  */
 interface Props {
 	/** 详情页链接（可选） */
@@ -26,54 +26,44 @@ const { href, title, date, cover, compact = false, tags = [], summary } = Astro.
 
 const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' })
 
+import { withBase } from '@utils/path'
 import '@styles/tag.css'
 import '@styles/card.css'
+
+const resolvedHref = href ? withBase(href) : undefined
+const resolvedCover = cover ? withBase(cover) : undefined
 ---
 {compact ? (
 	<article class="group rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#2c2c2e]/60 shadow-xs hover:shadow-md backdrop-blur-md transition-all duration-300 overflow-hidden">
 		<div class="p-3 flex items-start gap-3">
-			<div class="h-16 w-24 flex-none rounded-xl bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
-				{href ? (
-					<a href={href} aria-label={title} class="block w-full h-full relative">
-						{cover ? (
+			{resolvedCover ? (
+				<div class="h-16 w-24 flex-none rounded-xl bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden relative grid place-items-center">
+					{resolvedHref ? (
+						<a href={resolvedHref} aria-label={title} class="block w-full h-full relative">
 							<img
-								src={cover}
+								src={resolvedCover}
 								alt={title}
 								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 								loading="lazy"
-								onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+								onerror="this.parentElement.parentElement.style.display='none';"
 							/>
-						) : null}
-						<!-- 素材缺失特性：紧凑模式图片缺失时显示极简相框图形 -->
-						<div class={`h-full w-full ${cover ? 'hidden' : 'flex'} items-center justify-center bg-slate-100 dark:bg-[#2c2c2e] text-slate-300 dark:text-slate-600`}>
-							<svg class="w-6 h-6 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-							</svg>
-						</div>
-					</a>
-				) : (
-					<div class="w-full h-full relative">
-						{cover ? (
+						</a>
+					) : (
+						<div class="w-full h-full relative">
 							<img
-								src={cover}
+								src={resolvedCover}
 								alt={title}
 								class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 								loading="lazy"
-								onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+								onerror="this.parentElement.style.display='none';"
 							/>
-						) : null}
-						<!-- 素材缺失特性 -->
-						<div class={`h-full w-full ${cover ? 'hidden' : 'flex'} items-center justify-center bg-slate-100 dark:bg-[#2c2c2e] text-slate-300 dark:text-slate-600`}>
-							<svg class="w-6 h-6 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-								<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-							</svg>
 						</div>
-					</div>
-				)}
-			</div>
-			<div class="min-w-0 space-y-1">
+					)}
+				</div>
+			) : null}
+			<div class="min-w-0 space-y-1 flex-1">
 				<h3 class="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-sky-500 transition-colors truncate">
-					{href ? <a href={href}>{title}</a> : title}
+					{resolvedHref ? <a href={resolvedHref}>{title}</a> : title}
 				</h3>
 				{summary ? (<p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">{summary}</p>) : null}
 				<div class="text-[11px] text-slate-500 dark:text-slate-400">
@@ -84,59 +74,45 @@ import '@styles/card.css'
 	</article>
 ) : (
 	<article class="group rounded-2xl border border-black/[0.06] dark:border-white/[0.08] bg-white/80 dark:bg-[#2c2c2e]/60 shadow-xs hover:shadow-lg backdrop-blur-md transition-all duration-300 hover:-translate-y-1 overflow-hidden flex flex-col h-full">
-		<div class="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-[#2c2c2e] grid place-items-center" data-card-cover>
-			{href ? (
-				<a href={href} aria-label={title} class="block w-full h-full relative">
-					{cover ? (
+		{resolvedCover && (
+			<div class="relative aspect-[16/9] w-full overflow-hidden bg-slate-100 dark:bg-[#2c2c2e] grid place-items-center" data-card-cover>
+				{resolvedHref ? (
+					<a href={resolvedHref} aria-label={title} class="block w-full h-full relative">
 						<img
-							src={cover}
+							src={resolvedCover}
 							alt={title}
 							class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
 							loading="lazy"
-							onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+							onerror="this.parentElement.parentElement.style.display='none';"
 						/>
-					) : null}
-					<!-- 素材缺失特性：标准卡片封面缺失时，静默降级展示中性相框底纹，移除破图与文本占位符号 -->
-					<div class={`w-full h-full ${cover ? 'hidden' : 'flex'} items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#2c2c2e] dark:to-[#1c1c1e] text-slate-300 dark:text-slate-600`}>
-						<svg class="w-10 h-10 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-						</svg>
-					</div>
-				</a>
-			) : (
-				<div class="w-full h-full relative">
-					{cover ? (
+					</a>
+				) : (
+					<div class="w-full h-full relative">
 						<img
-							src={cover}
+							src={resolvedCover}
 							alt={title}
 							class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
 							loading="lazy"
-							onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+							onerror="this.parentElement.style.display='none';"
 						/>
-					) : null}
-					<!-- 素材缺失特性 -->
-					<div class={`w-full h-full ${cover ? 'hidden' : 'flex'} items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#2c2c2e] dark:to-[#1c1c1e] text-slate-300 dark:text-slate-600`}>
-						<svg class="w-10 h-10 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-							<path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-						</svg>
 					</div>
-				</div>
-			)}
-		</div>
+				)}
+			</div>
+		)}
 		<div class="p-5 flex flex-col flex-1 justify-between">
 			<div>
 				<div class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
 					<time datetime={date ? new Date(date).toISOString() : ''}>{fmt(date)}</time>
 				</div>
 				<h3 class="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-snug line-clamp-2 group-hover:text-sky-500 transition-colors">
-					{href ? <a href={href}>{title}</a> : title}
+					{resolvedHref ? <a href={resolvedHref}>{title}</a> : title}
 				</h3>
 				{summary ? (<p class="mt-2 text-sm text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">{summary}</p>) : null}
 			</div>
 			{tags?.length ? (
 				<div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.06] tag-list tag-list--right">
 					{tags.map((t) => (
-						<a href={`/tags/${encodeURIComponent(t)}/`} class="tag tag--card">#{t}</a>
+						<a href={withBase(`/tags/${encodeURIComponent(t)}/`)} class="tag tag--card">#{t}</a>
 					))}
 				</div>
 			) : null}

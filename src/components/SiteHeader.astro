@@ -20,26 +20,34 @@ interface Props {
   t: (key: string, fallback?: string) => string;
 }
 const { localePrefix, isHomeNormalized, pathNoLocale, t } = Astro.props as Props;
+import { withBase } from '@utils/path';
 
 const isSection = (prefix: string) => pathNoLocale === prefix || pathNoLocale.startsWith(prefix);
 const navBase = "relative inline-flex items-center py-2 px-3 text-[13px] sm:text-sm font-medium tracking-tight rounded-full transition-colors nav-link text-slate-700 dark:text-slate-200 hover:text-black dark:hover:text-white";
 const navActive = "bg-black/[0.05] dark:bg-white/[0.1] text-black dark:text-white";
 const navInactive = "";
+
+const homeHref = withBase(localePrefix || '/');
+const articlesHref = withBase(`${localePrefix}/articles/`);
+const activityHref = withBase(`${localePrefix}/activity/`);
+const aboutHref = withBase(`${localePrefix}/about/`);
+const groupsHref = withBase(`${localePrefix}/groups/`);
+const linksHref = withBase(`${localePrefix}/links/`);
 ---
 <header
   class="site-header border-b border-black/[0.06] dark:border-white/[0.08] bg-white/75 dark:bg-[#161617]/75 backdrop-blur-xl sticky top-0 z-30 transition-all duration-300"
 >
   <nav class="nav-main mx-auto max-w-6xl px-4 py-2.5 flex items-center gap-[var(--nav-inline-gap)]">
     <span class="nav-highlight" aria-hidden="true"></span>
-    <a href={localePrefix || '/'} class="inline-flex items-center gap-2 mr-2 group shrink-0" aria-label="SFA Home">
-      <img src="/favicon.svg" alt="SFA" class="w-6 h-6 rounded-md object-contain transition-transform group-hover:scale-105" />
+    <a href={homeHref} class="inline-flex items-center gap-2 mr-2 group shrink-0" aria-label="SFA Home">
+      <img src={withBase('/favicon.svg')} alt="SFA" class="w-6 h-6 rounded-md object-contain transition-transform group-hover:scale-105" />
     </a>
-    <a href={localePrefix || '/'} class={`${navBase} ${isHomeNormalized ? `${navActive} is-active` : ''}`}>{t('nav.home','首页')}</a>
-    <a href={`${localePrefix}/articles/`} class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>{t('nav.articles','文章')}</a>
-    <a href={`${localePrefix}/activity/`} class={`${navBase} ${isSection('/activity/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/activity/') ? 'page' : undefined}>{t('nav.activity','活动')}</a>
-    <a href={`${localePrefix}/about/`} class={`${navBase} ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>{t('nav.about','关于我们')}</a>
-    <a href={`${localePrefix}/groups/`} class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>{t('nav.groups','兴趣小组')}</a>
-    <a href={`${localePrefix}/links/`} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>
+    <a href={homeHref} class={`${navBase} ${isHomeNormalized ? `${navActive} is-active` : ''}`}>{t('nav.home','首页')}</a>
+    <a href={articlesHref} class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>{t('nav.articles','文章')}</a>
+    <a href={activityHref} class={`${navBase} ${isSection('/activity/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/activity/') ? 'page' : undefined}>{t('nav.activity','活动')}</a>
+    <a href={aboutHref} class={`${navBase} ${isSection('/about/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/about/') ? 'page' : undefined}>{t('nav.about','关于我们')}</a>
+    <a href={groupsHref} class={`${navBase} ${isSection('/groups/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/groups/') ? 'page' : undefined}>{t('nav.groups','兴趣小组')}</a>
+    <a href={linksHref} class={`${navBase} ${isSection('/links/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/links/') ? 'page' : undefined}>{t('nav.links','友链')}</a>
     <div class="ml-auto flex items-center gap-3">
       <button id="theme-toggle" class="w-9 h-9 inline-flex items-center justify-center rounded-full border border-black/[0.08] dark:border-white/[0.12] bg-white/60 dark:bg-white/[0.06] hover:bg-black/[0.04] dark:hover:bg-white/[0.12] transition-colors text-slate-700 dark:text-slate-200 shadow-2xs" aria-pressed="false" title={t('actions.toggleTheme','切换主题')}>
         <span class="sr-only">切换主题</span>
@@ -56,7 +64,7 @@ const navInactive = "";
   </nav>
 </header>
 
-<script is:inline>
+<script is:inline define:vars={{ baseUrl: import.meta.env.BASE_URL || '/' }}>
   // 主题切换按钮逻辑：在 html 上切换 .dark，并持久化到 localStorage
   (function() {
     var btn = document.getElementById('theme-toggle');
@@ -121,6 +129,10 @@ const navInactive = "";
     function normalizePath(p){
       try { var u = new URL(p, window.location.origin); p = u.pathname; } catch(e){}
       p = p || '/';
+      var cleanBase = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+      if (cleanBase !== '/' && p.indexOf(cleanBase) === 0) {
+        p = '/' + p.slice(cleanBase.length);
+      }
       p = p.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
       if (!p.endsWith('/')) p += '/';
       return p;

@@ -16,13 +16,15 @@ interface Props {
   logo?: string
 }
 const { title, url, description, logo } = Astro.props as Props
+import { withBase } from '@utils/path'
+const resolvedLogo = logo ? withBase(logo) : undefined
 ---
 <a href={url} target="_blank" rel="noopener noreferrer"
    class="group block rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
   <div class="flex items-center gap-4">
     <div class="flex h-20 w-20 flex-none items-center justify-center overflow-hidden rounded-xl bg-slate-50 dark:bg-[#2c2c2e] ring-1 ring-black/[0.06] dark:ring-white/10 shadow-xs text-slate-400 dark:text-slate-500">
-      {logo ? (
-        <img src={logo} alt={`${title} logo`} class="max-h-20 max-w-20 object-contain" loading="lazy" />
+      {resolvedLogo ? (
+        <img src={resolvedLogo} alt={`${title} logo`} class="max-h-20 max-w-20 object-contain" loading="lazy" />
       ) : (
         <!-- 素材缺失特性：当友链 Logo 素材缺失时，展示极简外链矢量图标，不显示“No Logo”占位文本符号 -->
         <svg class="w-8 h-8 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

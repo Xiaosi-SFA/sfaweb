@@ -4,6 +4,7 @@ import { getCollection } from 'astro:content'
 import MemberCard from '@components/MemberCard.astro'
 import ActivityCard from '@components/ActivityCard.astro'
 import MarkdownContent from '@components/MarkdownContent.astro'
+import { withBase } from '@utils/path'
 
 const groups = (await getCollection('groups')).sort((a, b) => (a.data.order ?? 999) - (b.data.order ?? 999))
 const items = await Promise.all(
@@ -38,7 +39,7 @@ function initials(title: string) {
               <div class="md:col-span-1">
                 <div class="aspect-square w-full rounded-lg ring-1 ring-slate-200 dark:ring-[#2c2c2e] bg-slate-100 dark:bg-[#2c2c2e] overflow-hidden grid place-items-center">
                   {g.data.avatar ? (
-                    <img src={g.data.avatar} alt={g.data.title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
+                    <img src={withBase(g.data.avatar)} alt={g.data.title} class="h-full w-full object-cover" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid'" />
                   ) : null}
                   <div class={`h-full w-full ${g.data.avatar ? 'hidden' : ''} grid place-items-center text-slate-400 dark:text-slate-500 text-lg`}>{initials(g.data.title)}</div>
                 </div>
@@ -62,7 +63,7 @@ function initials(title: string) {
             {/* 中段：组长卡片（单栏通栏） */}
             {g.data.leader ? (
               <div>
-                <MemberCard avatar={g.data.leader.avatar} name={g.data.leader.name} quote={g.data.leader.quote} bio={g.data.leader.bio} labelOverride="组长" />
+                <MemberCard avatar={g.data.leader.avatar ? withBase(g.data.leader.avatar) : undefined} name={g.data.leader.name} quote={g.data.leader.quote} bio={g.data.leader.bio} labelOverride="组长" />
               </div>
             ) : null}
 
@@ -76,7 +77,7 @@ function initials(title: string) {
                     .filter(Boolean)
                     .slice(0, 4)
                     .map((e: any) => (
-                      <a href={`/activity/${e.slug}/`} class="block">
+                      <a href={withBase(`/activity/${e.slug}/`)} class="block">
                         <ActivityCard
                           title={e.data.title}
                           date={e.data.date}

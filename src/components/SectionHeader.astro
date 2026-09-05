@@ -17,14 +17,16 @@ interface Props {
 }
 
 const { title, description, link, linkLabel = '查看全部' } = Astro.props as Props
+import { withBase } from '@utils/path'
+const resolvedLink = link ? withBase(link) : undefined
 ---
 <div class="section-header">
   <div class="section-header__text">
     <h2 class="section-header__title">{title}</h2>
     {description ? (<p class="section-header__desc">{description}</p>) : null}
   </div>
-  {link ? (
-  <a href={link} class="section-header__link link-primary">
+  {resolvedLink ? (
+  <a href={resolvedLink} class="section-header__link link-primary">
       {linkLabel}
       <span class="chevron" aria-hidden>›</span>
     </a>

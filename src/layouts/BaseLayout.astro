@@ -9,16 +9,15 @@ import WaveBackground from "@components/WaveBackground.astro";
 import SiteHeader from "@components/SiteHeader.astro";
 import SiteFooter from "@components/SiteFooter.astro";
 import "@styles/global.css";
-import { getCollection } from 'astro:content';
+import { withBase } from "@utils/path";
 const {
-  title = "小四的机密档案室",
-  description = "社团官网与消息门户",
+  title = "四川大学科幻协会",
+  description = "社团官网与文章活动归档",
   hideHeaderFooter = false,
   disableWaveBg = false,
 } = Astro.props as Props;
 
 // i18n: load *.lang files (flat key=value), determine locale from URL prefix
-// NOTE: Vite deprecated the 'as: \"raw\"' option. Use query + import instead to avoid warnings.
 const langFiles = import.meta.glob('../content/lang/*.lang', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 function parseLang(raw: string) {
   const map: Record<string, string> = {};
@@ -34,8 +33,15 @@ function parseLang(raw: string) {
   });
   return map;
 }
+
+const base = import.meta.env.BASE_URL || '/';
+const cleanBase = base.endsWith('/') ? base : `${base}/`;
 const pathRaw = Astro.url.pathname;
-const m = pathRaw.match(/^\/(?<lc>[a-z]{2}(?:-[a-z]{2})?)(?:\/|$)/i);
+const pathNoBase = (cleanBase !== '/' && pathRaw.startsWith(cleanBase))
+  ? '/' + pathRaw.slice(cleanBase.length)
+  : pathRaw;
+
+const m = pathNoBase.match(/^\/(?<lc>[a-z]{2}(?:-[a-z]{2})?)(?:\/|$)/i);
 const currentLocale = (m?.groups?.lc || 'zh-cn').toLowerCase();
 const localePrefix = m?.groups?.lc ? `/${currentLocale}` : '';
 function loadLocale(code: string) {
@@ -49,8 +55,7 @@ function t(key: string, fallback?: string) {
 }
 
 // 当前路径与导航高亮
-const path = Astro.url.pathname;
-const pathNoLocale = path.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
+const pathNoLocale = pathNoBase.replace(/^\/[a-z]{2}(?:-[a-z]{2})?(?=\/|$)/i, '') || '/';
 const isHomeNormalized = pathNoLocale === '/';
 ---
 
@@ -76,8 +81,8 @@ const isHomeNormalized = pathNoLocale === '/';
         } catch (e) {}
       })();
     </script>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="mask-icon" href="/favicon.svg" color="#0ea5e9" />
+  <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+  <link rel="mask-icon" href={withBase('/favicon.svg')} color="#0ea5e9" />
   </head>
   <body
     class={`min-h-screen bg-[#f5f5f7] text-[#1d1d1f] dark:bg-[#1c1c1e] dark:text-[#f2f2f7] ${hideHeaderFooter ? "hide-header-footer" : ""}`}

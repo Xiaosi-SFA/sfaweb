@@ -13,6 +13,7 @@
  */
 import "@styles/ribbon.css";
 import { getCollection } from "astro:content";
+import { withBase } from "@utils/path";
 // 配置来源：src/content/ribbon/*.json（data collection，每个文件为数组）
 // 每项：{ src: string; href?: string; ratio?: number | string, alt?: string }
 // - ratio: 数字=相对上一张高度的比例；字符串=CSS 长度/百分比（仅 CSS 兜底）
@@ -34,7 +35,7 @@ const ribbonConfig = entries.flatMap((e: any) => e.data as any[]);
                     const content = (
                         <>
                             <img
-                                src={item.src}
+                                src={withBase(item.src)}
                                 alt={item.alt ?? ""}
                                 class="ribbon-img"
                                 loading={idx > 2 ? "lazy" : "eager"}

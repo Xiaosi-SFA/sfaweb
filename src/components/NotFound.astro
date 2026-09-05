@@ -6,16 +6,17 @@
  * - 无障碍：语义化标题；按钮有清晰文案。
  */
 import BaseLayout from '@layouts/BaseLayout.astro'
+import { withBase } from '@utils/path'
 ---
 <BaseLayout title="页面未找到 - SFA">
   <section class="max-w-xl mx-auto py-24 text-center space-y-6">
     <div class="inline-block text-4xl sm:text-5xl font-black text-sky-500 tracking-tight">404</div>
     <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">页面未找到</h1>
     <div class="flex items-center justify-center gap-4 pt-2">
-      <a href="/" class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-sm transition-all">
+      <a href={withBase('/')} class="px-6 py-2.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 font-semibold text-sm shadow-sm transition-all">
         返回首页
       </a>
-      <a href="/activity/" class="px-6 py-2.5 rounded-full liquid-pill text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
+      <a href={withBase('/activity/')} class="px-6 py-2.5 rounded-full liquid-pill text-slate-700 dark:text-slate-200 font-semibold text-sm transition-all">
         活动
       </a>
     </div>

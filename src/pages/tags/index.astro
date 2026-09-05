@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content'
+import { withBase } from '@utils/path'
 
 const articles = await getCollection('articles')
 const counter = new Map<string, number>()
@@ -21,7 +22,7 @@ const tags = [...counter.entries()]
     <ul class="flex flex-wrap gap-3">
       {tags.map(({ tag, count }) => (
         <li>
-          <a href={`/tags/${encodeURIComponent(tag)}/`} class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
+          <a href={withBase(`/tags/${encodeURIComponent(tag)}/`)} class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-700 hover:bg-slate-200">
             <span>#{tag}</span>
             <span class="text-xs text-slate-500">{count}</span>
           </a>

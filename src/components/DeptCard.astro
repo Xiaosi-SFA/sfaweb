@@ -16,19 +16,22 @@ interface Props {
   icon?: string
 }
 const { title, href, summary, icon } = Astro.props as Props
+import { withBase } from '@utils/path'
+const resolvedHref = withBase(href)
+const resolvedIcon = icon ? withBase(icon) : undefined
 ---
-<a href={href} class="group block w-full max-w-full overflow-hidden rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
+<a href={resolvedHref} class="group block w-full max-w-full overflow-hidden rounded-2xl liquid-glass p-5 transition-all duration-300 hover:-translate-y-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400">
   <div class="flex items-start gap-4">
     <div class="flex h-12 w-12 flex-none items-center justify-center overflow-hidden rounded-xl bg-sky-500/10 dark:bg-sky-400/10 text-sky-600 dark:text-sky-400 ring-1 ring-sky-500/20">
-      {icon ? (
-        <img src={icon} alt="" class="max-h-12 max-w-12 object-contain" loading="lazy" />
+      {resolvedIcon ? (
+        <img src={resolvedIcon} alt="" class="max-h-12 max-w-12 object-contain" loading="lazy" />
       ) : (
         <svg viewBox="0 0 24 24" width="28" height="28" class="text-slate-400 dark:text-slate-500"><path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
       )}
     </div>
     <div class="min-w-0">
       <h3 class="truncate text-base font-semibold text-slate-800 dark:text-slate-200 group-hover:text-sky-700 dark:group-hover:text-sky-300">{title}</h3>
-  <p class="mt-1 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-300 break-words">{summary}</p>
+      <p class="mt-1 line-clamp-3 text-sm leading-6 text-slate-600 dark:text-slate-300 break-words">{summary}</p>
     </div>
   </div>
 </a>

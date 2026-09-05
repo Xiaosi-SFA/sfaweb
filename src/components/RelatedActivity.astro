@@ -5,6 +5,7 @@
  * - 排序：先按标签重叠数降序，再按日期降序；截取 limit 条。
  */
 import { getCollection } from "astro:content";
+import { withBase } from "@utils/path";
 
 interface Props {
   /** 当前详情的 slug，用于排重 */
@@ -40,7 +41,7 @@ const scored = all
     <ul class="space-y-2">
       {scored.map(({ e }: { e: any }) => (
         <li>
-          <a href={`/activity/${e.slug}/`} class="block">
+          <a href={withBase(`/activity/${e.slug}/`)} class="block">
             <div class="text-xs text-slate-500 dark:text-slate-400">
               {e.data.date?.toISOString().slice(0, 10)}
             </div>
