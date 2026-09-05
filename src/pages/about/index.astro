@@ -13,7 +13,7 @@ const departments = (await getCollection('departments')).sort(
 )
 ---
 <BaseLayout title="关于我们 - SFA">
-  <div class="mx-auto w-full md:w-3/4 lg:w-1/2 py-4">
+  <div class="max-w-4xl mx-auto py-6">
     <section class="space-y-8">
       <header class="pb-3 border-b border-black/[0.06] dark:border-white/[0.08]">
         <h1 class="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100">{aboutEntry?.data.title ?? '关于我们'}</h1>

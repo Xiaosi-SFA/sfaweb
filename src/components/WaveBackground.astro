@@ -1,55 +1,173 @@
 ---
 /**
  * WaveBackground
- * - 用途：液态流动光晕与心电图结合的动态氛围背景。
- * - 风格：Apple 液态环境光（Liquid Ambient Orbs）+ 经典 ECG 扫描线。
+ * - 用途：《迷星叫》PV 风格的正弦波流动背景（Sine Waveform Envelope）。
+ * - 视觉设计：
+ *   - 5 条交织流动的正弦波束，两侧平滑收敛为基准水平线，中间如心潮起伏般优雅波动。
+ *   - 浅色模式（Light）：MyGO!!!!! 角色代表色（高松灯 / 千早爱音 / 要乐奈 / 长崎爽世 / 椎名立希）。
+ *   - 暗色模式（Dark）：Ave Mujica 角色代表色（Oblivionis 祥子 / Doloris 初华 / Mortis 睦 / Timoris 海铃 / Amoris 若麦）。
+ * - 性能：基于轻量 HTML5 Canvas 绘制，自适应 DPR，支持深浅模式动态平滑过渡与降帧节能。
  */
-const width = 1200
-const height = 600
-const baseline = 400
 import '@styles/wave.css'
-
-// Build a repeated ECG-like segment (P wave, sharp QRS, broad T wave)
-const segment = `
-  h30 q12 -10 24 0 h10
-  l6 14 l6 -120 l6 120 l6 -14
-  h12 q36 28 72 0 h40
-`
-
-// Repeat the segment enough times to exceed width
-const repeats = 8
-let d = `M0 ${baseline}`
-for (let i = 0; i < repeats; i++) d += segment
 ---
 <div class="wave-bg" aria-hidden="true">
-  <!-- 液态流光光晕层 Liquid Ambient Orbs -->
+  <!-- 环境流光层 -->
   <div class="liquid-ambient-container">
     <div class="liquid-orb liquid-orb-1"></div>
     <div class="liquid-orb liquid-orb-2"></div>
     <div class="liquid-orb liquid-orb-3"></div>
   </div>
 
-  <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <!-- scanning mask with edge fade -->
-      <mask id="ecg-scan-mask">
-        <rect x="0" y="0" width={width} height={height} fill="black" />
-        <linearGradient id="ecg-scan-gradient" x1="0" y1="0" x2="1" y2="0" gradientUnits="objectBoundingBox">
-          <stop offset="0%" stop-color="white" stop-opacity="0" />
-          <stop offset="12%" stop-color="white" stop-opacity="1" />
-          <stop offset="88%" stop-color="white" stop-opacity="1" />
-          <stop offset="100%" stop-color="white" stop-opacity="0" />
-        </linearGradient>
-        <rect id="ecg-scan-window" x="-200" y="0" width="120" height={height} fill="url(#ecg-scan-gradient)" class="scan-window" />
-      </mask>
-    </defs>
-
-    <!-- Baseline waveform (always visible) -->
-    <path class="wave-path-base" d={d} />
-
-    <!-- Highlighted waveform (visible only through scanning window) -->
-    <g mask="url(#ecg-scan-mask)">
-      <path class="wave-path" d={d} />
-    </g>
-  </svg>
+  <!-- 迷星叫正弦波 Canvas 渲染层 -->
+  <canvas id="mygoSineCanvas" class="sine-canvas"></canvas>
 </div>
+
+<script is:inline>
+  (function () {
+    const canvas = document.getElementById('mygoSineCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    // 配色定义
+    // MyGO!!!!! 配色 (Light Mode)
+    const MYGO_PALETTE = [
+      { name: 'Tomori', color: 'rgba(70, 193, 222, 0.88)', glow: 'rgba(70, 193, 222, 0.45)', width: 2.2 }, // 高松灯 - 水天蓝
+      { name: 'Anon',   color: 'rgba(250, 132, 155, 0.78)', glow: 'rgba(250, 132, 155, 0.35)', width: 1.8 }, // 千早爱音 - 樱粉
+      { name: 'Rana',   color: 'rgba(107, 211, 176, 0.76)', glow: 'rgba(107, 211, 176, 0.35)', width: 1.8 }, // 要乐奈 - 薄荷抹茶
+      { name: 'Soyo',   color: 'rgba(252, 218, 92, 0.82)', glow: 'rgba(252, 218, 92, 0.40)', width: 1.9 }, // 长崎爽世 - 琥珀金
+      { name: 'Taki',   color: 'rgba(158, 128, 209, 0.76)', glow: 'rgba(158, 128, 209, 0.35)', width: 1.8 }, // 椎名立希 - 幽暮紫
+    ];
+
+    // Ave Mujica 配色 (Dark Mode)
+    const MUJICA_PALETTE = [
+      { name: 'Oblivionis', color: 'rgba(107, 163, 232, 0.88)', glow: 'rgba(107, 163, 232, 0.50)', width: 2.2 }, // 丰川祥子 - 苍翠夜蓝
+      { name: 'Doloris',    color: 'rgba(235, 240, 248, 0.92)', glow: 'rgba(235, 240, 248, 0.55)', width: 2.0 }, // 三角初华 - 冷月白银
+      { name: 'Mortis',     color: 'rgba(72, 199, 152, 0.78)', glow: 'rgba(72, 199, 152, 0.40)', width: 1.8 }, // 若叶睦 - 幽森绿
+      { name: 'Timoris',    color: 'rgba(80, 126, 184, 0.80)', glow: 'rgba(80, 126, 184, 0.42)', width: 1.8 }, // 八幡海铃 - 暮霭群青
+      { name: 'Amoris',     color: 'rgba(243, 185, 82, 0.84)', glow: 'rgba(243, 185, 82, 0.45)', width: 1.9 }, // 祐天寺若麦 - 瑰丽金
+    ];
+
+    // 波束动态物理参数
+    const WAVES = [
+      { ampRatio: 0.12, freq1: 0.0018, freq2: 0.0036, speed1: 0.0016, speed2: -0.0022, phase: 0 },
+      { ampRatio: 0.09, freq1: 0.0022, freq2: 0.0044, speed1: -0.0014, speed2: 0.0020, phase: 1.3 },
+      { ampRatio: 0.075, freq1: 0.0026, freq2: 0.0052, speed1: 0.0018, speed2: -0.0016, phase: 2.7 },
+      { ampRatio: 0.085, freq1: 0.0020, freq2: 0.0038, speed1: -0.0020, speed2: 0.0015, phase: 4.1 },
+      { ampRatio: 0.07, freq1: 0.0024, freq2: 0.0048, speed1: 0.0015, speed2: -0.0024, phase: 5.4 },
+    ];
+
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let animId = 0;
+    let time = 0;
+    let isDark = document.documentElement.classList.contains('dark');
+
+    // 观察深浅色模式切换
+    const observer = new MutationObserver(() => {
+      isDark = document.documentElement.classList.contains('dark');
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+
+    // 汉宁窗/高斯平滑包络函数：两端收敛为 0，中间隆起
+    function envelope(x, w) {
+      if (w <= 0) return 0;
+      const nx = x / w; // [0, 1]
+      // 汉宁平滑窗 (sin(pi * x))^2
+      const s = Math.sin(Math.PI * nx);
+      return s * s * s; // 强化两端平滑度，突出中央起伏
+    }
+
+    function render(timestamp) {
+      time = timestamp || 0;
+      ctx.clearRect(0, 0, width, height);
+
+      const palette = isDark ? MUJICA_PALETTE : MYGO_PALETTE;
+      const centerY = height * 0.52; // 略微偏下居中，贴合视觉黄金比例
+      const maxBaseAmp = Math.min(height * 0.45, 200);
+
+      // 1. 绘制水平中央基准微光线（淡淡的延伸线）
+      ctx.beginPath();
+      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(70, 193, 222, 0.15)';
+      ctx.lineWidth = 1;
+      ctx.moveTo(0, centerY);
+      ctx.lineTo(width, centerY);
+      ctx.stroke();
+
+      // 2. 绘制 5 条正弦波
+      const step = Math.max(3, Math.floor(width / 180)); // 自适应采样步长，极致流畅
+
+      for (let i = 0; i < WAVES.length; i++) {
+        const w = WAVES[i];
+        const p = palette[i % palette.length];
+        const amp = maxBaseAmp * w.ampRatio;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.lineWidth = p.width;
+        ctx.strokeStyle = p.color;
+        ctx.shadowColor = p.glow;
+        ctx.shadowBlur = isDark ? 8 : 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        let started = false;
+
+        for (let x = 0; x <= width; x += step) {
+          const env = envelope(x, width);
+          // 双频正弦波叠加 + 随时间推移的相位演进
+          const wave1 = Math.sin(x * w.freq1 + time * w.speed1 + w.phase);
+          const wave2 = Math.sin(x * w.freq2 + time * w.speed2 + w.phase * 1.5) * 0.38;
+          const y = centerY + (wave1 + wave2) * amp * env;
+
+          if (!started) {
+            ctx.moveTo(x, y);
+            started = true;
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+
+        // 确保连接到右边缘
+        if (started) {
+          ctx.lineTo(width, centerY);
+        }
+
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // 是否在页面可见时持续循环
+      if (!document.hidden) {
+        animId = requestAnimationFrame(render);
+      }
+    }
+
+    // 页面可见性优化：切换到后台标签页时暂停动画，节省资源
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+        cancelAnimationFrame(animId);
+        animId = requestAnimationFrame(render);
+      } else {
+        cancelAnimationFrame(animId);
+      }
+    });
+
+    animId = requestAnimationFrame(render);
+  })();
+</script>
