@@ -33,7 +33,7 @@ const targetLangHref = isEn
   <nav class="nav-main mx-auto max-w-6xl px-4 py-2.5 flex items-center gap-[var(--nav-inline-gap)]">
     <span class="nav-highlight" aria-hidden="true"></span>
     <a href={homeHref} class="inline-flex items-center gap-2 mr-2 group shrink-0" aria-label="SFA Home">
-      <img src={withBase('/favicon.svg')} alt="SFA" class="w-6 h-6 rounded-md object-contain transition-transform group-hover:scale-105" />
+      <img src={withBase('/favicon.svg')} alt="SFA" class="w-6 h-6 rounded-md object-contain transition-transform group-hover:scale-105 dark:brightness-0 dark:invert" />
     </a>
     <a href={homeHref} class={`${navBase} ${isHomeNormalized ? `${navActive} is-active` : ''}`}>{t('nav.home','首页')}</a>
     <a href={articlesHref} class={`${navBase} ${isSection('/articles/') ? `${navActive} is-active` : navInactive}`} aria-current={isSection('/articles/') ? 'page' : undefined}>{t('nav.articles','文章')}</a>
