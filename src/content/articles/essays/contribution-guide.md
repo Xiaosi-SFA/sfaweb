@@ -30,7 +30,7 @@ align: left
 
 适用于轻量内容提交，无需配置本地开发环境：
 
-1. 访问官方仓库 [Xiaosi-SFA/sfaweb](https://github.com/Xiaosi-SFA/sfaweb) 并点击 **Fork**；
+1. 访问官方仓库 [Xiaosi-SFA/xiaosi-sfa.github.io](https://github.com/Xiaosi-SFA/xiaosi-sfa.github.io) 并点击 **Fork**；
 2. 进入 Fork 仓库，切换至 **`dev`** 分支（所有内容增补均基于 `dev`）；
 3. 进入对应目录（如文章投稿进入 `src/content/articles/contributions/`），点击 **Add file -> Create new file**；
 4. 指定文件名（格式为 `kebab-case.md`，使用英文字母与连字符），录入 Frontmatter 与正文；
@@ -45,8 +45,8 @@ align: left
 
 ```bash
 # 1. 克隆 Fork 仓库
-git clone git@github.com:your-username/sfaweb.git
-cd sfaweb
+git clone git@github.com:your-username/xiaosi-sfa.github.io.git
+cd xiaosi-sfa.github.io
 
 # 2. 安装依赖并切换分支
 pnpm install

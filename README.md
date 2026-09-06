@@ -135,7 +135,7 @@ pnpm ship --skip-build "content: 修正错别字"
 如需自定义部署域名或子路径，可在仓库的 `Settings -> Secrets and variables -> Actions -> Variables` 中添加以下变量：
 
 - `SITE_URL`：站点基础域名（如 `https://xiaosi-sfa.github.io` 或自定义域名 `https://sfa.example.com`）。
-- `BASE_PATH`：部署的子路径（默认为仓库名 `/sfaweb/`，若绑定根域名则设置为 `/`）。
+- `BASE_PATH`：部署的子路径（默认为根路径 `/`，如部署至二级路径则设置为对应子路径名）。
 
 ---
 
@@ -144,8 +144,8 @@ pnpm ship --skip-build "content: 修正错别字"
 如果你想向网站投稿**科幻小说、评析、随笔**，或归档**社团活动纪实**、登记**兴趣小组**，欢迎查阅以下详细指引：
 
 - **网站【杂谈】专栏在线版**：
-  - 📖 [SFA 官方网站投稿与内容共建全指南](https://xiaosi-sfa.github.io/sfaweb/articles/essays/contribution-guide/)：投稿流程、三大板块规范与 Frontmatter 模板详解。
-  - 🎨 [SFA Web 高级排版与 Markdown 渲染艺术手册](https://xiaosi-sfa.github.io/sfaweb/articles/essays/typesetting-guide/)：Obsidian Callouts、KaTeX 公式、荧光高亮与多媒体排版。
+  - 📖 [SFA 官方网站投稿与内容共建全指南](https://xiaosi-sfa.github.io/articles/essays/contribution-guide/)：投稿流程、三大板块规范与 Frontmatter 模板详解。
+  - 🎨 [SFA Web 高级排版与 Markdown 渲染艺术手册](https://xiaosi-sfa.github.io/articles/essays/typesetting-guide/)：Obsidian Callouts、KaTeX 公式、荧光高亮与多媒体排版。
 - **仓库代码文档版**：[docs/README.md](docs/README.md)（含完整贡献清单与本地工程化调试）
 
 ---
