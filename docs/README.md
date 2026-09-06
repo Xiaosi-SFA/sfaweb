@@ -27,7 +27,7 @@
 
 本站点基于 GitHub 工作流运作，任何人均可通过 Pull Request（PR）贡献内容：
 
-1. **Fork 仓库**：在 GitHub 上将 [Xiaosi-SFA/sfaweb](https://github.com/Xiaosi-SFA/sfaweb) Fork 到你的个人账号。
+1. **Fork 仓库**：在 GitHub 上将 [Xiaosi-SFA/xiaosi-sfa.github.io](https://github.com/Xiaosi-SFA/xiaosi-sfa.github.io) Fork 到你的个人账号。
 2. **切出分支**：基于 **`dev`** 分支创建你的内容分支（例如 `content/my-new-article`）。
 3. **添加文件**：根据内容类型在 `src/content/` 对应子目录中创建 `.md` 文件，并填写头部元数据（Frontmatter）与正文。
 4. **本地预览**：运行 `pnpm dev` 打开 `http://localhost:4321` 确认排版与视效无误。

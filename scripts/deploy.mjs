@@ -89,11 +89,12 @@ function formatDate(date) {
 }
 
 function checkAdminPermission() {
-  const remoteUrl = getOutput('git remote get-url origin') || 'Xiaosi-SFA/sfaweb'
-  const isUpstream = remoteUrl.includes('Xiaosi-SFA/sfaweb')
+  const remoteUrl = getOutput('git remote get-url origin') || 'Xiaosi-SFA/xiaosi-sfa.github.io'
+  const isUpstream = remoteUrl.includes('Xiaosi-SFA/xiaosi-sfa.github.io') || remoteUrl.includes('Xiaosi-SFA/sfaweb')
 
   try {
-    const out = getOutput('gh repo view Xiaosi-SFA/sfaweb --json viewerPermission')
+    const out = getOutput('gh repo view Xiaosi-SFA/xiaosi-sfa.github.io --json viewerPermission') ||
+                getOutput('gh repo view Xiaosi-SFA/sfaweb --json viewerPermission')
     if (out) {
       const parsed = JSON.parse(out)
       const role = parsed.viewerPermission
@@ -268,8 +269,8 @@ async function main() {
   console.log(`\n\x1b[1;32m========================================\x1b[0m`)
   console.log(`\x1b[1;32m   🎉 部署已全部就绪！总耗时: ${duration}s     \x1b[0m`)
   console.log(`\x1b[1;32m========================================\x1b[0m`)
-  console.log(`\n📡 部署进度追踪: \x1b[4;36mhttps://github.com/Xiaosi-SFA/sfaweb/actions\x1b[0m`)
-  console.log(`🌐 网站在线地址: \x1b[4;36mhttps://xiaosi-sfa.github.io/sfaweb/\x1b[0m\n`)
+  console.log(`\n📡 部署进度追踪: \x1b[4;36mhttps://github.com/Xiaosi-SFA/xiaosi-sfa.github.io/actions\x1b[0m`)
+  console.log(`🌐 网站在线地址: \x1b[4;36mhttps://xiaosi-sfa.github.io/\x1b[0m\n`)
 }
 
 main().catch((err) => {
