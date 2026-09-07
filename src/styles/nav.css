@@ -6,7 +6,7 @@
   transform-origin: center center;
   transition:
     color 180ms ease,
-    transform 280ms cubic-bezier(.34, 1.56, .64, 1),
+    transform 260ms cubic-bezier(0.25, 1, 0.35, 1),
     font-weight 180ms ease,
     text-shadow 180ms ease;
   will-change: transform;
@@ -21,18 +21,18 @@
   color: #ffffff;
 }
 
-/* 透镜折射放大：被选中的文字基于透镜折射微放大一点点（~5.5%） */
+/* 透镜微聚光放大：被选中的文字微放大（~3.5%），纯净通透 */
 .has-navhl .nav-link.is-active {
   color: #000000;
   font-weight: 600;
-  transform: scale(1.055);
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+  transform: scale(1.035);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
 }
 .dark .has-navhl .nav-link.is-active {
   color: #ffffff;
   font-weight: 600;
-  transform: scale(1.055);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transform: scale(1.035);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* 当鼠标滑向其他项时，原激活项离开透镜恢复原比例，当前滑块所在项受透镜放大 */
@@ -55,15 +55,15 @@
 .has-navhl .nav-link:focus-visible {
   color: #000000;
   font-weight: 600;
-  transform: scale(1.055);
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+  transform: scale(1.035);
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
 }
 .dark .has-navhl .nav-link:hover,
 .dark .has-navhl .nav-link:focus-visible {
   color: #ffffff;
   font-weight: 600;
-  transform: scale(1.055);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transform: scale(1.035);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .nav-main { position: relative; }
@@ -106,7 +106,7 @@
   .site-header .nav-main .nav-link > svg { display: block; }
 }
 
-/* 导航滑动滑块：静止时为柔和阴影底衬，活跃时呈现 Apple Music 弹性放大与极淡精致边缘色散 */
+/* 导航滑动滑块：Apple Music 清透液态玻璃质感（高透光基底、顶部弧面反光、内倒角双向折射与细腻柔和浮动阴影） */
 .nav-highlight {
   position: absolute;
   height: var(--nav-highlight-h, 78%);
@@ -120,130 +120,132 @@
   transform: scale(1);
   transform-origin: center center;
 
-  /* 静止/不活跃态：柔和低调的阴影底衬 */
-  background: rgba(0, 0, 0, 0.035);
-  border: 1px solid rgba(0, 0, 0, 0.03);
+  /* 常态：清透微光液态玻璃基底 */
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.68) 0%,
+    rgba(255, 255, 255, 0.38) 100%
+  );
+  backdrop-filter: blur(20px) saturate(180%) brightness(102%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(102%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow:
-    0 2px 8px 0 rgba(0, 0, 0, 0.04),
-    0 1px 2px 0 rgba(0, 0, 0, 0.02),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.5);
+    0 4px 16px -2px rgba(0, 0, 0, 0.06),
+    0 2px 6px -1px rgba(0, 0, 0, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 10px 0 rgba(255, 255, 255, 0.25);
 
-  /* 弹性阻尼滑动 */
+  /* Apple 物理阻尼流体运动 */
   transition:
-    left 300ms cubic-bezier(.34, 1.45, .64, 1),
-    width 300ms cubic-bezier(.34, 1.45, .64, 1),
-    transform 260ms cubic-bezier(.34, 1.56, .64, 1),
+    left 320ms cubic-bezier(0.25, 1, 0.35, 1),
+    width 320ms cubic-bezier(0.25, 1, 0.35, 1),
+    transform 260ms cubic-bezier(0.25, 1, 0.35, 1),
     background 220ms ease,
     border-color 220ms ease,
     box-shadow 220ms ease,
-    opacity 160ms ease;
+    opacity 180ms ease;
+  will-change: left, width, transform;
 }
 
 .dark .nav-highlight {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow:
-    0 4px 14px 0 rgba(0, 0, 0, 0.35),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-/* 边缘极轻微色散环（Prismatic Rim - 严格镂空仅 1px 细边框，低饱和度半透明） */
-.nav-highlight::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  pointer-events: none;
-  padding: 1px;
-  background: conic-gradient(
-    from 135deg,
-    rgba(56, 189, 248, 0.32),
-    rgba(125, 211, 252, 0.12) 15%,
-    transparent 28%,
-    rgba(244, 114, 182, 0.28) 55%,
-    rgba(251, 191, 36, 0.20) 68%,
-    transparent 82%,
-    rgba(56, 189, 248, 0.32) 100%
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 100%
   );
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 240ms ease;
-  z-index: 1;
+  backdrop-filter: blur(20px) saturate(180%) brightness(110%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%) brightness(110%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 6px 20px -2px rgba(0, 0, 0, 0.45),
+    0 2px 6px 0 rgba(0, 0, 0, 0.25),
+    inset 0 1px 0.5px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 0.8px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 8px 0 rgba(255, 255, 255, 0.06);
 }
 
-/* 顶部镜面反光纯净倒角（纯白高光，零外散杂色） */
-.nav-highlight::after {
+/* 边缘 1px 极细光学折射环（纯净无杂色） */
+.nav-highlight::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  z-index: 2;
-  opacity: 0;
-  transition: opacity 240ms ease;
-  box-shadow:
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 -1px 1.5px 0 rgba(0, 0, 0, 0.02);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  opacity: 0.8;
+  z-index: 1;
+  transition: opacity 220ms ease;
 }
 
 .dark .nav-highlight::before {
-  background: conic-gradient(
-    from 135deg,
-    rgba(56, 189, 248, 0.40),
-    rgba(125, 211, 252, 0.16) 15%,
-    transparent 28%,
-    rgba(244, 114, 182, 0.36) 55%,
-    rgba(251, 191, 36, 0.28) 68%,
-    transparent 82%,
-    rgba(56, 189, 248, 0.40) 100%
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  opacity: 0.6;
+}
+
+/* 顶部镜面反光弧面弯月（真实液体表面张力高光 Meniscus Sheen） */
+.nav-highlight::after {
+  content: "";
+  position: absolute;
+  inset: 1px 2px auto 2px;
+  height: 48%;
+  border-radius: 9999px 9999px 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(255, 255, 255, 0.15) 60%,
+    rgba(255, 255, 255, 0) 100%
   );
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.9;
+  transition: opacity 220ms ease;
 }
 
 .dark .nav-highlight::after {
-  box-shadow:
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.4),
-    inset 0 -1px 1.5px 0 rgba(255, 255, 255, 0.04);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.04) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0.75;
 }
 
-/* 活跃态（悬浮/聚焦/移动）：灵动放大、液态玻璃通透高亮与极淡边缘色散微显 */
+/* 活跃态（悬浮/聚焦/移动）：有机微膨胀、透光度增加与环境光晕 */
 .nav-main:hover .nav-highlight,
 .nav-main:focus-within .nav-highlight,
 .nav-highlight.is-active {
-  transform: scale(1.05) translateY(-0.5px);
+  transform: scale(1.03) translateY(-0.5px);
   background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.90) 0%,
-    rgba(255, 255, 255, 0.65) 100%
+    180deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0.46) 100%
   );
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.85);
   box-shadow:
-    0 8px 24px -4px rgba(0, 0, 0, 0.08),
-    0 2px 6px -1px rgba(0, 0, 0, 0.03),
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 1);
+    0 8px 24px -3px rgba(0, 0, 0, 0.08),
+    0 2px 8px -1px rgba(0, 0, 0, 0.03),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 0 12px 0 rgba(255, 255, 255, 0.32);
 }
 
 .dark .nav-main:hover .nav-highlight,
 .dark .nav-main:focus-within .nav-highlight,
 .dark .nav-highlight.is-active {
   background: linear-gradient(
-    135deg,
+    180deg,
     rgba(255, 255, 255, 0.18) 0%,
-    rgba(255, 255, 255, 0.08) 100%
+    rgba(255, 255, 255, 0.06) 100%
   );
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.22);
   box-shadow:
     0 10px 28px -4px rgba(0, 0, 0, 0.5),
     0 3px 8px -2px rgba(0, 0, 0, 0.3),
-    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.35);
+    inset 0 1.5px 0.8px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0.8px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 10px 0 rgba(255, 255, 255, 0.1);
 }
 
 .nav-main:hover .nav-highlight::before,
@@ -253,6 +255,12 @@
 .nav-highlight.is-active::before,
 .nav-highlight.is-active::after {
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-highlight {
+    transition: opacity 120ms ease;
+  }
 }
 
 .nav-main .nav-link { position: relative; z-index: 1; }
