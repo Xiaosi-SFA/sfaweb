@@ -6,3 +6,219 @@
 .dept-grid > * {
   min-width: 0;
 }
+
+/* 部门卡片 Liquid Glass 质感与物理边缘折射 */
+.dept-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem; /* 20px 优美大圆角 */
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.72) 0%,
+    rgba(255, 255, 255, 0.42) 50%,
+    rgba(255, 255, 255, 0.58) 100%
+  );
+  backdrop-filter: blur(22px) saturate(190%) brightness(102%);
+  -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(102%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    /* 柔和液态环境投影 */
+    0 12px 36px -4px rgba(0, 0, 0, 0.06),
+    0 4px 12px -2px rgba(0, 0, 0, 0.03),
+    /* 顶部倒角强镜面反光线 */
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.95),
+    /* 顶沿二次菲涅尔折射微光 */
+    inset 0 3px 6px 0 rgba(255, 255, 255, 0.45),
+    /* 底缘内折射出射光 */
+    inset 0 -1.5px 2px 0 rgba(255, 255, 255, 0.4),
+    /* 侧壁倒角折射 */
+    inset 1px 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset -1px 0 2px 0 rgba(255, 255, 255, 0.35),
+    /* 内部晶状体通透光晕 */
+    inset 0 0 20px 0 rgba(255, 255, 255, 0.2);
+  transition:
+    transform 320ms cubic-bezier(0.25, 1, 0.35, 1),
+    box-shadow 320ms cubic-bezier(0.25, 1, 0.35, 1),
+    background 320ms ease,
+    border-color 320ms ease;
+  will-change: transform, box-shadow;
+}
+
+.dark .dept-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.02) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  backdrop-filter: blur(22px) saturate(190%) brightness(110%);
+  -webkit-backdrop-filter: blur(22px) saturate(190%) brightness(110%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    /* 暗色深邃悬浮投影 */
+    0 16px 40px -4px rgba(0, 0, 0, 0.55),
+    0 4px 14px 0 rgba(0, 0, 0, 0.35),
+    /* 顶沿物理高光：纯净勾勒弧面 */
+    inset 0 1.2px 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 2.5px 5px 0 rgba(255, 255, 255, 0.12),
+    /* 底沿出射折射 */
+    inset 0 -1px 1.5px 0 rgba(255, 255, 255, 0.15),
+    /* 侧边微弱折射轮廓 */
+    inset 1px 0 2px 0 rgba(255, 255, 255, 0.08),
+    inset -1px 0 2px 0 rgba(255, 255, 255, 0.08),
+    /* 内部微光核心 */
+    inset 0 0 20px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* 边缘物理折射分界环（Caustic Prism & Micro-Bevel Rim） */
+.dept-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.25) 30%,
+    rgba(255, 255, 255, 0.06) 60%,
+    rgba(255, 255, 255, 0.45) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.85;
+  transition: opacity 300ms ease;
+}
+
+.dark .dept-card::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0.1) 30%,
+    rgba(255, 255, 255, 0.03) 60%,
+    rgba(255, 255, 255, 0.20) 100%
+  );
+  opacity: 0.85;
+}
+
+/* 顶部物理凸透镜曲率高光（Top Curved Meniscus Sheen） */
+.dept-card::after {
+  content: "";
+  position: absolute;
+  inset: 1px 1px auto 1px;
+  height: 48%;
+  border-radius: calc(1.25rem - 1px) calc(1.25rem - 1px) 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.08) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.85;
+  transition: opacity 300ms ease;
+}
+
+.dark .dept-card::after {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.03) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0.85;
+}
+
+/* 悬停与聚焦交互增强：浮动与折射光芒绽放 */
+.dept-card:hover,
+.dept-card:focus-visible {
+  transform: translateY(-3px);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(255, 255, 255, 0.48) 50%,
+    rgba(255, 255, 255, 0.68) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 20px 48px -4px rgba(0, 0, 0, 0.1),
+    0 6px 16px -2px rgba(0, 0, 0, 0.04),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 1),
+    inset 0 4px 8px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1.5px 2px 0 rgba(255, 255, 255, 0.5),
+    inset 1px 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset -1px 0 2px 0 rgba(255, 255, 255, 0.4),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.28);
+}
+
+.dark .dept-card:hover,
+.dark .dept-card:focus-visible {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 24px 54px -4px rgba(0, 0, 0, 0.65),
+    0 6px 18px 0 rgba(0, 0, 0, 0.4),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 3px 6px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 1.5px 0 rgba(255, 255, 255, 0.18),
+    inset 1px 0 2px 0 rgba(255, 255, 255, 0.12),
+    inset -1px 0 2px 0 rgba(255, 255, 255, 0.12),
+    inset 0 0 24px 0 rgba(255, 255, 255, 0.06);
+}
+
+.dept-card:hover::before,
+.dept-card:focus-visible::before {
+  opacity: 1;
+}
+
+.dept-card:hover::after,
+.dept-card:focus-visible::after {
+  opacity: 1;
+}
+
+/* 内部图标透镜容器 */
+.dept-card-icon {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+  transition: transform 300ms cubic-bezier(0.25, 1, 0.35, 1), background-color 300ms ease, border-color 300ms ease;
+}
+
+.dark .dept-card-icon {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+.dept-card:hover .dept-card-icon {
+  transform: scale(1.06);
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.95);
+}
+
+.dark .dept-card:hover .dept-card-icon {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dept-card {
+    transition: opacity 120ms ease;
+  }
+}

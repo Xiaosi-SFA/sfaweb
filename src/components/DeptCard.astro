@@ -12,14 +12,14 @@ const resolvedIcon = icon ? withBase(icon) : undefined
 ---
 <a
   href={resolvedHref}
-  class="group block w-full max-w-full rounded-2xl liquid-glass p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+  class="dept-card group block w-full max-w-full rounded-2xl p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
 >
-  <div class="flex items-start gap-4">
-    <div class="flex h-12 w-12 flex-none items-center justify-center overflow-hidden rounded-xl bg-sky-500/10 dark:bg-sky-400/10 text-sky-600 dark:text-sky-400 ring-1 ring-sky-500/20">
+  <div class="relative z-10 flex items-start gap-4">
+    <div class="dept-card-icon flex h-12 w-12 flex-none items-center justify-center overflow-hidden rounded-xl text-sky-600 dark:text-sky-400">
       {resolvedIcon ? (
         <img src={resolvedIcon} alt="" class="max-h-12 max-w-12 object-contain" loading="lazy" />
       ) : (
-        <svg viewBox="0 0 24 24" width="28" height="28" class="text-slate-400 dark:text-slate-400"><path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
+        <svg viewBox="0 0 24 24" width="28" height="28" class="text-sky-600 dark:text-sky-400"><path fill="currentColor" d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
       )}
     </div>
     <div class="min-w-0 flex-1">
